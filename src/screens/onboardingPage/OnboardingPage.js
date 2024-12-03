@@ -1,5 +1,5 @@
 import {View, Text, Pressable} from 'react-native';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {styles} from './styles';
 import Video from 'react-native-video';
 import Animated, {FadeIn, FadeInDown} from 'react-native-reanimated';
@@ -8,18 +8,22 @@ import {StackActions, useNavigation} from '@react-navigation/native';
 import {HOME_NAVIGATOR} from '../../navigation/routes';
 import {useDispatch} from 'react-redux';
 import {loginRequest} from '../../redux/reducers/authenticationReducer';
+import {setDataToStorage} from '../../utils/storage';
 
 const OnboardingPage = () => {
   const ref = useRef();
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const testConfiguration = () => {
-    const body = {
-      phone: 8574014902,
-      password: 'Shiv@123',
+  useEffect(() => {
+    const completeOnboarding = async () => {
+      await setDataToStorage('isFirstTimeUser', 'true');
     };
-    dispatch(loginRequest(body));
+    completeOnboarding();
+  }, []);
+
+  const navigateToHome = () => {
+    navigation.dispatch(StackActions.replace(HOME_NAVIGATOR));
   };
   return (
     <View style={styles.container}>
@@ -37,14 +41,10 @@ const OnboardingPage = () => {
         <Button
           title="Get Started"
           containerStyle={styles.btn}
-          onPress={testConfiguration}
+          onPress={navigateToHome}
         />
       </Animated.View>
-      <Pressable
-        style={styles.pressable}
-        onPress={() =>
-          navigation.dispatch(StackActions.replace(HOME_NAVIGATOR))
-        }>
+      <Pressable style={styles.pressable} onPress={navigateToHome}>
         <Text style={styles.pressableTxt}>Skip</Text>
       </Pressable>
     </View>

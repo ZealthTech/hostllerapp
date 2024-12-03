@@ -6,6 +6,7 @@ import {
   MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
 import {
+  BLACK_COLOR,
   COLOR_GRAY_7F,
   GRAY_92,
   ORANGE_DARK,
@@ -42,6 +43,7 @@ export const styles = StyleSheet.create({
   },
   sortText: {
     fontFamily: MONTSERRAT_REGULAR,
+    color: BLACK_COLOR,
   },
   iconView: selected => ({
     flexDirection: 'row',
@@ -60,6 +62,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: selected ? MONTSERRAT_SEMIBOLD : MONTSERRAT_REGULAR,
     marginTop: 3,
+    color: BLACK_COLOR,
   }),
   sheetHead: {
     backgroundColor: PURPLE,

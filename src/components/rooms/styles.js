@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_REGULAR,
     marginTop: 2,
   },
-  price: {fontFamily: MONTSERRAT_BOLD},
+  price: {fontFamily: MONTSERRAT_BOLD, color: BLACK_COLOR},
   btn: selected => ({
     flexDirection: 'row',
     gap: 5,

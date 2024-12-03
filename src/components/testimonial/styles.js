@@ -33,9 +33,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
-  cardContent: {
-    //flexDirection: 'row',
-  },
+
   image: {
     width: getDeviceWidth() * 0.8,
     height: getDeviceHeight() * 0.2,
@@ -49,29 +47,21 @@ export const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontFamily: MONTSERRAT_BOLD,
+    color: BLACK_COLOR,
     marginBottom: 5,
   },
   designation: {
     fontSize: 12,
     fontFamily: MONTSERRAT_REGULAR,
+    color: BLACK_COLOR,
   },
-  // htmlStyles: {
-  //   p: {
-  //     fontSize: 10,
-  //     fontFamily: MONTSERRAT_REGULAR,
-  //     lineHeight: 18,
-  //     textAlign: 'justify',
-  //   },
-  //   span: {
-  //     backgroundColor: 'transparent',
-  //   },
-  // },
-  // htmlContainer: {
-  //   height: 200, // Set a fixed height for the HTML content
-  //   overflow: 'hidden', // Prevent overflow if the content is taller
-  //   paddingBottom: 40,
-  // },
-  content: {fontSize: 10, fontFamily: MONTSERRAT_REGULAR, marginBottom: 80},
+
+  content: {
+    fontSize: 10,
+    fontFamily: MONTSERRAT_REGULAR,
+    marginBottom: 80,
+    color: BLACK_COLOR,
+  },
   pagination: {
     flexDirection: 'row',
     marginTop: 15,

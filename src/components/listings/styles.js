@@ -88,9 +88,13 @@ export const styles = StyleSheet.create({
     borderColor: PINK_LIGHT,
     borderWidth: 1,
   },
-  start: {fontFamily: MONTSERRAT_REGULAR},
+  start: {fontFamily: MONTSERRAT_REGULAR, color: BLACK_COLOR},
   price: {fontFamily: MONTSERRAT_BOLD, color: BLACK_COLOR, fontSize: 20},
-  deposPrice: {fontFamily: MONTSERRAT_REGULAR, fontSize: 16},
+  deposPrice: {
+    fontFamily: MONTSERRAT_REGULAR,
+    fontSize: 16,
+    color: BLACK_COLOR,
+  },
   line: {
     width: 1,
     color: WHITE,
@@ -101,5 +105,6 @@ export const styles = StyleSheet.create({
   rupee: {
     fontFamily: MONTSERRAT_REGULAR,
     fontSize: 18,
+    color: BLACK_COLOR,
   },
 });

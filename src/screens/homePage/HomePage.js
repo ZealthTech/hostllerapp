@@ -29,6 +29,32 @@ const HomePage = () => {
   const [dataGet, setDataGet] = useState(false);
   const navigation = useNavigation();
   const width_dev = getDeviceWidth();
+
+  useEffect(() => {
+    const initialize = async () => {
+      await findToken();
+      // Always call fetchHomeData, userData will either have valid data or be undefined
+      fetchHomeData();
+    };
+    initialize();
+  }, [findToken, fetchHomeData]);
+
+  const findToken = useCallback(async () => {
+    const _userData = await getDataFromStorage(REGISTER_DATA);
+    console.log('user data ', _userData);
+    const parsedData = _userData ? JSON.parse(_userData) : null;
+    setUserData(parsedData);
+  }, []);
+
+  const fetchHomeData = useCallback(() => {
+    const payload = {
+      userId: userData?.userId || '', // Use userData if it exists, otherwise empty string
+      token: userData?.token || '',
+    };
+    console.log('fetchHomeData payload:', payload);
+    dispatch(homeDataRequest(payload));
+  }, [dispatch, userData]);
+
   const handleScroll = useCallback(
     e => {
       const x = e.nativeEvent.contentOffset.x;
@@ -40,32 +66,6 @@ const HomePage = () => {
     },
     [homeData, width_dev],
   );
-
-  useEffect(() => {
-    const initialize = async () => {
-      await findToken();
-      if (dataGet) {
-        fetchHomeData();
-      }
-    };
-    initialize();
-  }, [findToken, fetchHomeData, dataGet]);
-
-  const findToken = useCallback(async () => {
-    const _userData = await getDataFromStorage(REGISTER_DATA);
-    console.log('user data ', _userData);
-    const parsedData = await JSON.parse(_userData);
-    setUserData(parsedData);
-    setDataGet(true);
-  }, []);
-
-  const fetchHomeData = useCallback(() => {
-    const payload = {
-      userId: userData?.userId || '',
-      token: userData?.token || '',
-    };
-    dispatch(homeDataRequest(payload));
-  }, [dispatch, userData]);
 
   const onPressCategory = name => {
     navigation?.navigate(HOSTEL_LISTINGS, {title: name, userData: userData});

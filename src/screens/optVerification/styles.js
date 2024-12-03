@@ -35,6 +35,6 @@ export const styles = StyleSheet.create({
     marginTop: 14,
     gap: 5,
   },
-  dont: {fontFamily: MONTSERRAT_MEDIUM},
+  dont: {fontFamily: MONTSERRAT_MEDIUM, color: BLACK_COLOR},
   resent: {fontFamily: MONTSERRAT_BOLD, color: ORANGE_DARK},
 });

@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_REGULAR,
     fontSize: fontsSize.fs14,
     marginHorizontal: 8,
+    color: BLACK_COLOR,
   },
   leftView: {
     flexDirection: 'row',

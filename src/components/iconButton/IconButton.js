@@ -1,6 +1,6 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {ORANGE_DARK} from '../../utils/colors/colors';
+import {ORANGE_DARK, PURPLE} from '../../utils/colors/colors';
 
 const IconButton = props => {
   const {icon, containerStyle, onPress} = props || {};
@@ -18,7 +18,8 @@ export default IconButton;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: ORANGE_DARK,
+    // backgroundColor: ORANGE_DARK,
+
     borderRadius: 50,
     height: 40,
     width: 40,

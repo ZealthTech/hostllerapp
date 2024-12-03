@@ -7,6 +7,7 @@ import {
 import IconButton from '../iconButton/IconButton';
 import Person from '../../assets/svg/person.svg';
 import Bell from '../../assets/svg/bell.svg';
+import {PURPLE} from '../../utils/colors/colors';
 
 const Header = props => {
   const {onPressProfile, onPressBell} = props || {};
@@ -17,8 +18,14 @@ const Header = props => {
         style={styles.image}
       />
       <View style={styles.rightView}>
-        <IconButton icon={<Person />} onPress={onPressProfile} />
-        <IconButton icon={<Bell />} onPress={onPressBell} />
+        <IconButton
+          icon={<Person fill={PURPLE} height={28} width={28} />}
+          onPress={onPressProfile}
+        />
+        <IconButton
+          icon={<Bell fill={PURPLE} height={28} width={28} />}
+          onPress={onPressBell}
+        />
       </View>
     </View>
   );

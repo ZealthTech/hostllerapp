@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_REGULAR,
     marginLeft: 10,
     marginTop: 5,
+    color: BLACK_COLOR,
   },
   btn: {
     paddingHorizontal: 16,

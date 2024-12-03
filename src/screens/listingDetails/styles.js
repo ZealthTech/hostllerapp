@@ -163,6 +163,7 @@ export const styles = StyleSheet.create({
   deposit: {
     fontFamily: MONTSERRAT_REGULAR,
     fontSize: fontsSize.fs12,
+    color: BLACK_COLOR,
     marginBottom: isAndroid() ? 0 : 5,
   },
   choose: {color: ORANGE_DARK, fontFamily: MONTSERRAT_BOLD},

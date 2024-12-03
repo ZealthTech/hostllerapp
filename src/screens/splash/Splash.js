@@ -13,15 +13,31 @@ import {
   LOGIN,
   ONBOARDING_PAGE,
 } from '../../navigation/routes';
+import {getDataFromStorage, setDataToStorage} from '../../utils/storage';
+import {REGISTER_DATA} from '../../utils/constants/constants';
 
 const Splash = () => {
   console.log('Splash screen loaded');
   const navigation = useNavigation();
+
   useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      const isFirstTimeUser = await getDataFromStorage('isFirstTimeUser');
+      if (isFirstTimeUser === null) {
+        console.log('isFirstTimeUser27 ', isFirstTimeUser);
+        // First-time user, navigate to Onboarding
+        navigation.dispatch(StackActions.replace(ONBOARDING_PAGE));
+      } else {
+        // Returning user, navigate to Home
+        console.log('isFirstTimeUser32 ', isFirstTimeUser);
+        navigation.dispatch(StackActions.replace(HOME_NAVIGATOR));
+      }
+    };
     setTimeout(() => {
-      navigation.dispatch(StackActions.replace(HOME_NAVIGATOR));
+      checkOnboardingStatus();
     }, 3000);
   }, [navigation]);
+
   return (
     <LinearGradient colors={['#FFE4AE', '#EE685C']} style={styles.gradient}>
       {/* You can add other components here if needed */}

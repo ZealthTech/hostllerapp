@@ -86,8 +86,9 @@ const WriteReviewView = props => {
           height: 400,
           cropping: true,
         });
+        console.log('Images selected ----', image);
         if (image) {
-          setSelectedImages([...selectedImages, ...image]); // Add selected images to state
+          setSelectedImages([...selectedImages, image]); // Add selected images to state
         }
       }, 1000);
     } catch (error) {

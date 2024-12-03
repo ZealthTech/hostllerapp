@@ -10,11 +10,16 @@ import ProfileIcon from '../../assets/svg/profile.svg';
 import SupportIcon from '../../assets/svg/support.svg';
 import {
   BLACK_COLOR,
+  GRAY_92,
+  GRAY_LIGHT_CB,
   LIGHT_PURPLE,
+  LIGHT_PURPLE_B1,
   PINK,
   PURPLE,
+  WHITE,
 } from '../../utils/colors/colors';
 import {
+  MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_REGULAR,
 } from '../../utils/styles/commonStyles';
@@ -24,7 +29,7 @@ const Tab = createBottomTabNavigator();
 
 // Function to render icons
 const TabIconWithLabel = ({focused, Icon}) => {
-  return <Icon fill={focused ? PURPLE : 'black'} color="red" />;
+  return <Icon fill={focused ? WHITE : GRAY_LIGHT_CB} color="red" />;
 };
 
 const TabNavigator = () => {
@@ -33,7 +38,7 @@ const TabNavigator = () => {
       screenOptions={({route}) => ({
         tabBarShowLabel: true,
         tabBarStyle: {
-          backgroundColor: LIGHT_PURPLE,
+          backgroundColor: PURPLE,
           height: 84,
           paddingTop: 10,
           borderTopLeftRadius: 20,
@@ -47,9 +52,9 @@ const TabNavigator = () => {
         tabBarLabel: ({focused}) => (
           <Text
             style={{
-              color: focused ? PURPLE : BLACK_COLOR,
+              color: focused ? WHITE : GRAY_LIGHT_CB,
               fontSize: 12,
-              fontFamily: MONTSERRAT_MEDIUM,
+              fontFamily: focused ? MONTSERRAT_BOLD : MONTSERRAT_MEDIUM,
               marginVertical: 5,
             }}>
             {route.name}
@@ -67,20 +72,11 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="My Booking"
+        name="My Bookings"
         component={Bookings}
         options={{
           tabBarIcon: ({focused}) => (
             <TabIconWithLabel focused={focused} Icon={MyBookingsIcon} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <TabIconWithLabel focused={focused} Icon={ProfileIcon} />
           ),
         }}
       />
@@ -90,6 +86,15 @@ const TabNavigator = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <TabIconWithLabel focused={focused} Icon={SupportIcon} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <TabIconWithLabel focused={focused} Icon={ProfileIcon} />
           ),
         }}
       />
