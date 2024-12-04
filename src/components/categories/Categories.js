@@ -1,9 +1,11 @@
-import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
-import React from 'react';
 import {
-  getDeviceHeight,
-  getDeviceWidth,
-} from '../../utils/constants/commonFunctions';
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ImageBackground,
+} from 'react-native';
+import React from 'react';
 import {styles} from './styles';
 
 const Categories = props => {
@@ -21,13 +23,9 @@ const Categories = props => {
             activeOpacity={1}
             onPress={() => onPress?.(item?.type)}
             style={styles.tchView(index === 0)}>
-            <Image
-              source={item?.image}
-              style={{
-                height: getDeviceHeight() * 0.17,
-                width: getDeviceWidth() * 0.3,
-              }}
-            />
+            <ImageBackground source={item?.image} style={styles.image}>
+              <Text style={styles.text}>{item?.name}</Text>
+            </ImageBackground>
           </TouchableOpacity>
         )}
       />

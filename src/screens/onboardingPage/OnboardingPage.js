@@ -13,7 +13,6 @@ import {setDataToStorage} from '../../utils/storage';
 const OnboardingPage = () => {
   const ref = useRef();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const completeOnboarding = async () => {
@@ -44,9 +43,6 @@ const OnboardingPage = () => {
           onPress={navigateToHome}
         />
       </Animated.View>
-      <Pressable style={styles.pressable} onPress={navigateToHome}>
-        <Text style={styles.pressableTxt}>Skip</Text>
-      </Pressable>
     </View>
   );
 };

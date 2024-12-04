@@ -25,55 +25,16 @@ const OtpVerification = () => {
   const {data, fromForgot} = route?.params || {};
   const [otp, setOtp] = useState('');
   const [token, setToke] = useState('');
-  const [isOtpAutoRead, setIsOtpAutoRead] = useState(false); // For status tracking
+
   const {otpStatus, message, loading} = useSelector(state => state.authReducer);
   console.log('data ', data);
 
   console.log('fromForgot ', fromForgot);
-
-  // useEffect(() => {
-  //   // Fetch hash for SMS
-  //   RNOtpVerify.getHash()
-  //     .then(hash => console.log('Hash for SMS:', hash))
-  //     .catch(e => console.log('Error fetching hash:', e));
-
-  //   // Start OTP listener
-  //   RNOtpVerify.getOtp()
-  //     .then(() => {
-  //       RNOtpVerify.addListener(otpHandler);
-  //     })
-  //     .catch(e => console.log('Error starting OTP listener:', e));
-
-  //   // Cleanup listener on unmount
-  //   return () => {
-  //     RNOtpVerify.removeListener();
-  //   };
-  // }, []);
   useEffect(() => {
-    console.log('44 // ', otpStatus);
     if (otpStatus) {
-      // navigation.reset({
-      //   index: 0,
-      //   routes: [{name: HOME_NAVIGATOR}],
-      // });
       navigation.dispatch(StackActions.replace(LOGIN));
     }
   }, [otpStatus, navigation]);
-
-  // const otpHandler = message => {
-  //   try {
-  //     // Extract OTP from the message using regex
-  //     const otpMatch = message.match(/(\d{4})/); // Adjust regex for your OTP length
-  //     if (otpMatch && otpMatch[1]) {
-  //       setOtp(otpMatch[1]); // Update OTP state
-  //       setIsOtpAutoRead(true); // Auto-read status
-  //       Keyboard.dismiss(); // Dismiss the keyboard
-  //       RNOtpVerify.removeListener(); // Remove listener after reading OTP
-  //     }
-  //   } catch (error) {
-  //     console.error('Error parsing OTP:', error);
-  //   }
-  // };
 
   const verifyOtp = async () => {
     if (fromForgot) {

@@ -9,7 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {PURPLE} from '../../../utils/colors/colors';
 import {requestCameraPermission} from '../../../utils/constants/commonFunctions';
 import Button from '../../../components/button/Button';
-import Animated, {FadeInDown} from 'react-native-reanimated';
+import Animated, {FadeIn, FadeInDown} from 'react-native-reanimated';
 import {ScrollView} from 'react-native-gesture-handler';
 import {styles} from './styles';
 import {useDispatch, useSelector} from 'react-redux';
@@ -37,11 +37,8 @@ const WriteReviewView = props => {
   const [review, setReview] = useState('');
   const [reviewError, setReviewError] = useState(false);
   const dispatch = useDispatch();
-  const {message, loading, status} = useSelector(
-    state => state.addReviewReducer,
-  );
+  const {loading, status} = useSelector(state => state.addReviewReducer);
 
-  console.log('message 42', message);
   const selectFromGallery = async () => {
     try {
       const ifPermission = await requestCameraPermission();
@@ -257,30 +254,29 @@ const WriteReviewView = props => {
             </View>
           ))}
         </View>
-
-        <Modal visible={showModal} transparent={true}>
-          <View style={styles.modalOverlay}>
-            <Animated.View style={styles.modalContent} entering={FadeInDown}>
-              <Text style={styles.select}>Select Photo</Text>
-              <View style={styles.line} />
-              <Pressable style={styles.row} onPress={onPressTakePhoto}>
-                <CustomSvg SvgComponent={<Camera height={20} width={20} />} />
-                <Text style={styles.take}>Take a Photo</Text>
-              </Pressable>
-              <View style={styles.line} />
-              <Pressable style={styles.row} onPress={onPressChooseFromGallery}>
-                <CustomSvg SvgComponent={<Gallery height={20} width={20} />} />
-                <Text style={styles.take}>Choose from Gallery</Text>
-              </Pressable>
-              <Button
-                title="Cancel"
-                containerStyle={styles.button}
-                onPress={() => setShowModal(false)}
-              />
-            </Animated.View>
-          </View>
-        </Modal>
       </ScrollView>
+      <Modal visible={showModal} transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.select}>Select Photo</Text>
+            <View style={styles.line} />
+            <Pressable style={styles.row} onPress={onPressTakePhoto}>
+              <CustomSvg SvgComponent={<Camera height={20} width={20} />} />
+              <Text style={styles.take}>Take a Photo</Text>
+            </Pressable>
+            <View style={styles.line} />
+            <Pressable style={styles.row} onPress={onPressChooseFromGallery}>
+              <CustomSvg SvgComponent={<Gallery height={20} width={20} />} />
+              <Text style={styles.take}>Choose from Gallery</Text>
+            </Pressable>
+            <Button
+              title="Cancel"
+              containerStyle={styles.button}
+              onPress={() => setShowModal(false)}
+            />
+          </View>
+        </View>
+      </Modal>
       <Button
         title="Submit"
         containerStyle={styles.bottomBtn}

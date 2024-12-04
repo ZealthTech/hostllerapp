@@ -3,7 +3,6 @@ import {
   BLACK_COLOR,
   ORANGE_DARK,
   ORANGE_EXTRA_LIGHT,
-  ORANGE_MEDIUM,
   PINK_EXTRA_LIGHT,
   WHITE,
 } from '../../utils/colors/colors';
@@ -28,6 +27,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 15,
     overflow: 'hidden',
+    backgroundColor: WHITE,
   },
   img: {height: 100, width: 105},
   genderRow: {

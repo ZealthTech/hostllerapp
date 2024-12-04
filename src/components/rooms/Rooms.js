@@ -1,4 +1,11 @@
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import {
@@ -11,6 +18,7 @@ import {
 } from '../../assets';
 import CustomSvg from '../customSvg/CustomSvg';
 import {fontsSize} from '../../utils/styles/commonStyles';
+import {formatedDateDMY} from '../../utils/constants/commonFunctions';
 
 const Rooms = props => {
   const {
@@ -21,6 +29,9 @@ const Rooms = props => {
     onPress,
     selectedRoom,
     setSelectedRoom,
+    selectedDate,
+    setSelectedRoomToCart,
+    selectedRoomToCart,
   } = props || {};
 
   const getSvgIcon = () => {
@@ -33,25 +44,39 @@ const Rooms = props => {
     }
   };
 
-  const handleSelection = (roomType, index, option) => {
-    if (
-      selectedRoom?.roomType === roomType &&
-      selectedRoom?.index === index &&
-      selectedRoom?.option === option
-    ) {
-      // Deselect if already selected
-      setSelectedRoom({
-        roomType: null,
-        index: null,
-        option: null,
-      });
+  const handleSelection = (roomType, index, option, item) => {
+    console.log('item ', item);
+    console.log('45 ', selectedDate);
+    if (selectedDate !== '') {
+      if (
+        selectedRoom?.roomType === roomType &&
+        selectedRoom?.index === index &&
+        selectedRoom?.option === option
+      ) {
+        // Deselect if already selected
+        setSelectedRoom({
+          roomType: null,
+          index: null,
+          option: null,
+        });
+        // Optionally reset selectedRoomToCart
+        setSelectedRoomToCart(null);
+      } else {
+        // Select the new option
+        setSelectedRoom({
+          roomType,
+          index,
+          option,
+        });
+        setSelectedRoomToCart({
+          item,
+          checkinDate: formatedDateDMY(selectedDate),
+          roomType,
+          option,
+        });
+      }
     } else {
-      // Select the new option
-      setSelectedRoom({
-        roomType,
-        index,
-        option,
-      });
+      Alert.alert('Please Select Checkin date');
     }
   };
 
@@ -131,7 +156,7 @@ const Rooms = props => {
                         selectedRoom?.option !== 'included'
                       }
                       onPress={() =>
-                        handleSelection(roomType, index, 'included')
+                        handleSelection(roomType, index, 'included', item)
                       }>
                       <CustomSvg SvgComponent={<Plus />} />
                       <Text style={styles.add}>Add</Text>

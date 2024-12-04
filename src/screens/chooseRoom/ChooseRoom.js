@@ -1,6 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, Modal, Pressable} from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import {styles} from './styles';
 import Rooms from '../../components/rooms/Rooms';
@@ -8,14 +12,24 @@ import CustomSvg from '../../components/customSvg/CustomSvg';
 import {Cancel, CheckGreen} from '../../assets';
 import Loader from '../../components/loader/Loader';
 import CalenderView from '../../components/calenderView/CalenderView';
+import FooterButton from '../../components/footerButton/FooterButton';
+import Animated, {FadeInDown} from 'react-native-reanimated';
+import {getDataFromStorage} from '../../utils/storage';
+import {REGISTER_DATA} from '../../utils/constants/constants';
+import {CART_SCREEN, CHOOSE_ROOM, LOGIN} from '../../navigation/routes';
+import {formatedDateDMY} from '../../utils/constants/commonFunctions';
+import MealChart from '../../components/mealChart/MealChart';
 
 const ChooseRoom = () => {
   const route = useRoute();
-  const {data, type} = route?.params || {};
+  const navigation = useNavigation();
+  const {data, type, fromLogin} = route?.params || {};
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showCalender, setShowCalender] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState('');
+  const [checkinDate, setCheckinDate] = useState('');
+  const [selectedRoomToCart, setSelectedRoomToCart] = useState({});
   const [selectedRoom, setSelectedRoom] = useState({
     roomType: null,
     index: null,
@@ -26,6 +40,8 @@ const ChooseRoom = () => {
     setModalVisible(true);
   };
 
+  console.log('data ', data);
+  console.log('selectedRoomToCart ', selectedRoomToCart);
   const roomData = [
     {key: 'single', data: data?.singleBedRoom, roomType: 'Single Room'},
     {key: 'double', data: data?.doubleBedRoom, roomType: 'Twin Sharing Room'},
@@ -39,6 +55,29 @@ const ChooseRoom = () => {
     if (date) {
       setSelectedDate(date); // Update selected date
     }
+  };
+
+  const handleCheckout = () => {
+    // setSelectedRoomToCart({
+    //   ...selectedRoomToCart,
+    //   ,
+    // });
+    navigation.navigate(CART_SCREEN, {
+      cartData: {...selectedRoomToCart, address: data?.address},
+      mealChart: data?.mealChart,
+      pgId: data?.pgId,
+    });
+    // setLoading(true);
+    // if (userData == null) {
+    //   navigation?.navigate(LOGIN, {
+    //     userData: userData,
+    //     targetRoute: CHOOSE_ROOM,
+    //   });
+    // } else {
+    //   //navigation?.navigate(CART_SCREEN);
+    //   addRoomToCart(userData);
+    // }
+    // setLoading(false);
   };
 
   return (
@@ -61,70 +100,34 @@ const ChooseRoom = () => {
             foodChart={data?.mealChart}
             onPress={openBottomSheet}
             selectedRoom={selectedRoom}
+            selectedDate={selectedDate}
             setSelectedRoom={setSelectedRoom}
+            setSelectedRoomToCart={setSelectedRoomToCart}
+            selectedRoomToCart={selectedRoomToCart}
           />
         )}
-        ListFooterComponent={<View style={{height: 20}} />} // Add some spacing at the bottom
+        ListFooterComponent={<View style={{height: 20}} />}
         showsVerticalScrollIndicator={false}
       />
-
-      <Modal visible={modalVisible} transparent={true}>
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}>
-          <View style={styles.modalContent}>
-            {/* Header */}
-            <Text style={styles.modalTitle}>MENU SCHEDULE</Text>
-
-            <View style={styles.table}>
-              {/* Header Row */}
-              <View style={styles.tableHeader}>
-                <Text style={[styles.tableCellUp, {flex: 1.2}]}>Day/Meal</Text>
-                <Text style={styles.tableCellUp}>Breakfast</Text>
-                <Text style={styles.tableCellUp}>Lunch</Text>
-                <Text style={styles.tableCellUp}>Snacks</Text>
-                <Text style={styles.tableCellUp}>Dinner</Text>
-              </View>
-              {data?.mealChart?.map(day => (
-                <View style={styles.tableRow} key={day._id}>
-                  <View style={styles.tableCell}>
-                    <Text style={styles.days}>{day.title}</Text>
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.breakfast === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.lunch === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.snacks === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.dinner === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        </Pressable>
-      </Modal>
-
+      {selectedRoom?.index !== null && (
+        <Animated.View
+          entering={FadeInDown.duration(300)} // Adjust duration for smoothness
+        >
+          <FooterButton
+            onPress={handleCheckout}
+            price={
+              selectedRoomToCart?.item?.rent +
+              selectedRoomToCart?.item?.foodPrice +
+              selectedRoomToCart?.item?.security
+            }
+          />
+        </Animated.View>
+      )}
+      <MealChart
+        modalVisible={modalVisible}
+        data={data?.mealChart}
+        onPressOutside={() => setModalVisible(false)}
+      />
       <Loader loading={loading} />
     </View>
   );

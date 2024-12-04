@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {ORANGE_DARK, WHITE} from '../../utils/colors/colors';
+import {GRAY_92, ORANGE_DARK, WHITE} from '../../utils/colors/colors';
 import {fontsSize, MONTSERRAT_BOLD} from '../../utils/styles/commonStyles';
 
 export const styles = StyleSheet.create({
@@ -17,12 +17,12 @@ export const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_BOLD,
   },
   elevation: {
-    elevation: 3,
+    elevation: 5,
     shadowOpacity: 0.2,
     shadowRadius: 2,
     shadowOffset: {
       height: 5,
-      width: 0,
+      width: 2,
     },
   },
 });

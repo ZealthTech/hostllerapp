@@ -7,7 +7,16 @@ const AmenitiesAndRules = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <FlatList
+      <View style={styles.contentContainer}>
+        {data?.map((item, index) => (
+          <View style={styles.itemContainer}>
+            <Image source={{uri: item?.image}} style={styles.icon} />
+            <Text style={styles.text}>{item?.title}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* <FlatList
         data={data}
         numColumns={3}
         contentContainerStyle={styles.flatListContainer}
@@ -18,7 +27,7 @@ const AmenitiesAndRules = props => {
             <Text style={styles.text}>{item?.title}</Text>
           </View>
         )}
-      />
+      /> */}
     </View>
   );
 };

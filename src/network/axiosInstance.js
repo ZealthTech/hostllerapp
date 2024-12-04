@@ -21,7 +21,7 @@ export const apiGet = async (endpoint, params = {}, token = null) => {
 
 // Common function to handle POST request
 export const apiPost = async (endpoint, data, token = null) => {
-  console.log('24 ', data);
+  console.log('24 ', data, token);
   try {
     const response = await axiosInstance.post(endpoint, data, {
       headers: token ? {Authorization: `Bearer ${token}`} : {},

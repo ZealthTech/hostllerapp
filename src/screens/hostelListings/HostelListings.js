@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Pressable} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -9,10 +9,11 @@ import {listingsDataRequest} from '../../redux/reducers/listingsReducer';
 import CustomSvg from '../../components/customSvg/CustomSvg';
 import {CrossIcon, Filters, RightTick, SortFilter} from '../../assets';
 import {styles} from './styles';
-import {CustomBottomSheet} from '../../components/customBottomSheet/CustomBottomSheet';
 import {listings, sortOptions} from './helper';
 import {WHITE} from '../../utils/colors/colors';
 import ListingsSkeleton from '../../components/skeletons/homeScreenSkeleton/ListingsSkeleton';
+import {LISTINGS_DETAILS} from '../../navigation/routes';
+import CustomBottomSheet from '../../components/customBottomSheet/CustomBottomSheet';
 
 const HostelListings = props => {
   const route = useRoute();
@@ -80,14 +81,22 @@ const HostelListings = props => {
       </View>
     );
   };
-  console.log('loading ', loading);
+  const navigateToDetail = (pgId, type, rent, security) => {
+    console.log('touched ');
+    navigation?.navigate(LISTINGS_DETAILS, {
+      pgId: pgId,
+      type: type,
+      security: security,
+      rent: rent,
+    });
+  };
   return (
     <View style={styles.container}>
       <BackIconHeader title={title} />
       {!loading ? (
         <>
           <View style={styles.filters}>
-            <TouchableOpacity
+            <Pressable
               style={styles.tch}
               onPress={() => {
                 if (sortSheetVisible) {
@@ -100,7 +109,7 @@ const HostelListings = props => {
               }}>
               <CustomSvg SvgComponent={<SortFilter />} />
               <Text style={styles.sortText}>Sort</Text>
-            </TouchableOpacity>
+            </Pressable>
             <TouchableOpacity style={styles.tch}>
               <CustomSvg SvgComponent={<Filters />} />
               <Text style={styles.sortText}>Filters</Text>
@@ -115,6 +124,7 @@ const HostelListings = props => {
           <Listings
             data={listings(listingData?.finalList, sortBy)}
             navigation={navigation}
+            onPressCard={navigateToDetail}
           />
         </>
       ) : (

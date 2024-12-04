@@ -2,6 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
+  CART_SCREEN,
   CHOOSE_ROOM,
   FORGOT_PASSWORD,
   HOME_NAVIGATOR,
@@ -23,6 +24,7 @@ import OtpVerification from '../screens/optVerification/OtpVerification';
 import ForgotPassword from '../screens/forgotPassword/ForgotPassword';
 import ChooseRoom from '../screens/chooseRoom/ChooseRoom';
 import ResetPassword from '../screens/resetPassword/ResetPassword';
+import CartScreen from '../screens/cartScreen/CartScreen';
 const Stack = createStackNavigator();
 const Navigator = ({navigationRef}) => {
   return (
@@ -80,6 +82,11 @@ const Navigator = ({navigationRef}) => {
         <Stack.Screen
           name={CHOOSE_ROOM}
           component={ChooseRoom}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={CART_SCREEN}
+          component={CartScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

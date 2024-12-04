@@ -1,7 +1,12 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {BLACK_COLOR, PURPLE} from '../../utils/colors/colors';
+import {
+  BLACK_COLOR,
+  GRAY_LIGHT,
+  PURPLE,
+  WHITE,
+} from '../../utils/colors/colors';
 import CustomSvg from '../customSvg/CustomSvg';
 import {Calendar} from '../../assets';
 import {MONTSERRAT_MEDIUM} from '../../utils/styles/commonStyles';
@@ -61,6 +66,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     alignItems: 'center',
+    backgroundColor: WHITE,
   },
   date: {color: BLACK_COLOR, fontFamily: MONTSERRAT_MEDIUM, fontSize: 14},
+  dateTimePicker: {
+    borderColor: GRAY_LIGHT,
+    marginTop: 10,
+    marginStart: 10,
+  },
 });

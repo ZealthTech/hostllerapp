@@ -1,4 +1,11 @@
-import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  Pressable,
+} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import CustomSvg from '../customSvg/CustomSvg';
@@ -6,7 +13,7 @@ import {ArrowDownCircle, ArrowUpCircle, CrossArrows, Star} from '../../assets/';
 import {LISTINGS_DETAILS} from '../../navigation/routes';
 
 const Listings = props => {
-  const {data, navigation} = props || {};
+  const {data, onPressCard} = props || {};
   const getSvgIcon = type => {
     if (type === 'Girls') {
       return <ArrowDownCircle />;
@@ -17,14 +24,6 @@ const Listings = props => {
     }
   };
 
-  const navigateToDetail = (pgId, type, rent, security) => {
-    navigation?.navigate(LISTINGS_DETAILS, {
-      pgId: pgId,
-      type: type,
-      security: security,
-      rent: rent,
-    });
-  };
   return (
     <FlatList
       data={data}
@@ -35,15 +34,10 @@ const Listings = props => {
         const amenities = item?.allServices?.slice(0, 8);
         console.log('amenites ', amenities);
         return (
-          <TouchableOpacity
+          <Pressable
             style={styles.tchContainer}
             onPress={() =>
-              navigateToDetail(
-                item?.pgId,
-                item?.type,
-                item?.rent,
-                item?.security,
-              )
+              onPressCard(item?.pgId, item?.type, item?.rent, item?.security)
             }>
             <Image source={{uri: item?.image}} style={styles.imageBnr} />
             <Text style={styles.pgName}>{item?.name}</Text>
@@ -82,7 +76,7 @@ const Listings = props => {
                 <Text style={styles.deposPrice}>₹ {item?.security}</Text>
               </View>
             </View>
-          </TouchableOpacity>
+          </Pressable>
         );
       }}
     />

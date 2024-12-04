@@ -19,11 +19,11 @@ const Header = props => {
       />
       <View style={styles.rightView}>
         <IconButton
-          icon={<Person fill={PURPLE} height={28} width={28} />}
+          icon={<Person fill={PURPLE} height={25} width={25} />}
           onPress={onPressProfile}
         />
         <IconButton
-          icon={<Bell fill={PURPLE} height={28} width={28} />}
+          icon={<Bell fill={PURPLE} height={25} width={25} />}
           onPress={onPressBell}
         />
       </View>

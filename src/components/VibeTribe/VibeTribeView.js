@@ -2,7 +2,13 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import CustomSvg from '../customSvg/CustomSvg';
 import {Building, Garden, Road, Temple} from '../../assets';
-import {BLACK_COLOR, LIGHT_PURPLE, PURPLE} from '../../utils/colors/colors';
+import {
+  BLACK_COLOR,
+  GRAY_92,
+  GRAY_LIGHT,
+  LIGHT_PURPLE,
+  PURPLE,
+} from '../../utils/colors/colors';
 import Space from '../space/Space';
 import {
   fontsSize,
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
   },
   imageView: {flexDirection: 'row', alignItems: 'center', flex: 1},
   container: {
-    backgroundColor: LIGHT_PURPLE,
+    backgroundColor: GRAY_LIGHT,
     borderRadius: 25,
     margin: 20,
     padding: 20,

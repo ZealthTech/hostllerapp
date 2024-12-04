@@ -18,3 +18,4 @@ export const GRAY_LIGHT = '#E5E4E2';
 export const PURPLE_EXTRA_LIGHT = '#faedf9';
 export const ORANGE_EXTRA_LIGHT = '#f6b3ad';
 export const LIGHT_PURPLE_B1 = '#B143AB';
+export const LIGHT_GREEN = '#28A44A';

@@ -1,5 +1,12 @@
-import {View, Text, Image, TouchableOpacity, Pressable} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
+import React, {Suspense, useEffect, useRef, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {listingDetailsRequest} from '../../redux/reducers/listingDetails';
@@ -19,12 +26,15 @@ import AddressDetails from '../../components/addressDetails/AddressDetails';
 import {stripHTMLTags} from '../../utils/constants/commonFunctions';
 import Reviews from './reviews/Reviews';
 import UserReviews from './userReviews/UserReviews';
-import {CustomBottomSheet} from '../../components/customBottomSheet/CustomBottomSheet';
+//import {CustomBottomSheet} from '../../components/customBottomSheet/CustomBottomSheet';
 import {CHOOSE_ROOM} from '../../navigation/routes';
 import {ScrollView} from 'react-native-gesture-handler';
 import WriteReviewView from './writeReview/WriteReviewView';
 import Loader from '../../components/loader/Loader';
 import FastImage from 'react-native-fast-image';
+const CustomBottomSheet = React.lazy(() =>
+  import('../../components/customBottomSheet/CustomBottomSheet'),
+);
 
 const ListingDetails = () => {
   const route = useRoute();
@@ -270,37 +280,39 @@ const ListingDetails = () => {
           <Text style={styles.choose}>Choose Room</Text>
         </Pressable>
       </View>
-      <CustomBottomSheet
-        ref={bottomSheetRef}
-        snapPoints={['90%']}
-        // children={allPhotosView()}
-        handleComponent={null}
-        scrollable={true}>
-        {allPhotosView()}
-      </CustomBottomSheet>
-      <CustomBottomSheet
-        ref={reviewSheetRef}
-        snapPoints={['100%']}
-        handleComponent={null}>
-        <WriteReviewView
-          reviewSheetRef={reviewSheetRef}
-          handleStarPress={(index, _setReviewsPosition, _reviewsPosition) =>
-            handleStarPress(index, _setReviewsPosition, _reviewsPosition)
-          }
-          setSelectedRating={setSelectedRating}
-          setFoodRate={setFoodRate}
-          setLocationRate={setLocationRate}
-          setAmenitiesRate={setAmenitiesRate}
-          setStaffRate={setStaffRate}
-          setCleanRate={setCleanRate}
-          selectedRating={selectedRating}
-          locationRate={locationRate}
-          foodRate={foodRate}
-          cleanRate={cleanRate}
-          staffRate={staffRate}
-          amenitiesRate={amenitiesRate}
-        />
-      </CustomBottomSheet>
+      <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+        <CustomBottomSheet
+          ref={bottomSheetRef}
+          snapPoints={['90%']}
+          handleComponent={null}
+          scrollable={true}>
+          {allPhotosView()}
+        </CustomBottomSheet>
+        <CustomBottomSheet
+          ref={reviewSheetRef}
+          snapPoints={['100%']}
+          handleComponent={null}>
+          <WriteReviewView
+            reviewSheetRef={reviewSheetRef}
+            handleStarPress={(index, _setReviewsPosition, _reviewsPosition) =>
+              handleStarPress(index, _setReviewsPosition, _reviewsPosition)
+            }
+            setSelectedRating={setSelectedRating}
+            setFoodRate={setFoodRate}
+            setLocationRate={setLocationRate}
+            setAmenitiesRate={setAmenitiesRate}
+            setStaffRate={setStaffRate}
+            setCleanRate={setCleanRate}
+            selectedRating={selectedRating}
+            locationRate={locationRate}
+            foodRate={foodRate}
+            cleanRate={cleanRate}
+            staffRate={staffRate}
+            amenitiesRate={amenitiesRate}
+          />
+        </CustomBottomSheet>
+      </Suspense>
+
       <Loader loading={loading} />
     </View>
   );

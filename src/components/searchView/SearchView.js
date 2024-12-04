@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     fontSize: fontsSize.fs14,
     marginHorizontal: 8,
     color: BLACK_COLOR,
+    flex: 1,
   },
   leftView: {
     flexDirection: 'row',

@@ -12,3 +12,4 @@ export const FORGOT_PASSWORD = 'ForgotPassword';
 export const OTP_VERIFICATION = 'OtpVerification';
 export const CHOOSE_ROOM = 'ChooseRoom';
 export const RESET_PASSWORD_SCREEN = 'ResetPassword';
+export const CART_SCREEN = 'CartScreen';

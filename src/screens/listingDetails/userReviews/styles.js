@@ -49,10 +49,11 @@ export const styles = StyleSheet.create({
   },
   content: {marginTop: 10, marginHorizontal: 3},
   postImg: {
-    height: 50,
+    height: 60,
     width: 65,
     borderRadius: 5,
     marginTop: 10,
     marginStart: 2,
+    marginEnd: 4,
   },
 });

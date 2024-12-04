@@ -8,7 +8,6 @@ import {useNavigation} from '@react-navigation/native';
 
 const BackIconHeader = props => {
   const {title} = props || {};
-  console.log('title ', title);
   const navigation = useNavigation();
   return (
     <View style={styles.view}>
@@ -23,7 +22,6 @@ const BackIconHeader = props => {
     </View>
   );
 };
-//'head' | 'middle' | 'tail' | 'clip'
 export default BackIconHeader;
 const styles = StyleSheet.create({
   view: {

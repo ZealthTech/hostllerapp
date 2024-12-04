@@ -1,4 +1,5 @@
 import {Dimensions, PermissionsAndroid, Platform} from 'react-native';
+import moment from 'moment';
 
 export const getDeviceWidth = () => {
   return Dimensions.get('window').width;
@@ -37,4 +38,8 @@ export const requestCameraPermission = async () => {
     console.log('request permission asked2....');
     return true;
   }
+};
+export const formatedDateDMY = date => {
+  const formattedDateTime = moment(date).format('DD MMM YYYY');
+  return formattedDateTime;
 };
