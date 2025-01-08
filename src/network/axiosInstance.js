@@ -2,17 +2,19 @@ import axios from 'axios';
 import {BASE_URL} from '../utils/constants/apiEndPoints';
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL, // Replace with your API base URL
+  baseURL: BASE_URL,
   timeout: 10000,
 });
 
 // Common function to handle GET request
 export const apiGet = async (endpoint, params = {}, token = null) => {
+  console.log('endpoint, data, token = null ', endpoint, params, token);
   try {
     const response = await axiosInstance.get(endpoint, {
       params,
-      headers: token ? {Authorization: `Bearer ${token}`} : {},
+      headers: token ? {Authorization: `${token}`} : {},
     });
+    console.log('response ', response?.data);
     return response.data; // Return only the data from the response
   } catch (error) {
     return handleError(error); // Handle errors centrally
@@ -21,11 +23,12 @@ export const apiGet = async (endpoint, params = {}, token = null) => {
 
 // Common function to handle POST request
 export const apiPost = async (endpoint, data, token = null) => {
-  console.log('24 ', data, token);
+  console.log('endpoint, data, token = null ', endpoint, data, token);
   try {
     const response = await axiosInstance.post(endpoint, data, {
-      headers: token ? {Authorization: `Bearer ${token}`} : {},
+      headers: token ? {Authorization: `${token}`} : {},
     });
+    console.log('29 ', response);
     return response.data; // Return only the data from the response
   } catch (error) {
     return handleError(error); // Handle errors centrally
@@ -59,8 +62,11 @@ export const apiDelete = async (endpoint, params = {}, token = null) => {
 
 export const postDataWithImages = async (endpoint, formData, token = null) => {
   console.log('Sending data to:', endpoint);
+  console.log(' send data ', formData);
   try {
-    const headers = {};
+    const headers = {
+      'Content-Type': 'multipart/form-data', // Set the Content-Type explicitly
+    };
     if (token) {
       headers.Authorization = `${token}`;
     }
@@ -69,27 +75,24 @@ export const postDataWithImages = async (endpoint, formData, token = null) => {
     const response = await axiosInstance.post(endpoint, formData, {headers});
     return response.data; // Return the response data
   } catch (error) {
-    console.error('Request failed:', error.message);
     return handleError(error); // Handle errors centrally
   }
 };
 
 // Centralized error handling function
 const handleError = error => {
+  console.log('82 ', error);
   if (error.response) {
     // Server responded with a status other than 2xx
-    console.error('Response error:', error.response);
     return {
-      success: false,
+      status: false,
       message: error.response.data.message || 'Something went wrong.',
     };
   } else if (error.request) {
     // No response was received from the server
-    console.error('Request error:', error.request);
-    return {success: false, message: 'No response from server.'};
+    return {status: false, message: 'No response from server.'};
   } else {
     // Something else went wrong
-    console.error('Error:', error.message);
-    return {success: false, message: error.message};
+    return {status: false, message: error.message};
   }
 };

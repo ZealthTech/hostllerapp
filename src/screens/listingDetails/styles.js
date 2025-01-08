@@ -105,38 +105,7 @@ export const styles = StyleSheet.create({
     marginTop: 5,
     lineHeight: 20,
   },
-  imgView: {
-    flexDirection: 'row',
-    marginHorizontal: 35,
-    gap: 8,
-    marginBottom: 10,
-  },
-  extTch: {
-    borderWidth: 0.5,
-    borderColor: PURPLE,
-    paddingHorizontal: 16,
-    paddingVertical: 5,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  extTxt: {
-    color: PURPLE,
-    fontFamily: MONTSERRAT_MEDIUM,
-    fontSize: fontsSize.fs14,
-  },
-  selectedButton: {
-    backgroundColor: LIGHT_PURPLE,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  selectedText: {
-    color: PURPLE,
-    fontFamily: MONTSERRAT_SEMIBOLD,
-  },
+
   sheetImg: {
     height: getDeviceHeight() * 0.28,
     alignSelf: 'center',

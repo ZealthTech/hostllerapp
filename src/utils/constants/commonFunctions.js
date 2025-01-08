@@ -1,5 +1,6 @@
 import {Dimensions, PermissionsAndroid, Platform} from 'react-native';
 import moment from 'moment';
+import Toast from 'react-native-toast-message';
 
 export const getDeviceWidth = () => {
   return Dimensions.get('window').width;
@@ -42,4 +43,15 @@ export const requestCameraPermission = async () => {
 export const formatedDateDMY = date => {
   const formattedDateTime = moment(date).format('DD MMM YYYY');
   return formattedDateTime;
+};
+
+export const showToast = (type, desc, info = false) => {
+  Toast.show({
+    type: type, //successToast || errorToast
+    position: 'bottom',
+    props: {
+      desc,
+      info,
+    },
+  });
 };

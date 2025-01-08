@@ -18,7 +18,11 @@ import {
 } from '../../assets';
 import CustomSvg from '../customSvg/CustomSvg';
 import {fontsSize} from '../../utils/styles/commonStyles';
-import {formatedDateDMY} from '../../utils/constants/commonFunctions';
+import {
+  formatedDateDMY,
+  showToast,
+} from '../../utils/constants/commonFunctions';
+import {ERROR_TOAST} from '../../utils/constants/constants';
 
 const Rooms = props => {
   const {
@@ -45,8 +49,6 @@ const Rooms = props => {
   };
 
   const handleSelection = (roomType, index, option, item) => {
-    console.log('item ', item);
-    console.log('45 ', selectedDate);
     if (selectedDate !== '') {
       if (
         selectedRoom?.roomType === roomType &&
@@ -76,7 +78,7 @@ const Rooms = props => {
         });
       }
     } else {
-      Alert.alert('Please Select Checkin date');
+      showToast(ERROR_TOAST, 'Please select a Checkin date', true);
     }
   };
 
@@ -192,7 +194,7 @@ const Rooms = props => {
                         selectedRoom?.option !== 'no food'
                       }
                       onPress={() =>
-                        handleSelection(roomType, index, 'no food')
+                        handleSelection(roomType, index, 'no food', item)
                       }>
                       <CustomSvg SvgComponent={<Plus />} />
                       <Text style={styles.add}>Add</Text>

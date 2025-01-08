@@ -11,15 +11,15 @@ function* fetchListings(action) {
   console.log('saga listings', action);
   try {
     const response = yield call(apiPost, LISTINGS_URL, action?.payload, null);
-    console.log('saga data', response);
+    console.log('saga data', response, action?.payload);
     if (response?.status) {
-      console.log('16 ');
       yield put(listingsDataSuccess(response?.data));
     } else {
-      console.log('19 ');
+      console.log('response?.message ', response?.message);
       yield put(listingsDataError(response?.message));
     }
   } catch (error) {
+    console.log('21 ', error);
     yield put(listingsDataError(error.message));
   }
 }

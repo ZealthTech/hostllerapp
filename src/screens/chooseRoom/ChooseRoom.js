@@ -1,47 +1,31 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, Modal, Pressable} from 'react-native';
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+import React, {useState} from 'react';
+import {View, FlatList} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import {styles} from './styles';
 import Rooms from '../../components/rooms/Rooms';
-import CustomSvg from '../../components/customSvg/CustomSvg';
-import {Cancel, CheckGreen} from '../../assets';
-import Loader from '../../components/loader/Loader';
 import CalenderView from '../../components/calenderView/CalenderView';
 import FooterButton from '../../components/footerButton/FooterButton';
 import Animated, {FadeInDown} from 'react-native-reanimated';
-import {getDataFromStorage} from '../../utils/storage';
-import {REGISTER_DATA} from '../../utils/constants/constants';
-import {CART_SCREEN, CHOOSE_ROOM, LOGIN} from '../../navigation/routes';
-import {formatedDateDMY} from '../../utils/constants/commonFunctions';
+import {CART_SCREEN} from '../../navigation/routes';
 import MealChart from '../../components/mealChart/MealChart';
 
 const ChooseRoom = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const {data, type, fromLogin} = route?.params || {};
+  const {data, type} = route?.params || {};
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showCalender, setShowCalender] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
-  const [checkinDate, setCheckinDate] = useState('');
   const [selectedRoomToCart, setSelectedRoomToCart] = useState({});
   const [selectedRoom, setSelectedRoom] = useState({
     roomType: null,
     index: null,
     option: null, // Tracks whether it's "with food" or "without food"
   });
-
   const openBottomSheet = () => {
     setModalVisible(true);
   };
-
-  console.log('data ', data);
-  console.log('selectedRoomToCart ', selectedRoomToCart);
   const roomData = [
     {key: 'single', data: data?.singleBedRoom, roomType: 'Single Room'},
     {key: 'double', data: data?.doubleBedRoom, roomType: 'Twin Sharing Room'},
@@ -58,28 +42,15 @@ const ChooseRoom = () => {
   };
 
   const handleCheckout = () => {
-    // setSelectedRoomToCart({
-    //   ...selectedRoomToCart,
-    //   ,
-    // });
     navigation.navigate(CART_SCREEN, {
       cartData: {...selectedRoomToCart, address: data?.address},
       mealChart: data?.mealChart,
       pgId: data?.pgId,
     });
-    // setLoading(true);
-    // if (userData == null) {
-    //   navigation?.navigate(LOGIN, {
-    //     userData: userData,
-    //     targetRoute: CHOOSE_ROOM,
-    //   });
-    // } else {
-    //   //navigation?.navigate(CART_SCREEN);
-    //   addRoomToCart(userData);
-    // }
-    // setLoading(false);
   };
 
+  const maximumDate = new Date();
+  maximumDate.setMonth(maximumDate.getMonth() + 6);
   return (
     <View style={styles.container}>
       <BackIconHeader title="Choose Room" />
@@ -88,6 +59,7 @@ const ChooseRoom = () => {
         showDatePicker={showCalender}
         value={selectedDate}
         onChangeDate={onChangeDate}
+        maximumDate={maximumDate}
       />
       <FlatList
         data={roomData}
@@ -128,7 +100,6 @@ const ChooseRoom = () => {
         data={data?.mealChart}
         onPressOutside={() => setModalVisible(false)}
       />
-      <Loader loading={loading} />
     </View>
   );
 };

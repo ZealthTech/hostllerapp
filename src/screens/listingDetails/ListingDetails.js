@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import React, {Suspense, useEffect, useRef, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -26,12 +19,13 @@ import AddressDetails from '../../components/addressDetails/AddressDetails';
 import {stripHTMLTags} from '../../utils/constants/commonFunctions';
 import Reviews from './reviews/Reviews';
 import UserReviews from './userReviews/UserReviews';
-//import {CustomBottomSheet} from '../../components/customBottomSheet/CustomBottomSheet';
 import {CHOOSE_ROOM} from '../../navigation/routes';
 import {ScrollView} from 'react-native-gesture-handler';
 import WriteReviewView from './writeReview/WriteReviewView';
 import Loader from '../../components/loader/Loader';
 import FastImage from 'react-native-fast-image';
+import SelectionChip from '../../components/selectionChip/SelectionChip';
+import {imageTypeData} from './helper';
 const CustomBottomSheet = React.lazy(() =>
   import('../../components/customBottomSheet/CustomBottomSheet'),
 );
@@ -43,7 +37,7 @@ const ListingDetails = () => {
   const {pgId, type, rent, security} = route?.params || {};
   const {details, loading} = useSelector(state => state.listingDetails);
   const [images, setImages] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const bottomSheetRef = useRef(null);
   const reviewSheetRef = useRef(null);
   const [selectedRating, setSelectedRating] = useState(0);
@@ -95,9 +89,12 @@ const ListingDetails = () => {
     }
   };
   const showAllImages = () => {
-    bottomSheetRef?.current?.expand();
+    bottomSheetRef.current?.expand(); // Open the bottom sheet
   };
 
+  const openWriteReview = () => {
+    reviewSheetRef.current?.expand(); // Open the bottom sheet
+  };
   const allPhotosView = () => {
     return (
       <View style={{flex: 1}}>
@@ -134,12 +131,7 @@ const ListingDetails = () => {
   const handleScroll = e => {
     const scrollPosition = e.nativeEvent.contentOffset.y + 200; // current scroll position
     const reviewTopPosition = reviewsPosition; // The top position of the review view relative to the screen
-
-    console.log('scrollPosition: ', scrollPosition);
-    console.log('review position: ', reviewTopPosition);
-
     if (scrollPosition >= reviewTopPosition) {
-      console.log('217 ');
       setIsReviewsVisible(true); // Trigger animation when reviews come into view
     }
   };
@@ -170,50 +162,14 @@ const ListingDetails = () => {
             );
           })}
         </ScrollView>
-        <View style={styles.imgView}>
-          <TouchableOpacity
-            style={[
-              styles.extTch,
-              selectedCategory === 'Exterior' && styles.selectedButton,
-            ]}
-            onPress={() => renderImages('Exterior')}>
-            <Text
-              style={[
-                styles.extTxt,
-                selectedCategory === 'Exterior' && styles.selectedText,
-              ]}>
-              Exterior
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.extTch,
-              selectedCategory === 'Interior' && styles.selectedButton,
-            ]}
-            onPress={() => renderImages('Interior')}>
-            <Text
-              style={[
-                styles.extTxt,
-                selectedCategory === 'Interior' && styles.selectedText,
-              ]}>
-              Interior
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.extTch,
-              selectedCategory === 'Washroom' && styles.selectedButton,
-            ]}
-            onPress={() => renderImages('Washroom')}>
-            <Text
-              style={[
-                styles.extTxt,
-                selectedCategory === 'Washroom' && styles.selectedText,
-              ]}>
-              Washroom
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <SelectionChip
+          data={imageTypeData}
+          selectedCategory={selectedCategory}
+          renderImages={item => {
+            setSelectedCategory(item);
+            renderImages(item);
+          }}
+        />
         <View style={styles.contentView}>
           <View style={styles.titleView}>
             <Text style={styles.pgTitle}>{details?.name}</Text>
@@ -251,7 +207,7 @@ const ListingDetails = () => {
               data={details?.pgReview}
               rating={details?.rating}
               review={details?.review}
-              onPressWriteReview={() => reviewSheetRef?.current?.expand()}
+              onPressWriteReview={openWriteReview}
               onLayout={event => {
                 const {y} = event.nativeEvent.layout;
                 setReviewsPosition(y);
@@ -280,7 +236,7 @@ const ListingDetails = () => {
           <Text style={styles.choose}>Choose Room</Text>
         </Pressable>
       </View>
-      <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+      <Suspense fallback={null}>
         <CustomBottomSheet
           ref={bottomSheetRef}
           snapPoints={['90%']}
@@ -294,6 +250,7 @@ const ListingDetails = () => {
           handleComponent={null}>
           <WriteReviewView
             reviewSheetRef={reviewSheetRef}
+            scrollable={true}
             handleStarPress={(index, _setReviewsPosition, _reviewsPosition) =>
               handleStarPress(index, _setReviewsPosition, _reviewsPosition)
             }
@@ -307,6 +264,7 @@ const ListingDetails = () => {
             locationRate={locationRate}
             foodRate={foodRate}
             cleanRate={cleanRate}
+            pgId={details?.pgId}
             staffRate={staffRate}
             amenitiesRate={amenitiesRate}
           />

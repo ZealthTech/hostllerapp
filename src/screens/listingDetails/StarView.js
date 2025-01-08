@@ -22,7 +22,6 @@ const StarView = props => {
       <Text style={styles.text}>{reviewFor}</Text>
       {stars?.map((item, index) => (
         <CustomSvg
-          key={item}
           SvgComponent={
             <MulticolorStar
               height={26}

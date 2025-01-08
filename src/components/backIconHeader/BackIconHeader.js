@@ -1,20 +1,20 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {PURPLE, WHITE} from '../../utils/colors/colors';
+import {BLACK_COLOR, PURPLE, WHITE} from '../../utils/colors/colors';
 import {MONTSERRAT_BOLD} from '../../utils/styles/commonStyles';
 import CustomSvg from '../customSvg/CustomSvg';
 import {BackArrow} from '../../assets';
 import {useNavigation} from '@react-navigation/native';
 
 const BackIconHeader = props => {
-  const {title} = props || {};
+  const {title, fromCart = false, onPress} = props || {};
   const navigation = useNavigation();
   return (
     <View style={styles.view}>
       <CustomSvg
-        SvgComponent={<BackArrow />}
+        SvgComponent={<BackArrow fill={WHITE} />}
         isClickable={true}
-        onPress={() => navigation?.goBack()}
+        onPress={() => (fromCart ? onPress : navigation?.goBack())}
       />
       <Text style={styles.text} numberOfLines={1} ellipsizeMode={'tail'}>
         {title}

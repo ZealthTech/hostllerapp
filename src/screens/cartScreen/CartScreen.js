@@ -1,6 +1,10 @@
 import {View, Text, Image, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useFocusEffect, useRoute} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {styles} from './styles';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import CustomSvg from '../../components/customSvg/CustomSvg';
@@ -13,21 +17,46 @@ import {
 } from '../../utils/styles/commonStyles';
 import {LIGHT_GREEN, WHITE} from '../../utils/colors/colors';
 import {getDataFromStorage} from '../../utils/storage';
-import {REGISTER_DATA} from '../../utils/constants/constants';
+import {
+  ERROR_TOAST,
+  REGISTER_DATA,
+  SUCCESS_TOAST,
+} from '../../utils/constants/constants';
 import {apiPost} from '../../network/axiosInstance';
 import {BOOK_ROOM} from '../../utils/constants/apiEndPoints';
+import {showToast} from '../../utils/constants/commonFunctions';
+import Loader from '../../components/loader/Loader';
+import {
+  BOOKING_SUCCESS_SCREEN,
+  CART_SCREEN,
+  CHOOSE_ROOM,
+  LOGIN,
+} from '../../navigation/routes';
+import {setBookingSummary} from '../../redux/reducers/bookingSummary';
+import {useDispatch, useSelector} from 'react-redux';
 
 const CartScreen = () => {
   const route = useRoute();
+  const dispatch = useDispatch();
   const {cartData, mealChart, fromLogin, pgId} = route?.params || {};
-  console.log('cartData ', cartData);
   const foodInclude = cartData?.option === 'included';
-  console.log('foodInclude ', foodInclude);
-  console.log(' pgId ', pgId);
   const [modalVisible, setModalVisible] = useState();
+  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
+  const navigation = useNavigation();
+  const {bookingSummary} = useSelector(state => state.bookingSummary);
 
   useEffect(() => {
+    dispatch(setBookingSummary(cartData)); //storing booking info in redux so that we can get it after coming back from login
+    setTimeout(() => {
+      //showing loader for 300ms, so that until we get the data from redux, loader will be shown
+      setLoading(false);
+    }, 300);
+  }, [cartData, dispatch]);
+
+  console.log('from login', fromLogin);
+  useEffect(() => {
+    console.log('userData.... ', userData);
     if (fromLogin && userData != null) {
       addRoomToCart(userData);
     }
@@ -42,51 +71,80 @@ const CartScreen = () => {
   const checkLogin = async () => {
     const _userData = await getDataFromStorage(REGISTER_DATA);
     const parsedData = _userData ? JSON.parse(_userData) : null;
-    console.log('parsedData ', parsedData);
+    console.log('parsedData 58', parsedData);
     setUserData(parsedData);
   };
 
   console.log('userData?.token ', userData?.token);
+  console.log('userData?.userId ', userData?.userData?.userId);
   const addRoomToCart = async _userData => {
-    const bodyData = {
-      userId: userData?.userId,
-      pgId: pgId,
-      totalBeds: 2,
-      roomType: cartData?.item?.roomType, // 1_Bed | 2_Bed | 3_Bed | 4_Bed | dormitory
-      bathroomType: cartData?.item?.bathroomType, // Private | Shared
-      ac: cartData?.item?.ac,
-      rent: cartData?.item?.rent,
-      security: cartData?.item?.security,
-      totalPaid:
-        cartData?.item?.security +
-        cartData?.item?.rent +
-        cartData?.item?.foodPrice, // Rent + Secuity = Total Paid
-      foodOption: cartData?.option, //
-      foodPrice: cartData?.item?.foodPrice, // Give Price When Optional Else 0
-      paymentMode: 'Online', // Online | Cash
-      checkinDate: cartData?.checkinDate,
-    };
-    const response = await apiPost(BOOK_ROOM, bodyData, userData?.token);
-    console.log('response ', response);
+    setLoading(true);
+    if (userData != null) {
+      const bodyData = {
+        userId: userData?.userData?.userId,
+        pgId: pgId,
+        totalBeds: 2,
+        roomType: bookingSummary?.item?.roomType, // 1_Bed | 2_Bed | 3_Bed | 4_Bed | dormitory
+        bathroomType: bookingSummary?.item?.bathroomType, // Private | Shared
+        ac: bookingSummary?.item?.ac,
+        rent: bookingSummary?.item?.rent,
+        security: bookingSummary?.item?.security,
+        totalPaid:
+          bookingSummary?.item?.security +
+          bookingSummary?.item?.rent +
+          bookingSummary?.item?.foodPrice, // Rent + Security = Total Paid
+        foodOption: bookingSummary?.option, //
+        foodPrice: bookingSummary?.item?.foodPrice, // Give Price When Optional Else 0
+        paymentMode: 'Online', // Online | Cash
+        checkinDate: bookingSummary?.checkinDate,
+      };
+      console.log('bodyData, userData?.token ,', bodyData, userData?.token);
+      const response = await apiPost(BOOK_ROOM, bodyData, userData?.token);
+
+      console.log('response ', response);
+      if (response?.status) {
+        navigation.pop(4);
+        navigation.replace(BOOKING_SUCCESS_SCREEN);
+      } else {
+        showToast(ERROR_TOAST, response?.message);
+      }
+    } else {
+      navigation.navigate(LOGIN, {
+        targetRoute: CART_SCREEN,
+        cartData: cartData,
+        mealChart: mealChart,
+        pgId: pgId,
+        fromCart: true,
+      });
+    }
+
+    setLoading(false);
   };
   return (
     <View style={styles.container}>
-      <BackIconHeader title="Booking Summary" />
+      <BackIconHeader
+        title="Booking Summary"
+        // fromCart={true}
+        //onPress={() => navigation.navigate(CHOOSE_ROOM)}
+      />
       <View style={styles.card}>
         <View style={styles.imageView}>
-          <Image source={{uri: cartData?.item?.image}} style={styles.img} />
+          <Image
+            source={{uri: bookingSummary?.item?.image}}
+            style={styles.img}
+          />
           <View style={styles.titleView}>
-            <Text style={styles.title}>{cartData?.address.trim()}</Text>
+            <Text style={styles.title}>{bookingSummary?.address?.trim()}</Text>
             <View style={styles.calenderView}>
               <CustomSvg SvgComponent={<Calendar />} />
-              <Text style={styles.date}>{cartData?.checkinDate}</Text>
+              <Text style={styles.date}>{bookingSummary?.checkinDate}</Text>
             </View>
           </View>
         </View>
         <View style={styles.priceTopView}>
           <View>
             <Text style={styles.bedText}>
-              {cartData?.item?.roomType} {cartData?.roomType}
+              {bookingSummary?.item?.roomType} {bookingSummary?.roomType}
             </Text>
             <Text style={styles.bedText}>
               {foodInclude ? 'With Food ' : 'Without Food'}
@@ -95,7 +153,7 @@ const CartScreen = () => {
           <View>
             <Text style={styles.originalPrice}>₹15084</Text>
             <Text style={styles.currentPrice}>
-              ₹{cartData?.item?.rent + cartData?.item?.foodPrice}
+              ₹{bookingSummary?.item?.rent + bookingSummary?.item?.foodPrice}
             </Text>
             <Text style={styles.off}>20% OFF</Text>
           </View>
@@ -114,7 +172,7 @@ const CartScreen = () => {
         <View style={styles.securityView}>
           <Text style={styles.meal}>Security Deposit</Text>
           <Text style={[styles.currentPrice, {fontFamily: MONTSERRAT_MEDIUM}]}>
-            ₹{cartData?.item?.security}
+            ₹{bookingSummary?.item?.security}
           </Text>
         </View>
         <View style={styles.securityView}>
@@ -137,9 +195,9 @@ const CartScreen = () => {
           </Text>
           <Text style={[styles.meal, {fontFamily: MONTSERRAT_SEMIBOLD}]}>
             ₹
-            {cartData?.item?.security +
-              cartData?.item?.rent +
-              cartData?.item?.foodPrice -
+            {bookingSummary?.item?.security +
+              bookingSummary?.item?.rent +
+              bookingSummary?.item?.foodPrice -
               100}
           </Text>
         </View>
@@ -147,9 +205,9 @@ const CartScreen = () => {
           <Text style={styles.payNow}>Pay Now</Text>
           <Text style={styles.finalRs}>
             ₹
-            {cartData?.item?.security +
-              cartData?.item?.rent +
-              cartData?.item?.foodPrice -
+            {bookingSummary?.item?.security +
+              bookingSummary?.item?.rent +
+              bookingSummary?.item?.foodPrice -
               100}
           </Text>
         </Pressable>
@@ -159,6 +217,7 @@ const CartScreen = () => {
         modalVisible={modalVisible}
         onPressOutside={() => setModalVisible(false)}
       />
+      <Loader loading={loading} />
     </View>
   );
 };

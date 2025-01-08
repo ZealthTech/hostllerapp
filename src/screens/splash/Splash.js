@@ -7,14 +7,8 @@ import {
 } from '../../utils/constants/commonFunctions';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import {StackActions, useNavigation} from '@react-navigation/native';
-import {
-  HOME_NAVIGATOR,
-  HOME_PAGE,
-  LOGIN,
-  ONBOARDING_PAGE,
-} from '../../navigation/routes';
-import {getDataFromStorage, setDataToStorage} from '../../utils/storage';
-import {REGISTER_DATA} from '../../utils/constants/constants';
+import {HOME_NAVIGATOR, ONBOARDING_PAGE} from '../../navigation/routes';
+import {getDataFromStorage} from '../../utils/storage';
 
 const Splash = () => {
   console.log('Splash screen loaded');

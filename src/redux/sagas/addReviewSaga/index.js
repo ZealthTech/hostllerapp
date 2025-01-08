@@ -9,12 +9,14 @@ import {
 
 function* addReview(action) {
   console.log('add review', action);
+  console.log('add review action payload:', action.payload);
+
   try {
     const response = yield call(
       postDataWithImages,
       ADD_REVIEW,
-      action?.payload,
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3REYXRhIjp7InVzZXJJZCI6IlVTUlc3SE9YQiIsInVzZXJOYW1lIjoiYW5hbnlhNzg1OCIsIm5hbWUiOiJBTkFOWUEgUEFOREVZIiwicGhvbmUiOjY2NjY2MDAwMDAsInJvbGUiOjV9LCJpYXQiOjE3MzE1ODk0ODl9.IfHsyQLtH000GySa4a8JLrBpP4mC1J6mptAFGFFLF2U',
+      action?.payload?.formData,
+      action?.payload?.token,
     );
     console.log('review response ', response);
     yield put(addReviewSuccess(response));

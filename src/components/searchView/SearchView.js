@@ -1,25 +1,27 @@
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
 import CustomSvg from '../customSvg/CustomSvg';
 import LocationIcon from '../../assets/svg/location_pin.svg';
 import SearchIcon from '../../assets/svg/search.svg';
 import {BLACK_COLOR, TEXT_COLOR, WHITE} from '../../utils/colors/colors';
 import InputText from '../inputText/InputText';
-import {fontsSize, MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
+import {
+  fontsSize,
+  MONTSERRAT_MEDIUM,
+  MONTSERRAT_REGULAR,
+} from '../../utils/styles/commonStyles';
 import {isAndroid} from '../../utils/constants/commonFunctions';
-const SearchView = () => {
+const SearchView = ({onPressSearchInput, containerStyle, placeholder}) => {
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={[styles.container, containerStyle]}
+      onPress={onPressSearchInput}>
       <View style={styles.leftView}>
         <CustomSvg isClickable={false} SvgComponent={<LocationIcon />} />
-        <TextInput
-          placeholder="Search location..."
-          placeholderTextColor={TEXT_COLOR}
-          style={styles.input}
-        />
+        <Text style={styles.searchTxt}>{placeholder}</Text>
       </View>
       <CustomSvg isClickable={false} SvgComponent={<SearchIcon />} />
-    </View>
+    </Pressable>
   );
 };
 
@@ -32,10 +34,15 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Vertically center all items
     justifyContent: 'space-between', // Space between the input and search icon
     paddingHorizontal: 12,
-    paddingVertical: isAndroid() ? 0 : 16,
+    paddingVertical: 16,
     borderRadius: 12,
     marginTop: 14,
     marginBottom: 5,
+  },
+  searchTxt: {
+    color: TEXT_COLOR,
+    fontFamily: MONTSERRAT_MEDIUM,
+    marginStart: 10,
   },
   input: {
     fontFamily: MONTSERRAT_REGULAR,

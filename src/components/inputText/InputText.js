@@ -25,6 +25,8 @@ const InputText = props => {
     containerStyle,
     multiline,
     maxLength,
+    labelReq = false,
+    label,
   } = props || {};
   const [isFocused, setIsFocused] = useState(onFocus);
   const [secureText, setSecureText] = useState(secureTextEntry);
@@ -39,10 +41,11 @@ const InputText = props => {
 
   const handleOnBlur = text => {
     setIsFocused(false);
-    onBlur && onBlur(text);
+    onBlur?.(text); //optional chaining
   };
   return (
     <View style={[containerStyle]}>
+      {labelReq && <Text style={styles.label}>{label}</Text>}
       <View
         style={[
           styles.containerStyle(isErrorMsgRequired, isFocused),

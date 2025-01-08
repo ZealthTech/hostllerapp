@@ -6,8 +6,6 @@ import Animated, {FadeIn, FadeInDown} from 'react-native-reanimated';
 import Button from '../../components/button/Button';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import {HOME_NAVIGATOR} from '../../navigation/routes';
-import {useDispatch} from 'react-redux';
-import {loginRequest} from '../../redux/reducers/authenticationReducer';
 import {setDataToStorage} from '../../utils/storage';
 
 const OnboardingPage = () => {

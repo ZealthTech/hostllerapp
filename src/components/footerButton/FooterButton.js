@@ -4,6 +4,7 @@ import {
   BLACK_COLOR,
   GRAY_92,
   GRAY_LIGHT_CB,
+  PURPLE,
   TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  button: {marginTop: 0, paddingHorizontal: 30},
+  button: {marginTop: 0, paddingHorizontal: 30, backgroundColor: PURPLE},
   total: {fontFamily: MONTSERRAT_MEDIUM, color: BLACK_COLOR},
   price: {fontFamily: MONTSERRAT_BOLD, fontSize: 18, color: BLACK_COLOR},
 });

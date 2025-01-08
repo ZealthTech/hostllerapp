@@ -64,18 +64,34 @@ export const styles = StyleSheet.create({
     marginTop: 3,
     color: BLACK_COLOR,
   }),
-  sheetHead: {
-    backgroundColor: PURPLE,
-    paddingVertical: 25,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
+
   sheetContainer: {
     backgroundColor: WHITE,
   },
-  title: {color: WHITE, fontFamily: MONTSERRAT_BOLD, fontSize: fontsSize.fs18},
   crossTch: {padding: 5},
   leftView: {flexDirection: 'row', gap: 10, alignItems: 'center'},
+  gender: {
+    fontSize: 16,
+    marginBottom: 3,
+    fontFamily: MONTSERRAT_BOLD,
+    color: BLACK_COLOR,
+    marginTop: 30,
+  },
+  containerFilter: {padding: 20},
+  buttonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    backgroundColor: PURPLE,
+    paddingBottom: 20,
+  },
+  btn2: {backgroundColor: WHITE, marginEnd: 30},
+  btn1: {backgroundColor: PURPLE, paddingHorizontal: 40},
+  txt: {fontSize: 16},
+  txt2: {color: PURPLE},
+  emptyTxt: {
+    textAlign: 'center',
+    fontFamily: MONTSERRAT_REGULAR,
+    marginTop: 50,
+  },
 });

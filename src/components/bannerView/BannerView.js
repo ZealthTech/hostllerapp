@@ -4,7 +4,7 @@ import {styles} from './styles';
 import SearchView from '../searchView/SearchView';
 
 const BannerView = props => {
-  const {data} = props || {};
+  const {data, onPressSearchInput} = props || {};
   return (
     <View style={styles.container}>
       <View style={styles.upperView}>
@@ -15,7 +15,10 @@ const BannerView = props => {
         </View>
         <Image source={{uri: data?.image}} style={styles.image} />
       </View>
-      <SearchView />
+      <SearchView
+        onPressSearchInput={onPressSearchInput}
+        placeholder={'Search location...'}
+      />
     </View>
   );
 };

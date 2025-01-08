@@ -6,9 +6,6 @@ import {
   otpSendRequest,
   otpVerificationFailure,
   otpVerificationSuccess,
-  registerUserFailure,
-  registerUserRequest,
-  registerUserSuccess,
 } from '../../reducers/authenticationReducer';
 import {
   FORGOT_PASSWORD,
@@ -18,17 +15,28 @@ import {
 import {apiPost} from '../../../network/axiosInstance';
 import {setDataToStorage} from '../../../utils/storage';
 import {REGISTER_DATA, TOKEN} from '../../../utils/constants/constants';
+import {
+  registerUserFailure,
+  registerUserRequest,
+  registerUserSuccess,
+} from '../../reducers/registerReducer';
 
 function* registerUser(action) {
+  console.log('action?.payload ', action?.payload);
   try {
     const response = yield call(apiPost, SIGNUP_URL, action?.payload, null);
-    console.log('16 status ', response?.status);
+    console.log('16 status ', response);
     if (response?.status) {
       yield put(registerUserSuccess(response));
+      let updatedUserData;
+      updatedUserData = {
+        userData: response?.data,
+        token: response?.data?.token,
+      };
       yield call(
         setDataToStorage,
         REGISTER_DATA,
-        JSON.stringify(response?.data),
+        JSON.stringify(updatedUserData),
       );
     } else {
       yield put(registerUserFailure(response));
@@ -41,6 +49,7 @@ function* registerUser(action) {
 function* verifyOtp(action) {
   try {
     const response = yield call(apiPost, VERIFY_OTP, action?.payload, null);
+    console.log('status ', response);
     if (response?.status) {
       yield put(otpVerificationSuccess(response));
     } else {

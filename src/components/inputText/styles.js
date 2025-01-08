@@ -13,7 +13,8 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     color: '#333',
-    marginBottom: 5,
+    marginBottom: 8,
+    marginTop: 20,
   },
   inputError: {
     borderColor: 'red',
@@ -29,7 +30,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 10,
-    borderWidth: 0.4,
+    borderWidth: 0.6,
     paddingVertical: isAndroid() ? 0 : 12,
     width: '84%',
     borderColor: GRAY_92,

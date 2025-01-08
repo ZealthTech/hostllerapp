@@ -11,7 +11,6 @@ import Space from '../space/Space';
 const Testimonial = props => {
   const {data, handleScroll, currentIndex} = props || {};
 
-  //const scrollX = new Animated.Value(0);
   console.log('data ', data);
   return (
     <View style={styles.container}>
@@ -33,16 +32,15 @@ const Testimonial = props => {
                 <View style={styles.textContent}>
                   <Text style={styles.name}>{item.name}</Text>
                   <Text style={styles.designation}>({item.designation})</Text>
-                  {/* <View style={styles.htmlContainer}> */}
                   <Text style={styles.content} numberOfLines={5}>
                     {plainText}
                   </Text>
-                  {/* </View> */}
                 </View>
               </View>
             </View>
           );
         }}
+        snapToAlignment="center"
       />
       <View style={styles.pagination}>
         {data?.map((_, index) => (

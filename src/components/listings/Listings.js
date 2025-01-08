@@ -11,6 +11,7 @@ import {styles} from './styles';
 import CustomSvg from '../customSvg/CustomSvg';
 import {ArrowDownCircle, ArrowUpCircle, CrossArrows, Star} from '../../assets/';
 import {LISTINGS_DETAILS} from '../../navigation/routes';
+import FastImage from 'react-native-fast-image';
 
 const Listings = props => {
   const {data, onPressCard} = props || {};
@@ -30,16 +31,14 @@ const Listings = props => {
       style={{marginBottom: 20}}
       showsVerticalScrollIndicator={false}
       renderItem={({item, index}) => {
-        console.log('amenities ', item?.allServices);
         const amenities = item?.allServices?.slice(0, 8);
-        console.log('amenites ', amenities);
         return (
           <Pressable
             style={styles.tchContainer}
             onPress={() =>
               onPressCard(item?.pgId, item?.type, item?.rent, item?.security)
             }>
-            <Image source={{uri: item?.image}} style={styles.imageBnr} />
+            <FastImage source={{uri: item?.image}} style={styles.imageBnr} />
             <Text style={styles.pgName}>{item?.name}</Text>
             <View style={styles.ratingView}>
               <CustomSvg SvgComponent={<Star />} />

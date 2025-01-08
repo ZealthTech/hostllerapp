@@ -34,12 +34,29 @@ export const listings = (list, sortBy) => {
 
   switch (sortBy) {
     case 'Lowest price':
-      return sortedList.sort((a, b) => a.rent - b.rent);
+      return sortedList.sort((a, b) => a?.rent - b?.rent);
     case 'Highest price':
-      return sortedList.sort((a, b) => b.rent - a.rent);
+      return sortedList.sort((a, b) => b?.rent - a?.rent);
     case 'Best rated':
-      return sortedList.sort((a, b) => b.rating - a.rating);
+      return sortedList.sort((a, b) => b?.rating - a?.rating);
     default:
       return list;
   }
 };
+export const gender = [
+  {id: 0, title: 'Male'},
+  {id: 1, title: 'Female'},
+  {id: 2, title: 'Gender Neutral'},
+];
+export const stars = [
+  {id: 0, title: 5},
+  {id: 1, title: 4},
+  {id: 2, title: 3},
+  {id: 3, title: 2},
+  {id: 4, title: 1},
+];
+export const roomTypes = [
+  {id: 0, title: 'Single rooms'},
+  {id: 1, title: 'Sharing rooms'},
+  {id: 2, title: 'Dormitory'},
+];

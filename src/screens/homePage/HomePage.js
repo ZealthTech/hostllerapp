@@ -1,5 +1,5 @@
-import {View, Text, ScrollView} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {View, ScrollView, RefreshControl} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import Header from '../../components/header/Header';
 import {useDispatch, useSelector} from 'react-redux';
 import {homeDataRequest} from '../../redux/reducers/homeReducer';
@@ -9,51 +9,68 @@ import {categories, genderCategories} from './helper';
 import VibeTribeView from '../../components/VibeTribe/VibeTribeView';
 import Testimonial from '../../components/testimonial/Testimonial';
 import {getDeviceWidth} from '../../utils/constants/commonFunctions';
-import {useNavigation} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {
   HOME_NAVIGATOR,
   HOSTEL_LISTINGS,
   LOGIN,
-  OTP_VERIFICATION,
+  PROFILE_SCREEN,
+  SEARCH_SCREEN,
 } from '../../navigation/routes';
 import HomeScreenSkeleton from '../../components/skeletons/homeScreenSkeleton/HomeScreenSkeleton';
 import {getDataFromStorage} from '../../utils/storage';
-import {REGISTER_DATA, TOKEN} from '../../utils/constants/constants';
+import {REGISTER_DATA} from '../../utils/constants/constants';
+import {setUserInfo} from '../../redux/reducers/userInfoReducer';
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const route = useRoute();
+  const {fromLogin} = route?.params || {};
   const {homeData, loading} = useSelector(state => state.homeReducer);
-  // const {token} = useSelector(state => state.authReducer);
+  const {data} = useSelector(state => state.loginReducer);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userData, setUserData] = useState();
-  const [dataGet, setDataGet] = useState(false);
-  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+  const _navigation = useNavigation();
   const width_dev = getDeviceWidth();
-
-  useEffect(() => {
-    const initialize = async () => {
-      await findToken();
-      // Always call fetchHomeData, userData will either have valid data or be undefined
-      fetchHomeData();
-    };
-    initialize();
-  }, [findToken, fetchHomeData]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const initialize = async () => {
+        await findToken();
+        // Always call fetchHomeData when the screen is focused
+        fetchHomeData();
+      };
+      initialize();
+    }, [findToken, fetchHomeData]),
+  );
 
   const findToken = useCallback(async () => {
-    const _userData = await getDataFromStorage(REGISTER_DATA);
-    console.log('user data ', _userData);
-    const parsedData = _userData ? JSON.parse(_userData) : null;
-    setUserData(parsedData);
-  }, []);
+    if (fromLogin) {
+      //if coming from login screen getting data from redux because getting datar from redux is faster than async storage
+      setUserData(data);
+      dispatch(setUserInfo(data?.data));
+    } else {
+      const _userData = await getDataFromStorage(REGISTER_DATA);
+      const parsedData = _userData ? JSON.parse(_userData) : null;
+      setUserData(parsedData);
+      dispatch(setUserInfo(parsedData));
+    }
+  }, [dispatch, fromLogin, data]);
 
   const fetchHomeData = useCallback(() => {
     const payload = {
       userId: userData?.userId || '', // Use userData if it exists, otherwise empty string
       token: userData?.token || '',
     };
-    console.log('fetchHomeData payload:', payload);
     dispatch(homeDataRequest(payload));
-  }, [dispatch, userData]);
+    if (!loading) {
+      setRefreshing(false);
+    }
+  }, [dispatch, userData, loading]);
 
   const handleScroll = useCallback(
     e => {
@@ -68,25 +85,42 @@ const HomePage = () => {
   );
 
   const onPressCategory = name => {
-    navigation?.navigate(HOSTEL_LISTINGS, {title: name, userData: userData});
+    _navigation?.navigate(HOSTEL_LISTINGS, {title: name, userData: userData});
   };
-  //Gender neutral
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchHomeData();
+  };
+  const goToSearchScreen = () => {
+    _navigation.navigate(SEARCH_SCREEN);
+  };
+
+  const onPressProfile = () => {
+    if (userData == null) {
+      _navigation?.navigate(LOGIN, {
+        userData: userData,
+        targetRoute: HOME_NAVIGATOR,
+      });
+    } else {
+      _navigation.navigate(PROFILE_SCREEN);
+    }
+  };
   return (
     <View>
-      <Header
-        onPressProfile={() =>
-          navigation?.navigate(LOGIN, {
-            userData: userData,
-            targetRoute: HOME_NAVIGATOR,
-          })
-        }
-      />
+      <Header onPressProfile={onPressProfile} />
       <ScrollView
         contentContainerStyle={{paddingBottom: 90}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsVerticalScrollIndicator={false}>
         {!loading ? (
           <>
-            <BannerView data={homeData?.topBanner} />
+            <BannerView
+              data={homeData?.topBanner}
+              onPressSearchInput={goToSearchScreen}
+            />
             <Categories
               level="Explore for"
               data={genderCategories}
@@ -103,6 +137,7 @@ const HomePage = () => {
               handleScroll={handleScroll}
               currentIndex={currentIndex}
             />
+            {/* <Scale /> */}
           </>
         ) : (
           <HomeScreenSkeleton />

@@ -5,6 +5,8 @@ import Navigator from './src/navigation/Navigator';
 import {PURPLE} from './src/utils/colors/colors';
 import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
+import Toast from 'react-native-toast-message';
+import ToastMessage from './src/components/toastMessage/ToastMessage';
 
 const RootWrapper = () => {
   const [isOnline, setIsOnline] = useState(true);
@@ -35,12 +37,48 @@ const RootWrapper = () => {
         //   title: strings('common.app.nointernet'),
         //   desc: strings('common.app.nointernetDesc'),
         // });
-        console.log('no internet');
       }
     }, 200);
   }, [isOnline]);
   return <Navigator navigationRef={navigationRef} />;
 };
+
+// const toastConfig = {
+//   errorToast: ({type, props}) => {
+//     console.log('49 ');
+//     return <ToastMessage type={type} title={props.title} desc={props.desc} />;
+//   },
+//   successToast: ({type, props}) => {
+//     console.log('53 ');
+//     return <ToastMessage type={type} title={props.title} desc={props.desc} />;
+//   },
+// };
+const toastConfig = {
+  errorToast: ({type, props}) => {
+    return (
+      <ToastMessage
+        type={type}
+        title={props.title}
+        desc={props.desc}
+        info={props.info}
+      />
+    );
+  },
+  successToast: ({type, props}) => {
+    return (
+      <ToastMessage
+        type={type}
+        title={props.title}
+        desc={props.desc}
+        info={props.info}
+      />
+    );
+  },
+  infoToast: ({type, props}) => {
+    return <ToastMessage type={type} title={props.title} desc={props.desc} />;
+  },
+};
+
 const App = () => {
   return (
     <Provider store={store}>
@@ -49,6 +87,7 @@ const App = () => {
           <StatusBar barStyle="light-content" backgroundColor={PURPLE} />
         </SafeAreaView>
         <RootWrapper />
+        <Toast config={toastConfig} />
       </View>
     </Provider>
   );

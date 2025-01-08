@@ -1,9 +1,14 @@
 import {StyleSheet} from 'react-native';
 import {
   BLACK_COLOR,
+  GRAY_92,
+  GRAY_LIGHT,
+  GRAY_LIGHT_CB,
   ORANGE_DARK,
   ORANGE_EXTRA_LIGHT,
   PINK_EXTRA_LIGHT,
+  PURPLE,
+  PURPLE_EXTRA_LIGHT,
   WHITE,
 } from '../../utils/colors/colors';
 import {
@@ -14,7 +19,9 @@ import {
 
 export const styles = StyleSheet.create({
   imgView: {
-    backgroundColor: PINK_EXTRA_LIGHT,
+    //  backgroundColor: PINK_EXTRA_LIGHT,
+    //backgroundColor: PURPLE_EXTRA_LIGHT,
+    //backgroundColor: GRAY_LIGHT,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
@@ -64,7 +71,7 @@ export const styles = StyleSheet.create({
   btn: selected => ({
     flexDirection: 'row',
     gap: 5,
-    backgroundColor: selected ? ORANGE_EXTRA_LIGHT : ORANGE_DARK,
+    backgroundColor: selected ? PURPLE_EXTRA_LIGHT : PURPLE,
     alignSelf: 'flex-start',
     alignItems: 'center',
     paddingVertical: 8,

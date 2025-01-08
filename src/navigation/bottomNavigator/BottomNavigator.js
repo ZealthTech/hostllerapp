@@ -2,37 +2,32 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomePage from '../../screens/homePage/HomePage';
 import Bookings from '../../screens/myBookings/Bookings';
-import Profile from '../../screens/profile/Profile';
-import Support from '../../screens/support/Support';
 import ExploreIcon from '../../assets/svg/homeExplore.svg';
 import MyBookingsIcon from '../../assets/svg/myBooking.svg';
 import ProfileIcon from '../../assets/svg/profile.svg';
 import SupportIcon from '../../assets/svg/support.svg';
-import {
-  BLACK_COLOR,
-  GRAY_92,
-  GRAY_LIGHT_CB,
-  LIGHT_PURPLE,
-  LIGHT_PURPLE_B1,
-  PINK,
-  PURPLE,
-  WHITE,
-} from '../../utils/colors/colors';
+import {GRAY_LIGHT_CB, PURPLE, WHITE} from '../../utils/colors/colors';
 import {
   MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_REGULAR,
 } from '../../utils/styles/commonStyles';
 import {Text} from 'react-native';
+import LeadPage from '../../screens/leadPage/LeadPage';
+import ProfileScreen from '../../screens/profileScreen/ProfileScreen';
+import {useRoute} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 // Function to render icons
 const TabIconWithLabel = ({focused, Icon}) => {
-  return <Icon fill={focused ? WHITE : GRAY_LIGHT_CB} color="red" />;
+  return <Icon fill={focused ? WHITE : GRAY_LIGHT_CB} />;
 };
 
 const TabNavigator = () => {
+  const route = useRoute();
+  const {fromLogin} = route.params || {}; // Get params passed to HOME_NAVIGATOR
+  console.log('route30', route);
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -56,6 +51,8 @@ const TabNavigator = () => {
               fontSize: 12,
               fontFamily: focused ? MONTSERRAT_BOLD : MONTSERRAT_MEDIUM,
               marginVertical: 5,
+              width: '120%',
+              textAlign: 'center',
             }}>
             {route.name}
           </Text>
@@ -65,6 +62,7 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Explore"
         component={HomePage}
+        initialParams={{fromLogin}} // Pass params to HomePage
         options={{
           tabBarIcon: ({focused}) => (
             <TabIconWithLabel focused={focused} Icon={ExploreIcon} />
@@ -82,7 +80,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Support"
-        component={Support}
+        component={LeadPage}
         options={{
           tabBarIcon: ({focused}) => (
             <TabIconWithLabel focused={focused} Icon={SupportIcon} />
@@ -91,7 +89,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <TabIconWithLabel focused={focused} Icon={ProfileIcon} />

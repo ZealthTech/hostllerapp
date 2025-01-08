@@ -54,9 +54,9 @@ export const styles = StyleSheet.create({
       width: 3,
     },
   },
-  btnContainer: loginView => ({
-    marginTop: loginView ? getDeviceHeight() * 0.15 : 25,
-  }),
+  btnContainer: {
+    marginTop: getDeviceHeight() * 0.15,
+  },
   forgotText: {
     color: ORANGE_DARK,
     fontFamily: MONTSERRAT_MEDIUM,
