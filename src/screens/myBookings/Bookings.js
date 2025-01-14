@@ -1,15 +1,10 @@
 import {View, Text, FlatList, Pressable} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import CustomSvg from '../../components/customSvg/CustomSvg';
-import MyIcon from '../../assets/svg/homeExplore.svg';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import {styles} from './styles';
 import {useSelector} from 'react-redux';
 import {apiPost} from '../../network/axiosInstance';
-import {
-  BOOKING_DETAILS,
-  BOOKING_LIST,
-} from '../../utils/constants/apiEndPoints';
+import {BOOKING_LIST} from '../../utils/constants/apiEndPoints';
 import FastImage from 'react-native-fast-image';
 import {MONTSERRAT_BOLD} from '../../utils/styles/commonStyles';
 import Space from '../../components/space/Space';
@@ -20,13 +15,10 @@ const Bookings = navigation => {
   const [bookingList, setBookingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
-  console.log('user info ', userInfo);
+
   useEffect(() => {
     getBookingList();
   }, [getBookingList]);
-
-  console.log('user id ', userInfo?.userId);
-  console.log('user token ', userInfo?.token);
 
   const getBookingList = useCallback(async () => {
     const response = await apiPost(
@@ -34,6 +26,7 @@ const Bookings = navigation => {
       {userId: userInfo?.userId},
       userInfo?.token,
     );
+    console.log('29 ', response);
     if (response?.status) {
       setBookingList(response?.data);
     }
@@ -94,6 +87,7 @@ const Bookings = navigation => {
           <FlatList
             data={bookingList}
             refreshing={refresh}
+            contentContainerStyle={{paddingBottom: 20}}
             onRefresh={() => setRefresh(true)}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}

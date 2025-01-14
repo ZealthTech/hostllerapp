@@ -34,7 +34,8 @@ const OnboardingPage = () => {
           repeat={true}
         />
       </Animated.View>
-      <Animated.View entering={FadeInDown.duration(400)}>
+      <Animated.View
+        entering={FadeInDown.duration(500).springify().damping(10)}>
         <Button
           title="Get Started"
           containerStyle={styles.btn}

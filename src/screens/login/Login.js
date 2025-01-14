@@ -9,11 +9,10 @@ import Button from '../../components/button/Button';
 import Animated, {FadeInUp} from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
 import Space from '../../components/space/Space';
-import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   CART_SCREEN,
   FORGOT_PASSWORD,
-  OTP_VERIFICATION,
   REGISTER_SCREEN,
 } from '../../navigation/routes';
 import {getDataFromStorage} from '../../utils/storage';
@@ -21,10 +20,9 @@ import {
   ERROR_TOAST,
   REGISTER_DATA,
   SUCCESS_TOAST,
-  TOKEN,
 } from '../../utils/constants/constants';
 import {showToast} from '../../utils/constants/commonFunctions';
-import {loginRequest, resetLoginState} from '../../redux/reducers/loginReducer';
+import {loginRequest} from '../../redux/reducers/loginReducer';
 
 const Login = () => {
   const route = useRoute();
@@ -54,8 +52,6 @@ const Login = () => {
     if (hasAttemptedLogin && !loading) {
       if (loginStatus) {
         showToast(SUCCESS_TOAST, message);
-        // dispatch(resetLoginState());
-        // navigation.navigate(targetRoute);
         if (fromCart) {
           navigation.pop();
 
@@ -67,7 +63,6 @@ const Login = () => {
             fromLogin: true,
           });
         } else {
-          console.log('akanksha called===', targetRoute);
           navigation.reset({
             index: 0,
             routes: [
@@ -82,7 +77,6 @@ const Login = () => {
         }
       } else {
         showToast(ERROR_TOAST, message || 'Login failed, please try again');
-        // dispatch(resetLoginState());
       }
       setHasAttemptedLogin(false); // Reset after handling response
     }
@@ -114,7 +108,6 @@ const Login = () => {
     useFormik({
       enableReinitialize: true,
       validationSchema: loginValidationSchema,
-
       initialValues: loginInitialValues,
       onSubmit: inputValues => {
         loginUser(inputValues);
@@ -136,9 +129,8 @@ const Login = () => {
           style={styles.image}
         />
         <Text style={styles.signup}>{'Login'}</Text>
-
         <Animated.View
-          entering={FadeInUp.duration(400).damping(50)} // Slide from top to bottom
+          entering={FadeInUp.delay(200).duration(400).damping(50)} // Slide from top to bottom
           style={styles.inputContainer}>
           <InputText
             placeholder={'Mobile Number'}

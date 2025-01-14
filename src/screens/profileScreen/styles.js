@@ -13,6 +13,7 @@ import {
   BLACK_COLOR,
   GRAY_LIGHT_CB,
   ORANGE_DARK,
+  PURPLE,
   WHITE,
 } from '../../utils/colors/colors';
 const imageSize = Math.min(getDeviceWidth() * 0.82, getDeviceHeight() * 0.52);
@@ -84,4 +85,17 @@ export const styles = StyleSheet.create({
   },
   verifyContainer: {marginStart: 28, marginTop: 20},
   textStyle: {color: ORANGE_DARK},
+  myProfile: {
+    fontSize: 22,
+    fontFamily: MONTSERRAT_SEMIBOLD,
+    color: BLACK_COLOR,
+  },
+  emptyProfileView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  content: {textAlign: 'center', fontFamily: MONTSERRAT_REGULAR, padding: 10},
+  buttonView: {backgroundColor: PURPLE},
+  profileImg: {height: 100, width: 100, borderRadius: 200, marginBottom: 10},
 });

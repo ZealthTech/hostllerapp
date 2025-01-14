@@ -8,13 +8,48 @@ import {
 import {
   getDeviceHeight,
   getDeviceWidth,
-  isAndroid,
 } from '../../utils/constants/commonFunctions';
-import {MONTSERRAT_MEDIUM} from '../../utils/styles/commonStyles';
+import {
+  MONTSERRAT_MEDIUM,
+  MONTSERRAT_REGULAR,
+  MONTSERRAT_SEMIBOLD,
+} from '../../utils/styles/commonStyles';
 
 export const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: WHITE},
-  contentContainer: {alignItems: 'center', paddingTop: 20},
+  contentContainer: {
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  lavelStyle: {marginBottom: 5, marginStart: 2},
+  containerStyle: {width: '90%'},
+  terms: {
+    color: ORANGE_DARK,
+    fontFamily: MONTSERRAT_SEMIBOLD,
+    textDecorationLine: 'underline',
+  },
+  dobRightView: {flex: 0.9},
+  dobLeftView: {flex: 1.1},
+  rightIconContainer: {
+    borderWidth: 1,
+    borderColor: GRAY_92,
+    padding: 1,
+    height: 20,
+    width: 20,
+    borderRadius: 5,
+  },
+  agree: {fontSize: 12, fontFamily: MONTSERRAT_MEDIUM, color: BLACK_COLOR},
+  termPolicyView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    alignSelf: 'flex-start',
+    marginTop: 20,
+    marginStart: 20,
+  },
+  dobInput: {width: '100%'},
+  dobContainer: {flex: 1},
+  dropDownStyle: {marginHorizontal: 0},
   button: {
     backgroundColor: WHITE,
     borderColor: ORANGE_DARK,
@@ -24,22 +59,39 @@ export const styles = StyleSheet.create({
     marginBottom: 30,
   },
   textStyle: {color: ORANGE_DARK, paddingVertical: 3},
+  dobView: {
+    width: '89%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+  },
+  dropDownButton: {
+    marginTop: 5,
+    marginHorizontal: -3,
+  },
   idContainer: {
     borderRadius: 10,
     borderWidth: 0.6,
-    paddingVertical: isAndroid() ? 0 : 12,
-    width: '84%',
+    paddingVertical: 12,
+    width: '90%',
     borderColor: GRAY_92,
     alignItems: 'flex-start',
     marginTop: 10,
   },
   image: {marginStart: 20},
+  dob: {
+    fontSize: 14,
+    fontFamily: MONTSERRAT_REGULAR,
+    marginStart: 16,
+    color: BLACK_COLOR,
+  },
   label: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: 15,
+    color: BLACK_COLOR,
     textAlign: 'left',
     alignSelf: 'flex-start',
     marginTop: 20,
+    fontFamily: MONTSERRAT_REGULAR,
     marginHorizontal: 35,
   },
   or: {fontFamily: MONTSERRAT_MEDIUM, color: BLACK_COLOR, marginVertical: 16},
@@ -47,7 +99,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: -5,
     marginTop: 20,
-    marginHorizontal: 32,
+    marginHorizontal: 20,
   },
   images: {
     width: getDeviceWidth() * 0.3,

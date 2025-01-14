@@ -7,9 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import Header from '../../components/header/Header';
-import LeadBanner from './leadBanner/LeadBanner';
 import LeadBanners from './leadBanner/LeadBanner';
 import {styles} from './styles';
 import InputText from '../../components/inputText/InputText';
@@ -17,9 +15,7 @@ import {bedrooms, data, validationSchemaLead} from './helper';
 import DropDownInput from '../../components/dropDownInput/DropDownInput';
 import {MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
 import Button from '../../components/button/Button';
-import CustomSvg from '../../components/customSvg/CustomSvg';
 import ImageCard from './leadBanner/ImageCard';
-import {CommentIcon} from '../../assets';
 import {useFormik} from 'formik';
 import {apiPost} from '../../network/axiosInstance';
 import {
@@ -31,10 +27,9 @@ import {showToast} from '../../utils/constants/commonFunctions';
 import {SUCCESS_TOAST} from '../../utils/constants/constants';
 
 const LeadPage = () => {
-  const [bedroom, setBedrooms] = useState('');
+  const [bedroom, setBedroom] = useState('');
   const [cityList, setCityList] = useState([]);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedCity, setSelectedCity] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
   const {userInfo} = useSelector(state => state.userInfoReducer);
 
   useEffect(() => {
@@ -64,8 +59,7 @@ const LeadPage = () => {
     if (response?.status) {
       showToast(SUCCESS_TOAST, response?.message);
       resetForm(); // Reset form to initial values
-      setBedrooms('');
-      setSelectedCity('');
+      setBedroom('');
     }
   };
   const {
@@ -85,13 +79,12 @@ const LeadPage = () => {
     },
   });
   const handleCitySelect = city => {
-    setSelectedCity(city);
     setFieldValue('city', city);
     setModalVisible(false);
   };
   const handleBedroomSelect = _bedroom => {
     setFieldValue('totalBeds', _bedroom);
-    setBedrooms(_bedroom);
+    setBedroom(_bedroom);
   };
   console.log(values?.bedrooms);
   return (
@@ -113,6 +106,7 @@ const LeadPage = () => {
           <View style={styles.bedroomView}>
             {bedrooms.map(item => (
               <TouchableOpacity
+                key={item.id}
                 style={styles.bedroom(item?.title === bedroom)}
                 activeOpacity={0.6}
                 onPress={() => handleBedroomSelect(item?.title)}>
@@ -131,9 +125,12 @@ const LeadPage = () => {
             isErrorMsgRequired={touched.city && !!errors.city}
             error={errors.city}
             value={values.city}
+            modalVisible={modalVisible}
+            handleCitySelect={handleCitySelect}
+            setModalVisible={() => setModalVisible(false)}
             onPressIcon={() => setModalVisible(true)}
           />
-          <Modal
+          {/* <Modal
             transparent={true}
             visible={isModalVisible}
             animationType="slide"
@@ -159,7 +156,7 @@ const LeadPage = () => {
                 />
               </View>
             </View>
-          </Modal>
+          </Modal> */}
           <Text style={styles.labelText}>Where is your property located</Text>
           <InputText
             inputContainer={styles.inputField}
@@ -206,6 +203,7 @@ const LeadPage = () => {
           </Text>
           {data?.map(item => (
             <ImageCard
+              key={item?.id}
               Icon={item?.icon}
               title={item?.title}
               content={item?.content}

@@ -31,14 +31,14 @@ const CommonSelectionChip = props => {
         const isSelected = selectedCategory?.includes?.(item?.title);
         return (
           <TouchableOpacity
-            key={item?.id}
+            key={item?.title}
             style={[
               styles.extTch,
               selectedCategory === item?.title && styles.selectedButton,
               isSelected && styles.selectedButton,
               stars && styles.starsView(selectedCategory === item?.title),
             ]}
-            onPress={() => onPress?.(item?.title)}>
+            onPress={() => onPress?.(item)}>
             {stars && (
               <CustomSvg
                 SvgComponent={

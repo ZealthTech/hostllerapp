@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
   flat: {margin: 20},
   imgMain: (index, length) => ({
     height: getDeviceHeight() * 0.26,
-    width: getDeviceWidth() * 0.64,
+    width: length === 1 ? getDeviceWidth() * 0.9 : getDeviceWidth() * 0.64,
     borderTopLeftRadius: imgRadiusTopLeft(index),
     marginEnd: 16,
     borderBottomLeftRadius: imgRadiusTopLeft(index),

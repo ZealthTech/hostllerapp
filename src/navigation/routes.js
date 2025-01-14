@@ -20,3 +20,4 @@ export const BOOKING_DETAILS_SCREEN = 'BookingDetails';
 export const LEADS_SCREEN = 'LeadsScreen';
 export const KYC_DETAILS_SCREEN = 'KycDetails';
 export const BOOKING_SUCCESS_SCREEN = 'BookingSuccess';
+export const PRIVACY_POLICY = 'PrivacyPolicy';

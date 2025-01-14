@@ -37,6 +37,8 @@ function* fetchLoginData(action) {
         REGISTER_DATA,
         JSON.stringify(updatedUserData),
       );
+      console.log('updatedUserData40 ', updatedUserData?.userData);
+      yield put(setUserInfo(updatedUserData?.userData));
     } else {
       console.log('response 45 ', response);
       yield put(loginFailure(response.message));

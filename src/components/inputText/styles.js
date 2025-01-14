@@ -11,8 +11,9 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: 15,
+    color: BLACK_COLOR,
+    fontFamily: MONTSERRAT_REGULAR,
     marginBottom: 8,
     marginTop: 20,
   },

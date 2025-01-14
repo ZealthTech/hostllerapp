@@ -16,6 +16,7 @@ import {
   LOGIN,
   ONBOARDING_PAGE,
   OTP_VERIFICATION,
+  PRIVACY_POLICY,
   PROFILE_SCREEN,
   REGISTER_SCREEN,
   RESET_PASSWORD_SCREEN,
@@ -41,6 +42,7 @@ import LeadPage from '../screens/leadPage/LeadPage';
 import KycDetails from '../screens/kycDetails/KycDetails';
 import SuccessScreen from '../screens/successScreen/SuccessScreen';
 import HomePage from '../screens/homePage/HomePage';
+import PrivacyPolicy from '../screens/privacyPolicy/PrivacyPolicy';
 const Stack = createStackNavigator();
 const Navigator = ({navigationRef}) => {
   return (
@@ -143,6 +145,11 @@ const Navigator = ({navigationRef}) => {
         <Stack.Screen
           name="Explore"
           component={HomePage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={PRIVACY_POLICY}
+          component={PrivacyPolicy}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

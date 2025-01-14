@@ -93,6 +93,7 @@ const SearchScreen = navigation => {
       <FlatList
         data={searchList}
         showsVerticalScrollIndicator={false}
+        keyExtractor={(_, index) => index.toString()}
         renderItem={({item, index}) => (
           <TouchableOpacity
             style={styles.searchViews}

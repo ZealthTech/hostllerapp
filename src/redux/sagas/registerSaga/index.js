@@ -20,6 +20,7 @@ import {
   registerUserRequest,
   registerUserSuccess,
 } from '../../reducers/registerReducer';
+import {setUserInfo} from '../../reducers/userInfoReducer';
 
 function* registerUser(action) {
   console.log('action?.payload ', action?.payload);
@@ -38,6 +39,8 @@ function* registerUser(action) {
         REGISTER_DATA,
         JSON.stringify(updatedUserData),
       );
+      console.log('updatedUserData42 ', updatedUserData?.userData);
+      yield put(setUserInfo(updatedUserData?.userData));
     } else {
       yield put(registerUserFailure(response));
     }

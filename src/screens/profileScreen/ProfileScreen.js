@@ -1,6 +1,6 @@
 import {View, Text, Image, Pressable, ScrollView} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {apiGet, postDataWithImages} from '../../network/axiosInstance';
 import {
   PROFILE_DETAIL,
@@ -19,21 +19,49 @@ import {
   requestCameraPermission,
   showToast,
 } from '../../utils/constants/commonFunctions';
-import {ERROR_TOAST, SUCCESS_TOAST} from '../../utils/constants/constants';
+import {
+  ERROR_TOAST,
+  REGISTER_DATA,
+  SUCCESS_TOAST,
+} from '../../utils/constants/constants';
 import ImagePicker from 'react-native-image-crop-picker';
-import {KYC_DETAILS_SCREEN} from '../../navigation/routes';
+import {
+  HOME_NAVIGATOR,
+  KYC_DETAILS_SCREEN,
+  LOGIN,
+  PRIVACY_POLICY,
+} from '../../navigation/routes';
 import Button from '../../components/button/Button';
+import FooterButton from '../../components/footerButton/FooterButton';
+import {useFocusEffect} from '@react-navigation/native';
+import {getDataFromStorage} from '../../utils/storage';
+import {setUserInfo} from '../../redux/reducers/userInfoReducer';
 
 const ProfileScreen = navigation => {
   const {userInfo} = useSelector(state => state.userInfoReducer);
+  //const {data: userInfo} = useSelector(state => state.loginReducer);
   console.log('userInfo ', userInfo);
+  const {fromLogin} = navigation?.route?.params || {};
   const [userData, setUserData] = useState();
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  //const [userDetail, setUserDetail] = useState();
+  const dispatch = useDispatch();
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const initialize = async () => {
+  //       findToken();
+  //     };
+  //     initialize();
+  //   }, [findToken]),
+  // );
+
   useEffect(() => {
     getProfileDetail();
-  }, [getProfileDetail]);
+  }, [getProfileDetail, userInfo]);
+
   const getProfileDetail = useCallback(async () => {
     const response = await apiGet(PROFILE_DETAIL, {}, userInfo?.token);
     if (response?.status) {
@@ -42,6 +70,23 @@ const ProfileScreen = navigation => {
     }
     setLoading(false);
   }, [userInfo]);
+
+  const findToken = useCallback(async () => {
+    setLoading(true);
+    if (fromLogin) {
+      //if coming from login screen getting data from redux because getting datar from redux is faster than async storage
+      // setUserDetail(userInfo);
+      dispatch(setUserInfo(userInfo?.data));
+    } else {
+      const _userData = await getDataFromStorage(REGISTER_DATA);
+      console.log('_userData ', _userData);
+      const parsedData = _userData ? JSON.parse(_userData) : null;
+      console.log('parsed data ', parsedData);
+      setUserData(parsedData);
+      dispatch(setUserInfo(parsedData));
+      setLoading(false);
+    }
+  }, [dispatch, fromLogin, userInfo]);
 
   const goItemDetail = () => {
     navigation?.navigation?.navigate(KYC_DETAILS_SCREEN, {userData: userInfo});
@@ -102,6 +147,12 @@ const ProfileScreen = navigation => {
       name: 'userUpdatedProfile.jpg',
     });
     formData.append('userId', userInfo?.userId);
+    console.log(
+      'userInfo?.token ',
+      userInfo?.token,
+      ' user id ',
+      userInfo?.userId,
+    );
     const sendImageResponse = await postDataWithImages(
       UPDATE_PROFILE_IMAGE,
       formData,
@@ -122,74 +173,112 @@ const ProfileScreen = navigation => {
     selectFromGallery();
     setModal(false);
   };
+  const goToPrivacyPolicy = () => {
+    navigation?.navigation?.navigate(PRIVACY_POLICY);
+  };
+  const gotToLoginScreen = () => {
+    navigation?.navigation?.navigate(LOGIN, {
+      userData: userData,
+      targetRoute: HOME_NAVIGATOR,
+    });
+  };
+  const renderLoginView = () => {
+    return (
+      <View style={styles.emptyProfileView}>
+        <Image
+          source={require('../../assets/images/user_profile.png')}
+          style={styles.profileImg}
+        />
+        <Text style={styles.myProfile}>My Profile</Text>
+        <Text style={styles.content}>
+          Discover and explore unlimited PG, Hotels etc. with us SignUp/Login
+          with us to start
+        </Text>
+        <Button
+          title="Log in or sign up"
+          containerStyle={styles.buttonView}
+          onPress={gotToLoginScreen}
+        />
+      </View>
+    );
+  };
+  const showProfileData = !loading && userInfo != null;
+  console.log('showProfileData');
   return (
     <View style={styles.container}>
       <BackIconHeader title="Profile" />
-      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{
-              uri:
-                selectedImage === ''
-                  ? userData?.userImage
-                  : selectedImage?.path,
-            }}
-            style={styles.image}
-          />
-          <Pressable style={styles.imageView} onPress={() => setModal(true)}>
-            <CustomSvg SvgComponent={<Camera width={30} height={30} />} />
-          </Pressable>
-        </View>
-        <Text style={styles.nameTxt}>{userData?.name}</Text>
-        <Space height={30} />
-        <View style={styles.rowPhone}>
-          <CustomSvg SvgComponent={<Phone />} />
-          <Text style={styles.phoneTxt}>+91 {userData?.phone}</Text>
-        </View>
-        <View style={styles.rowPhone}>
-          <CustomSvg SvgComponent={<Inbox />} />
-          <Text style={styles.phoneTxt}>{userData?.email}</Text>
-        </View>
-        {userData?.isGmailVerified === 1 && (
-          <View style={styles.verifyContainer}>
-            <Text style={styles.verify}>Please verify your email address</Text>
-            <Button
-              title="Verify Now"
-              containerStyle={styles.buttonContainer}
-              textStyle={styles.textStyle}
-              elevation={true}
+      {!showProfileData && renderLoginView()}
+      {showProfileData && (
+        <ScrollView
+          contentContainerStyle={{paddingBottom: 30}}
+          showsVerticalScrollIndicator={false}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{
+                uri:
+                  selectedImage === ''
+                    ? userData?.userImage
+                    : selectedImage?.path,
+              }}
+              style={styles.image}
             />
+            <Pressable style={styles.imageView} onPress={() => setModal(true)}>
+              <CustomSvg SvgComponent={<Camera width={30} height={30} />} />
+            </Pressable>
           </View>
-        )}
-        <View style={styles.line} />
-        <ItemRow
-          Icon={Kyc}
-          title={'KYC Details'}
-          content="You can view/update your KYC details"
-          onPress={goItemDetail}
-        />
-        <View style={styles.line} />
-        <ItemRow
-          Icon={Policy}
-          title={'Privacy Policy'}
-          onPress={goItemDetail}
-        />
-        <View style={styles.line} />
-        <ItemRow
-          Icon={Logout}
-          title={'Log out'}
-          onPress={logout}
-          nextReq={false}
-          textColor={{color: ORANGE_DARK}}
-        />
-        <Loader loading={loading} />
-        <PhotoSelectionModal
-          showModal={modal}
-          closeModal={() => setModal(false)}
-          onPressTakePhoto={onPressTakePhoto}
-          onPressChooseFromGallery={onPressChooseFromGallery}
-        />
-      </ScrollView>
+          <Text style={styles.nameTxt}>{userData?.name}</Text>
+          <Space height={30} />
+          <View style={styles.rowPhone}>
+            <CustomSvg SvgComponent={<Phone />} />
+            <Text style={styles.phoneTxt}>+91 {userData?.phone}</Text>
+          </View>
+          <View style={styles.rowPhone}>
+            <CustomSvg SvgComponent={<Inbox />} />
+            <Text style={styles.phoneTxt}>{userData?.email}</Text>
+          </View>
+          {userData?.isGmailVerified === 1 && (
+            <View style={styles.verifyContainer}>
+              <Text style={styles.verify}>
+                Please verify your email address
+              </Text>
+              <Button
+                title="Verify Now"
+                containerStyle={styles.buttonContainer}
+                textStyle={styles.textStyle}
+                elevation={true}
+              />
+            </View>
+          )}
+          <View style={styles.line} />
+          <ItemRow
+            Icon={Kyc}
+            title={'KYC Details'}
+            content="You can view/update your KYC details"
+            onPress={goItemDetail}
+          />
+          <View style={styles.line} />
+          <ItemRow
+            Icon={Policy}
+            title={'Privacy Policy'}
+            onPress={goToPrivacyPolicy}
+          />
+          <View style={styles.line} />
+          <ItemRow
+            Icon={Logout}
+            title={'Log out'}
+            onPress={logout}
+            nextReq={false}
+            textColor={{color: ORANGE_DARK}}
+          />
+          <PhotoSelectionModal
+            showModal={modal}
+            closeModal={() => setModal(false)}
+            onPressTakePhoto={onPressTakePhoto}
+            onPressChooseFromGallery={onPressChooseFromGallery}
+          />
+        </ScrollView>
+      )}
+      <Loader loading={loading} />
     </View>
   );
 };

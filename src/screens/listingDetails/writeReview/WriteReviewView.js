@@ -51,6 +51,8 @@ const WriteReviewView = props => {
   const [review, setReview] = useState('');
   const [reviewError, setReviewError] = useState(false);
   const [isReviewSubmit, setIsReviewSubmit] = useState(false);
+  const [ratingError, setRatingError] = useState(false);
+  const [ratingErrorText, setRatingErrorText] = useState('');
   const {userInfo} = useSelector(state => state.userInfoReducer);
   console.log('user data ', userInfo);
   const dispatch = useDispatch();
@@ -60,12 +62,13 @@ const WriteReviewView = props => {
 
   useEffect(() => {
     if (status && !loading && isReviewSubmit) {
-      console.log('163 ');
+      console.log('163 ', status && !loading && isReviewSubmit);
       showToast(SUCCESS_TOAST, message);
       setReview('');
       clearAllRatings();
       setSelectedImages([]);
       reviewSheetRef?.current?.close();
+      setIsReviewSubmit(false);
     } else if (!status && !loading && error) {
       showToast(ERROR_TOAST, DEFAULT_ERROR_STRING);
     }
@@ -158,7 +161,14 @@ const WriteReviewView = props => {
   };
 
   const submitReview = () => {
+    console.log('selectedRating ', selectedRating);
     let isValid = true;
+    if (selectedRating < 1) {
+      isValid = false;
+      setRatingErrorText('This field is required');
+    } else {
+      setRatingErrorText('');
+    }
     if (review.trim() === '') {
       setReviewError('Review is required');
       isValid = false;
@@ -169,6 +179,8 @@ const WriteReviewView = props => {
       setReviewError('');
     }
     if (isValid) {
+      setIsReviewSubmit(true);
+      console.log('isValid ', isValid);
       const formData = new FormData();
       if (selectedImages?.length > 0) {
         selectedImages.forEach((image, index) => {
@@ -182,9 +194,8 @@ const WriteReviewView = props => {
         formData.append('ratingImages', []);
       }
 
-      console.log('userInfo?.userData?.userId ', userInfo?.userData?.userId);
       // Add other fields
-      formData.append('userId', userInfo?.userData?.userId);
+      formData.append('userId', userInfo?.userId);
       formData.append('pgId', pgId);
       formData.append('rating', selectedRating);
       formData.append('review', review);
@@ -234,10 +245,13 @@ const WriteReviewView = props => {
           <Space height={20} />
           <StarView
             reviewFor="Ratings"
-            handleStarPress={ind =>
-              handleStarPress(ind, setSelectedRating, selectedRating)
-            }
+            handleStarPress={ind => {
+              setRatingErrorText('');
+              handleStarPress(ind, setSelectedRating, selectedRating);
+            }}
             selectedRating={selectedRating}
+            ratingErrorText={ratingErrorText}
+            errorReq={true}
           />
           <StarView
             reviewFor="Location"
@@ -286,7 +300,6 @@ const WriteReviewView = props => {
             title="Submit"
             containerStyle={styles.bottomBtn}
             onPress={() => {
-              setIsReviewSubmit(true);
               submitReview();
             }}
             loading={loading}

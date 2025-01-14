@@ -70,7 +70,6 @@ export const styles = StyleSheet.create({
     },
   },
   backImgLead: {
-    height: getDeviceHeight() * 0.62,
     width: '100%',
     marginTop: 20,
     borderRadius: 16,

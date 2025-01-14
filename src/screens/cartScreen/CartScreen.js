@@ -1,4 +1,4 @@
-import {View, Text, Image, Pressable} from 'react-native';
+import {View, Text, Image, Pressable, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   useFocusEffect,
@@ -38,9 +38,11 @@ import {useDispatch, useSelector} from 'react-redux';
 const CartScreen = () => {
   const route = useRoute();
   const dispatch = useDispatch();
+  const {userInfo} = useSelector(state => state.userInfoReducer);
   const {cartData, mealChart, fromLogin, pgId} = route?.params || {};
   const foodInclude = cartData?.option === 'included';
   const [modalVisible, setModalVisible] = useState();
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
   const navigation = useNavigation();
@@ -55,33 +57,46 @@ const CartScreen = () => {
   }, [cartData, dispatch]);
 
   console.log('from login', fromLogin);
-  useEffect(() => {
-    console.log('userData.... ', userData);
-    if (fromLogin && userData != null) {
-      addRoomToCart(userData);
-    }
-  }, [fromLogin, userData]);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      checkLogin();
-    }, []),
+  console.log(
+    '  const {userInfo} = useSelector(state => state.userInfoReducer); ',
+    userInfo,
   );
 
+  // useEffect(()=>{
+  //   checkLogin();
+  // },[fromLogin])
+
+  console.log('is user data ', !userData);
+  // useEffect(() => {
+  //   if (fromLogin && !userData) {
+  //     setButtonLoading(true);
+  //   } else {
+  //     setButtonLoading(false);
+  //   }
+  // }, [fromLogin, userData]);
+
   const checkLogin = async () => {
+    setButtonLoading(true);
     const _userData = await getDataFromStorage(REGISTER_DATA);
     const parsedData = _userData ? JSON.parse(_userData) : null;
-    console.log('parsedData 58', parsedData);
+
     setUserData(parsedData);
+    console.log('84 ', parsedData);
+    if (parsedData) {
+      return true;
+    }
   };
 
   console.log('userData?.token ', userData?.token);
   console.log('userData?.userId ', userData?.userData?.userId);
   const addRoomToCart = async _userData => {
+    const isLogin = await checkLogin();
+    console.log('is login ', isLogin);
+    setButtonLoading(false);
     setLoading(true);
-    if (userData != null) {
+    if (isLogin) {
       const bodyData = {
-        userId: userData?.userData?.userId,
+        userId: userInfo.userId,
         pgId: pgId,
         totalBeds: 2,
         roomType: bookingSummary?.item?.roomType, // 1_Bed | 2_Bed | 3_Bed | 4_Bed | dormitory
@@ -99,7 +114,7 @@ const CartScreen = () => {
         checkinDate: bookingSummary?.checkinDate,
       };
       console.log('bodyData, userData?.token ,', bodyData, userData?.token);
-      const response = await apiPost(BOOK_ROOM, bodyData, userData?.token);
+      const response = await apiPost(BOOK_ROOM, bodyData, userInfo.token);
 
       console.log('response ', response);
       if (response?.status) {
@@ -202,14 +217,20 @@ const CartScreen = () => {
           </Text>
         </View>
         <Pressable style={styles.buttonView} onPress={addRoomToCart}>
-          <Text style={styles.payNow}>Pay Now</Text>
-          <Text style={styles.finalRs}>
-            ₹
-            {bookingSummary?.item?.security +
-              bookingSummary?.item?.rent +
-              bookingSummary?.item?.foodPrice -
-              100}
-          </Text>
+          {buttonLoading ? (
+            <ActivityIndicator color={WHITE} style={{flex: 1}} />
+          ) : (
+            <>
+              <Text style={styles.payNow}>Pay Now</Text>
+              <Text style={styles.finalRs}>
+                ₹
+                {bookingSummary?.item?.security +
+                  bookingSummary?.item?.rent +
+                  bookingSummary?.item?.foodPrice -
+                  100}
+              </Text>
+            </>
+          )}
         </Pressable>
       </View>
       <MealChart

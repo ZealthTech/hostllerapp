@@ -44,9 +44,9 @@ export const listings = (list, sortBy) => {
   }
 };
 export const gender = [
-  {id: 0, title: 'Male'},
-  {id: 1, title: 'Female'},
-  {id: 2, title: 'Gender Neutral'},
+  {id: 0, title: 'Male', slug: 'Boys'},
+  {id: 1, title: 'Female', slug: 'Girls'},
+  {id: 2, title: 'Gender Neutral', slug: 'Gender Neutral'},
 ];
 export const stars = [
   {id: 0, title: 5},

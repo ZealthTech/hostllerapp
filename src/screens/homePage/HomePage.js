@@ -57,7 +57,8 @@ const HomePage = () => {
       const _userData = await getDataFromStorage(REGISTER_DATA);
       const parsedData = _userData ? JSON.parse(_userData) : null;
       setUserData(parsedData);
-      dispatch(setUserInfo(parsedData));
+      console.log('parsed data ', parsedData);
+      dispatch(setUserInfo(parsedData?.userData));
     }
   }, [dispatch, fromLogin, data]);
 
@@ -84,8 +85,13 @@ const HomePage = () => {
     [homeData, width_dev],
   );
 
-  const onPressCategory = name => {
-    _navigation?.navigate(HOSTEL_LISTINGS, {title: name, userData: userData});
+  const onPressCategory = (name, bedType) => {
+    _navigation?.navigate(HOSTEL_LISTINGS, {
+      title: name,
+      userData: userData,
+      _gender: name,
+      bedType: bedType,
+    });
   };
 
   const onRefresh = () => {
@@ -124,12 +130,12 @@ const HomePage = () => {
             <Categories
               level="Explore for"
               data={genderCategories}
-              onPress={name => onPressCategory(name)}
+              onPress={name => onPressCategory(name, '')}
             />
             <Categories
               level="Category"
               data={categories}
-              onPress={name => onPressCategory(name)}
+              onPress={name => onPressCategory('', name)}
             />
             <VibeTribeView />
             <Testimonial

@@ -15,25 +15,36 @@ import {
 } from '../../utils/styles/commonStyles';
 
 const StarView = props => {
-  const {reviewFor, handleStarPress, selectedRating} = props || {};
+  const {
+    reviewFor,
+    handleStarPress,
+    selectedRating,
+    ratingErrorText,
+    errorReq = false,
+  } = props || {};
   const stars = [1, 2, 3, 4, 5];
+  const showError = errorReq && ratingErrorText.length > 0;
   return (
-    <View style={styles.row}>
-      <Text style={styles.text}>{reviewFor}</Text>
-      {stars?.map((item, index) => (
-        <CustomSvg
-          SvgComponent={
-            <MulticolorStar
-              height={26}
-              width={26}
-              isClickable={true}
-              fill={index < selectedRating ? ORANGE_DARK : GRAY_LIGHT_CB}
-              onPress={() => handleStarPress(index + 1)}
-            />
-          }
-        />
-      ))}
-    </View>
+    <>
+      <View style={styles.row}>
+        <Text style={styles.text}>{reviewFor}</Text>
+        {stars?.map((item, index) => (
+          <CustomSvg
+            key={item}
+            SvgComponent={
+              <MulticolorStar
+                height={26}
+                width={26}
+                isClickable={true}
+                fill={index < selectedRating ? ORANGE_DARK : GRAY_LIGHT_CB}
+                onPress={() => handleStarPress(index + 1)}
+              />
+            }
+          />
+        ))}
+      </View>
+      {showError && <Text style={styles.error}>{ratingErrorText}</Text>}
+    </>
   );
 };
 
@@ -53,5 +64,11 @@ const styles = StyleSheet.create({
     flex: 0.8,
     fontFamily: MONTSERRAT_SEMIBOLD,
     fontSize: fontsSize.fs14,
+  },
+  error: {
+    color: 'red',
+    fontSize: 12,
+    fontFamily: MONTSERRAT_REGULAR,
+    marginTop: -10,
   },
 });

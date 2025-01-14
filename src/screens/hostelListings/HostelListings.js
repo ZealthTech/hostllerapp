@@ -18,10 +18,16 @@ import Space from '../../components/space/Space';
 import {ScrollView} from 'react-native-gesture-handler';
 import {apiPost} from '../../network/axiosInstance';
 import {LISTINGS_URL} from '../../utils/constants/apiEndPoints';
+import {BLACK_COLOR, GRAY_92} from '../../utils/colors/colors';
 
 const HostelListings = props => {
   const route = useRoute();
-  const {title, searchInput = '', fromSearch} = route?.params || {};
+  const {
+    title,
+    searchInput = '',
+    _gender = '',
+    bedType = '',
+  } = route?.params || {};
   const [listingData, setListingData] = useState({});
   const navigation = useNavigation();
   const [sortBy, setSortBy] = useState('Recommended');
@@ -44,15 +50,15 @@ const HostelListings = props => {
 
   useEffect(() => {
     fetchAllListings();
-  }, [fetchAllListings]);
+  }, [fetchAllListings, resetFilter]);
 
   const fetchAllListings = useCallback(async () => {
-    console.log('48 ');
+    console.log('48 called after reset filters', selectedGender, title);
     setLoading(true);
     const data = {
       searchInput: searchInput,
-      gender: fromSearch ? '' : title,
-      bedType: roomType, // Single rooms || Sharing rooms || Dormitory Else ""
+      gender: selectedGender === '' ? _gender : selectedGender?.slug,
+      bedType: roomType === '' ? bedType : roomType, // Single rooms || Sharing rooms || Dormitory Else ""
       checkinDate: '',
       minPrice: dataToSend,
       maxPrice: maxValue,
@@ -60,6 +66,7 @@ const HostelListings = props => {
       facility: selectedChips,
     };
     const response = await apiPost(LISTINGS_URL, data, null);
+    console.log('response ', response);
     if (response?.status) {
       setListingData(response?.data);
       setMinValue(response?.data?.minPrice);
@@ -74,9 +81,11 @@ const HostelListings = props => {
     selectedStar,
     selectedChips,
     dataToSend,
-    maxValue,
     searchInput,
-    fromSearch,
+    selectedGender,
+    _gender,
+    bedType,
+    maxValue,
   ]);
   const listingLength = listingData?.finalList?.length;
 
@@ -87,12 +96,6 @@ const HostelListings = props => {
     bottomSheetRef?.current?.close();
     setSortSheetVisible(false);
   };
-
-  useEffect(() => {
-    if (resetFilter) {
-      fetchAllListings();
-    }
-  }, [resetFilter, fetchAllListings]);
 
   const sortView = () => {
     return (
@@ -112,7 +115,7 @@ const HostelListings = props => {
                 </Text>
               </View>
               {sortBy === item?.label && (
-                <CustomSvg SvgComponent={<RightTick />} />
+                <CustomSvg SvgComponent={<RightTick fill={BLACK_COLOR} />} />
               )}
             </TouchableOpacity>
           );
@@ -141,14 +144,15 @@ const HostelListings = props => {
   const handleFacilitySelection = item => {
     setSelectedChips(prev =>
       prev.includes(item)
-        ? prev.filter(_title => item !== _title)
-        : [...prev, item],
+        ? prev.filter(_title => item?.title !== _title?.title)
+        : [...prev, item?.title],
     );
   };
   const clearFilters = () => {
     setSelectedChips([]);
     setSelectedStar(0);
     setSelectedGender('');
+    setRoomType('');
     setResetFilter(true);
     closeFilterSheet();
   };
@@ -177,19 +181,19 @@ const HostelListings = props => {
             <CommonSelectionChip
               data={gender}
               onPress={item => setSelectedGender(item)}
-              selectedCategory={selectedGender}
+              selectedCategory={selectedGender?.title}
             />
             <Text style={styles.gender}>Rating </Text>
             <CommonSelectionChip
               data={stars}
-              onPress={item => setSelectedStar(item)}
+              onPress={item => setSelectedStar(item?.title)}
               selectedCategory={selectedStar}
               stars={true}
             />
             <Text style={styles.gender}>Rooms </Text>
             <CommonSelectionChip
               data={roomTypes}
-              onPress={item => setRoomType(item)}
+              onPress={item => setRoomType(item?.title)}
               selectedCategory={roomType}
             />
             <Text style={styles.gender}>Facilities </Text>
@@ -225,7 +229,6 @@ const HostelListings = props => {
   return (
     <View style={styles.container}>
       <BackIconHeader title={title} />
-
       <View style={styles.filters}>
         <Pressable
           style={styles.tch}
@@ -241,7 +244,7 @@ const HostelListings = props => {
           <CustomSvg SvgComponent={<SortFilter />} />
           <Text style={styles.sortText}>Sort</Text>
         </Pressable>
-        <TouchableOpacity style={styles.tch} onPress={openFilterSheet}>
+        <TouchableOpacity style={styles.tch} onPress={() => openFilterSheet()}>
           <CustomSvg SvgComponent={<Filters />} />
           <Text style={styles.sortText}>Filters</Text>
         </TouchableOpacity>
@@ -275,9 +278,9 @@ const HostelListings = props => {
       <CustomBottomSheet
         ref={filterRef}
         handleComponent={null}
-        snapPoints={['60%']}>
-        {filterView()}
-      </CustomBottomSheet>
+        children={filterView()}
+        snapPoints={['60%']}
+      />
     </View>
   );
 };
