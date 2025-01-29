@@ -48,7 +48,7 @@ import Phone from '../assets/svg/phone.svg';
 import Policy from '../assets/svg/policy.svg';
 import NextArrow from '../assets/svg/nextArrow.svg';
 import Upload from '../assets/svg/upload.svg';
-
+import TermAndConditions from '../assets/svg/terms-and-conditions.svg';
 export {
   Road,
   Temple,
@@ -101,4 +101,5 @@ export {
   Policy,
   NextArrow,
   Upload,
+  TermAndConditions,
 };

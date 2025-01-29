@@ -15,30 +15,34 @@ function* fetchLoginData(action) {
   try {
     const response = yield call(apiPost, LOGIN_URL, action?.payload, null);
     if (response?.status) {
-      yield put(loginSuccess(response));
+      // yield put(loginSuccess(response));
       const userDataString = yield call(getDataFromStorage, REGISTER_DATA);
       const userData = userDataString ? JSON.parse(userDataString) : null;
 
       console.log('userData 22 ', userData);
+      console.log('23 ', response?.data);
       let updatedUserData;
       if (userData == null) {
-        updatedUserData = {
-          userData: response?.data,
-          token: response?.data?.token,
-        };
+        updatedUserData = response?.data;
+        //token: response?.data?.token,
       } else {
         updatedUserData = {
           ...userData,
           token: response?.data?.token,
         };
       }
+      console.log('35 ', updatedUserData);
+      let obj = JSON.stringify(updatedUserData);
+      console.log('obj ', obj);
       yield call(
         setDataToStorage,
         REGISTER_DATA,
         JSON.stringify(updatedUserData),
       );
       console.log('updatedUserData40 ', updatedUserData?.userData);
-      yield put(setUserInfo(updatedUserData?.userData));
+      console.log('45 ', updatedUserData);
+      yield put(setUserInfo(updatedUserData));
+      yield put(loginSuccess(response));
     } else {
       console.log('response 45 ', response);
       yield put(loginFailure(response.message));

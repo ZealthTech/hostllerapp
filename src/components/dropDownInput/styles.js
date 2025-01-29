@@ -1,6 +1,14 @@
 import {StyleSheet} from 'react-native';
 import {MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
-import {BLACK_COLOR, COLOR_GRAY_7F, WHITE} from '../../utils/colors/colors';
+import {
+  BLACK_COLOR,
+  COLOR_GRAY_7F,
+  GRAY_92,
+  GRAY_LIGHT,
+  GRAY_LIGHT_CB,
+  WHITE,
+  WHITE_F5,
+} from '../../utils/colors/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -55,4 +63,5 @@ export const styles = StyleSheet.create({
   closeButton: {
     marginTop: 15,
   },
+  disabled: {backgroundColor: GRAY_LIGHT},
 });

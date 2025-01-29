@@ -13,7 +13,7 @@ import {
   BLACK_COLOR,
   GRAY_LIGHT_CB,
   ORANGE_DARK,
-  PURPLE,
+  TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
 const imageSize = Math.min(getDeviceWidth() * 0.82, getDeviceHeight() * 0.52);
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   contentView: {flexDirection: 'row', alignItems: 'center', gap: 14},
-  titleTxt: {color: BLACK_COLOR, fontFamily: MONTSERRAT_BOLD},
+  titleTxt: {color: BLACK_COLOR, fontFamily: MONTSERRAT_SEMIBOLD},
   contentTxt: {
     fontSize: 10,
     fontFamily: MONTSERRAT_REGULAR,
@@ -95,7 +95,20 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
-  content: {textAlign: 'center', fontFamily: MONTSERRAT_REGULAR, padding: 10},
-  buttonView: {backgroundColor: PURPLE},
+  content: {
+    textAlign: 'center',
+    fontFamily: MONTSERRAT_REGULAR,
+    padding: 10,
+    lineHeight: 20,
+    marginHorizontal: 20,
+  },
   profileImg: {height: 100, width: 100, borderRadius: 200, marginBottom: 10},
+  version: {
+    textAlign: 'center',
+    color: TEXT_COLOR,
+    fontSize: 14,
+    marginVertical: 40,
+    fontFamily: MONTSERRAT_REGULAR,
+  },
+  arrowStyle: {transform: [{rotate: '270deg'}]},
 });

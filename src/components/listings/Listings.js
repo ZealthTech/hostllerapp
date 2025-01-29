@@ -1,16 +1,8 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  FlatList,
-  Pressable,
-} from 'react-native';
+import {View, Text, Image, FlatList, Pressable} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import CustomSvg from '../customSvg/CustomSvg';
 import {ArrowDownCircle, ArrowUpCircle, CrossArrows, Star} from '../../assets/';
-import {LISTINGS_DETAILS} from '../../navigation/routes';
 import FastImage from 'react-native-fast-image';
 
 const Listings = props => {
@@ -30,7 +22,7 @@ const Listings = props => {
       data={data}
       style={{marginBottom: 20}}
       showsVerticalScrollIndicator={false}
-      renderItem={({item, index}) => {
+      renderItem={({item, _index}) => {
         const amenities = item?.allServices?.slice(0, 8);
         return (
           <Pressable
@@ -40,11 +32,13 @@ const Listings = props => {
             }>
             <FastImage source={{uri: item?.image}} style={styles.imageBnr} />
             <Text style={styles.pgName}>{item?.name}</Text>
-            <View style={styles.ratingView}>
-              <CustomSvg SvgComponent={<Star />} />
-              <Text style={styles.rating}>{item?.rating}</Text>
-              <Text style={styles.totalRatings}>({item?.totalRating})</Text>
-            </View>
+            {item.totalRating > 0 && (
+              <View style={styles.ratingView}>
+                <CustomSvg SvgComponent={<Star />} />
+                <Text style={styles.rating}>{item?.rating}</Text>
+                <Text style={styles.totalRatings}>({item?.totalRating})</Text>
+              </View>
+            )}
             <View style={styles.genderRow}>
               <CustomSvg SvgComponent={getSvgIcon(item?.type)} />
               <Text style={styles.genderText}>{item?.type}</Text>

@@ -1,40 +1,63 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
-import React from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import CustomSvg from '../customSvg/CustomSvg';
 import LocationIcon from '../../assets/svg/location_pin.svg';
 import SearchIcon from '../../assets/svg/search.svg';
 import {BLACK_COLOR, TEXT_COLOR, WHITE} from '../../utils/colors/colors';
-import InputText from '../inputText/InputText';
 import {
   fontsSize,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_REGULAR,
 } from '../../utils/styles/commonStyles';
-import {isAndroid} from '../../utils/constants/commonFunctions';
-const SearchView = ({onPressSearchInput, containerStyle, placeholder}) => {
+import Animated, {FadeInDown, FadeOutUp} from 'react-native-reanimated';
+const SearchView = props => {
+  const {onPressSearchInput, containerStyle} = props || {};
+  const [current, setCurrent] = useState(0);
+
+  const searchPlaceholder = [
+    'Search by name...',
+    'Search by location...',
+    'Search PG...',
+    'Search Hostels...',
+  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent(prev => (prev + 1) % searchPlaceholder.length); // Cycle through the array
+    }, 2800);
+
+    return () => clearInterval(interval); // Clean up the interval on unmount
+  }, []);
+
   return (
     <Pressable
       style={[styles.container, containerStyle]}
       onPress={onPressSearchInput}>
       <View style={styles.leftView}>
         <CustomSvg isClickable={false} SvgComponent={<LocationIcon />} />
-        <Text style={styles.searchTxt}>{placeholder}</Text>
+        <Animated.Text
+          key={current}
+          style={styles.searchTxt}
+          entering={FadeInDown.duration(0)}
+          exiting={FadeOutUp.duration(0)}>
+          {searchPlaceholder[current]}
+        </Animated.Text>
       </View>
       <CustomSvg isClickable={false} SvgComponent={<SearchIcon />} />
     </Pressable>
   );
 };
 
-export default SearchView;
+export default React.memo(SearchView);
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: WHITE,
-    flexDirection: 'row', // Align items in a row
-    alignItems: 'center', // Vertically center all items
-    justifyContent: 'space-between', // Space between the input and search icon
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 16,
+    //paddingVertical: 16,
+    height: 50,
     borderRadius: 12,
     marginTop: 14,
     marginBottom: 5,

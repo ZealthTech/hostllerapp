@@ -39,8 +39,7 @@ const Login = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const _data = await getDataFromStorage(REGISTER_DATA); // Replace `TOKEN` with your actual key
-      //const token = await getDataFromStorage(TOKEN);
+      const _data = await getDataFromStorage(REGISTER_DATA);
       const parsedData = _data ? JSON.parse(_data) : null;
       setUserData(parsedData);
     };
@@ -63,6 +62,7 @@ const Login = () => {
             fromLogin: true,
           });
         } else {
+          console.log('going to home screen', targetRoute);
           navigation.reset({
             index: 0,
             routes: [

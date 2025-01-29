@@ -4,6 +4,7 @@ import {
   GRAY_92,
   LIGHT_GREEN,
   ORANGE_DARK,
+  ORANGE_EXTRA_LIGHT,
   PINK_EXTRA_LIGHT,
   TEXT_COLOR,
   WHITE,
@@ -19,11 +20,12 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  svgImg: {marginBottom: 5},
   imageView: {
     flexDirection: 'row',
-    backgroundColor: PINK_EXTRA_LIGHT,
     padding: 10,
   },
+  apply: {color: ORANGE_DARK, fontFamily: MONTSERRAT_SEMIBOLD},
   img: {height: 100, width: 110},
   card: {
     backgroundColor: WHITE,
@@ -31,9 +33,11 @@ export const styles = StyleSheet.create({
     borderColor: GRAY_92,
     margin: 14,
     overflow: 'hidden',
+    gap: 5,
     borderRadius: 15,
   },
-  titleView: {flex: 1, padding: 6},
+  applyButton: {paddingVertical: 8},
+  titleView: {flex: 1, padding: 8},
   title: {color: ORANGE_DARK, fontFamily: MONTSERRAT_BOLD},
   calenderView: {
     flexDirection: 'row',
@@ -41,7 +45,7 @@ export const styles = StyleSheet.create({
     gap: 8,
     marginTop: 10,
   },
-  date: {color: BLACK_COLOR, fontFamily: MONTSERRAT_REGULAR},
+  date: {color: BLACK_COLOR, fontFamily: MONTSERRAT_REGULAR, fontSize: 12},
   priceTopView: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -61,6 +65,7 @@ export const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_BOLD,
     fontSize: 16,
   },
+  loader: {flex: 1},
   off: {
     fontFamily: MONTSERRAT_MEDIUM,
     color: LIGHT_GREEN,

@@ -15,6 +15,7 @@ const loginSlice = createSlice({
       state.error = null;
     },
     loginSuccess: (state, action) => {
+      console.log('login success called ');
       state.loading = false;
       state.data = action.payload;
       state.message = action.payload?.message;

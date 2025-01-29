@@ -47,7 +47,7 @@ const SelectedImagesFrame = props => {
             />
           </Pressable>
           <Image
-            source={{uri: image.path}} // Assuming 'image.path' is the path of the selected image
+            source={{uri: image.path}}
             style={[styles.selectedImage, imageStyle]}
           />
         </View>

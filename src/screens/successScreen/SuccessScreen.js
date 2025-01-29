@@ -1,7 +1,7 @@
 import {View, Text, Image, BackHandler} from 'react-native';
 import React, {useEffect} from 'react';
 import {styles} from './styles';
-import {HOME_NAVIGATOR, HOME_PAGE} from '../../navigation/routes';
+import {HOME_NAVIGATOR} from '../../navigation/routes';
 import Button from '../../components/button/Button';
 import {StackActions} from '@react-navigation/native';
 

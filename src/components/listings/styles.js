@@ -3,9 +3,7 @@ import {
   BLACK_COLOR,
   COLOR_GRAY_7F,
   ORANGE_DARK,
-  ORANGE_MEDIUM,
   PINK_LIGHT,
-  PURPLE,
   WHITE,
 } from '../../utils/colors/colors';
 import {getDeviceWidth} from '../../utils/constants/commonFunctions';
@@ -29,7 +27,7 @@ export const styles = StyleSheet.create({
       width: 0,
     },
     backgroundColor: WHITE,
-    elevation: 5, // For Android shadow
+    elevation: 5,
   },
 
   imageBnr: {

@@ -1,15 +1,8 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import CustomSvg from '../customSvg/CustomSvg';
 import {Building, Garden, Road, Temple} from '../../assets';
-import {
-  BLACK_COLOR,
-  GRAY_92,
-  GRAY_LIGHT,
-  LIGHT_PURPLE,
-  PURPLE,
-} from '../../utils/colors/colors';
-import Space from '../space/Space';
+import {BLACK_COLOR, GRAY_LIGHT, PURPLE} from '../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_REGULAR,

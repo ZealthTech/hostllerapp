@@ -1,17 +1,15 @@
 // ToastMessage.js
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text} from 'react-native';
 import {ERROR_TOAST, SUCCESS_TOAST} from '../../utils/constants/constants';
 import {
   BLACK_COLOR,
-  COLOR_GRAY_7F,
-  GRAY_92,
   LIGHT_GREEN,
   RED_DARK,
   WHITE,
 } from '../../utils/colors/colors';
 import CustomSvg from '../customSvg/CustomSvg';
-import {Cancel, CheckGreen, CrossArrows, RightTick} from '../../assets';
+import {Cancel, CheckGreen} from '../../assets';
 import {MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
 
 const ToastMessage = ({type, title, desc, info}) => {
@@ -81,7 +79,7 @@ const getStyles = type => {
           color: info ? WHITE : BLACK_COLOR,
           fontFamily: MONTSERRAT_REGULAR,
         }),
-        line: info => ({height: 4, backgroundColor: RED_DARK}),
+        line: _info => ({height: 4, backgroundColor: RED_DARK}),
       };
     default:
       return {

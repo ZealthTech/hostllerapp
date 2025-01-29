@@ -9,7 +9,6 @@ import {
 } from '../../utils/colors/colors';
 import {
   fontsSize,
-  MONTSERRAT_MEDIUM,
   MONTSERRAT_REGULAR,
   MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';

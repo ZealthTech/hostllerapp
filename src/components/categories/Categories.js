@@ -5,15 +5,18 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import {styles} from './styles';
 
 const Categories = props => {
   const {level, data, onPress} = props || {};
+  const flatRef = useRef();
+
   return (
     <View style={styles.container}>
       <Text style={styles.levelText}>{level}</Text>
       <FlatList
+        ref={flatRef}
         data={data}
         showsHorizontalScrollIndicator={false}
         horizontal={true}

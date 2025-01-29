@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import Header from '../../components/header/Header';
 import LeadBanners from './leadBanner/LeadBanner';
@@ -19,7 +12,8 @@ import ImageCard from './leadBanner/ImageCard';
 import {useFormik} from 'formik';
 import {apiPost} from '../../network/axiosInstance';
 import {
-  CITY_LIST_BIHAR,
+  CITY_LIST,
+  STATES_LIST,
   SUBMIT_LEAD_FORM_DATA,
 } from '../../utils/constants/apiEndPoints';
 import {useSelector} from 'react-redux';
@@ -30,16 +24,32 @@ const LeadPage = () => {
   const [bedroom, setBedroom] = useState('');
   const [cityList, setCityList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [cityModal, setCityModal] = useState(false);
   const {userInfo} = useSelector(state => state.userInfoReducer);
+  const [states, setStates] = useState([]);
+  const [stateId, setStateId] = useState('');
 
   useEffect(() => {
-    fetchCities();
-  }, [fetchCities]);
+    fetchStates();
+  }, [fetchStates]);
+
+  useEffect(() => {
+    if (stateId !== '') {
+      fetchCities();
+    }
+  }, [stateId, fetchCities]);
 
   const fetchCities = useCallback(async () => {
-    const response = await apiPost(CITY_LIST_BIHAR, {state_id: 5});
+    const response = await apiPost(CITY_LIST, {state_id: 5});
     if (response?.status) {
       setCityList(response?.data);
+    }
+  }, []);
+
+  const fetchStates = useCallback(async () => {
+    const response = await apiPost(STATES_LIST);
+    if (response?.status) {
+      setStates(response?.data);
     }
   }, []);
   const initialValues = {
@@ -49,6 +59,7 @@ const LeadPage = () => {
     address: '',
     phone: '',
     email: '',
+    state: '',
   };
   const submitFormData = async values => {
     const response = await apiPost(
@@ -79,18 +90,25 @@ const LeadPage = () => {
     },
   });
   const handleCitySelect = city => {
-    setFieldValue('city', city);
-    setModalVisible(false);
+    setFieldValue('city', city?.name);
+    setCityModal(false);
   };
   const handleBedroomSelect = _bedroom => {
     setFieldValue('totalBeds', _bedroom);
     setBedroom(_bedroom);
   };
-  console.log(values?.bedrooms);
+  const handleStateSelect = state => {
+    setFieldValue('state', state?.state_title);
+    setStateId(state?.state_id);
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <Header />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}>
         <LeadBanners />
         <View style={styles.formView}>
           <Text style={styles.labelText}>Name of the house owner</Text>
@@ -101,6 +119,7 @@ const LeadPage = () => {
             value={values.ownerName}
             isErrorMsgRequired={touched.ownerName && !!errors.ownerName}
             error={errors.ownerName}
+            maxLength={20}
           />
           <Text style={styles.labelText}>Name of bedrooms in the property</Text>
           <View style={styles.bedroomView}>
@@ -119,44 +138,33 @@ const LeadPage = () => {
           {touched.totalBeds && !!errors.totalBeds && (
             <Text style={styles.error}>{errors.totalBeds}</Text>
           )}
+          <Text style={styles.labelText}>Select State</Text>
+          <DropDownInput
+            data={states}
+            isErrorMsgRequired={touched.state && !!errors.state}
+            error={errors.state}
+            value={values.state}
+            modalVisible={modalVisible}
+            handleCitySelect={handleStateSelect}
+            setModalVisible={() => setModalVisible(false)}
+            onPressIcon={() => setModalVisible(true)}
+            placeholder="Select a State"
+            state={true}
+            disabled={false}
+          />
           <Text style={styles.labelText}>Select located city</Text>
           <DropDownInput
             data={cityList}
             isErrorMsgRequired={touched.city && !!errors.city}
             error={errors.city}
             value={values.city}
-            modalVisible={modalVisible}
+            modalVisible={cityModal}
             handleCitySelect={handleCitySelect}
-            setModalVisible={() => setModalVisible(false)}
-            onPressIcon={() => setModalVisible(true)}
+            setModalVisible={() => setCityModal(false)}
+            onPressIcon={() => setCityModal(true)}
+            placeholder="Select a City"
+            disabled={values.state === ''}
           />
-          {/* <Modal
-            transparent={true}
-            visible={isModalVisible}
-            animationType="slide"
-            onRequestClose={() => setModalVisible(false)}>
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContent}>
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  data={cityList}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
-                    <TouchableOpacity
-                      style={styles.cityItem}
-                      onPress={() => handleCitySelect(item?.name)}>
-                      <Text style={styles.cityName}>{item?.name}</Text>
-                    </TouchableOpacity>
-                  )}
-                />
-                <Button
-                  title="Close"
-                  onPress={() => setModalVisible(false)}
-                  style={styles.closeButton}
-                />
-              </View>
-            </View>
-          </Modal> */}
           <Text style={styles.labelText}>Where is your property located</Text>
           <InputText
             inputContainer={styles.inputField}
@@ -165,6 +173,7 @@ const LeadPage = () => {
             value={values.address}
             isErrorMsgRequired={touched.address && !!errors.address}
             error={errors.address}
+            maxLength={30}
           />
           <Text style={styles.labelText}>
             Enter your phone no.{' '}

@@ -2,15 +2,11 @@ import {StyleSheet} from 'react-native';
 import {
   BLACK_COLOR,
   COLOR_GRAY_7F,
-  GRAY_92,
   GRAY_LIGHT,
   GRAY_LIGHT_CB,
   TEXT_COLOR,
 } from '../../utils/colors/colors';
-import {
-  MONTSERRAT_MEDIUM,
-  MONTSERRAT_REGULAR,
-} from '../../utils/styles/commonStyles';
+import {MONTSERRAT_MEDIUM} from '../../utils/styles/commonStyles';
 import {isAndroid} from '../../utils/constants/commonFunctions';
 
 export const styles = StyleSheet.create({
@@ -23,6 +19,9 @@ export const styles = StyleSheet.create({
       height: 3,
       width: 3,
     },
+  },
+  loader: {
+    marginTop: 70,
   },
   container: {flex: 1},
   headerView: {

@@ -1,15 +1,9 @@
 import {StyleSheet} from 'react-native';
-import {
-  BLACK_COLOR,
-  ORANGE_DARK,
-  RED_DARK,
-  WHITE,
-} from '../../../utils/colors/colors';
+import {BLACK_COLOR, ORANGE_DARK, WHITE} from '../../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_BOLD,
   MONTSERRAT_REGULAR,
-  MONTSERRAT_SEMIBOLD,
 } from '../../../utils/styles/commonStyles';
 
 export const styles = StyleSheet.create({

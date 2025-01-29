@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {styles} from './styles';
 import {COLOR_GRAY_7F} from '../../utils/colors/colors';
 import CustomSvg from '../customSvg/CustomSvg';
-import {Lock, OpenEye, Password} from '../../assets';
+import {OpenEye, Password} from '../../assets';
 
 const InputText = props => {
   const {

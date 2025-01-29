@@ -35,12 +35,7 @@ const CustomBottomSheet = forwardRef(
 
 export default CustomBottomSheet;
 const styles = StyleSheet.create({
-  background: {
-    // borderRadius: 20,
-  },
   contentContainer: {
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
     overflow: 'hidden',
     flex: 1,
   },

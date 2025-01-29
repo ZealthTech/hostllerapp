@@ -74,6 +74,7 @@ export const validationSchemaLead = yup.object().shape({
     .min(3, 'Too small address')
     .required('Location is required'),
   city: yup.string().required('City is required'),
+  state: yup.string().required('State is required'),
   email: yup
     .string()
     .email('Enter a valid email')

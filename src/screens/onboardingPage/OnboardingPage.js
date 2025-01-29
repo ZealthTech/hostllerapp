@@ -1,4 +1,4 @@
-import {View, Text, Pressable} from 'react-native';
+import {View} from 'react-native';
 import React, {useEffect, useRef} from 'react';
 import {styles} from './styles';
 import Video from 'react-native-video';

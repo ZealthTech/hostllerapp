@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {BLACK_COLOR, PURPLE, WHITE} from '../../utils/colors/colors';
+import {PURPLE, WHITE} from '../../utils/colors/colors';
 import {MONTSERRAT_BOLD} from '../../utils/styles/commonStyles';
 import CustomSvg from '../customSvg/CustomSvg';
 import {BackArrow} from '../../assets';

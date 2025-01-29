@@ -27,12 +27,7 @@ import {
 } from '../../utils/constants/commonFunctions';
 import {ERROR_TOAST, SUCCESS_TOAST} from '../../utils/constants/constants';
 import SelectedImagesFrame from '../../components/selectedImagesFrame/SelectedImagesFrame';
-import {
-  BLACK_COLOR,
-  GRAY_LIGHT_CB,
-  ORANGE_DARK,
-  PURPLE,
-} from '../../utils/colors/colors';
+import {GRAY_LIGHT_CB, ORANGE_DARK, PURPLE} from '../../utils/colors/colors';
 import Loader from '../../components/loader/Loader';
 import DropDownForSmallData from '../../components/dropDownForSmallData/DropDownForSmallData';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -59,7 +54,6 @@ const KycDetails = navigation => {
 
   const getKycDetails = useCallback(async () => {
     const response = await apiGet(GET_KYC_DETAILS, {}, userData?.token);
-
     if (response?.status) {
       const fetchedData = response?.data;
       setData(fetchedData);
@@ -74,6 +68,10 @@ const KycDetails = navigation => {
     }
     setLoading(false);
   }, [userData]);
+
+  useEffect(() => {
+    setSelectedDate(data?.dob);
+  }, [data]);
 
   const submitKycDetails = async values => {
     if (!agreeTAndC) {
@@ -111,6 +109,8 @@ const KycDetails = navigation => {
       formData.append('occupation', values?.occupation);
       formData.append('department', values?.department);
       formData.append('familyNumber', values?.familyPhone);
+      formData.append('dob', selectedDate);
+      formData.append('bloodGroup', values?.bloodGroup);
       const sendKycDetails = await postDataWithImages(
         UPDATE_KYC_DETAILS,
         formData,
@@ -137,7 +137,6 @@ const KycDetails = navigation => {
       },
       enableReinitialize: true, // Allows the form to reinitialize when `initialValues` change
       onSubmit: inputValues => {
-        console.log('input values ', inputValues);
         submitKycDetails(inputValues);
       },
     });

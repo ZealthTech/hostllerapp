@@ -1,19 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Slider from '@react-native-community/slider';
-import {
-  BLACK_COLOR,
-  GRAY_92,
-  ORANGE_DARK,
-  PURPLE,
-} from '../../utils/colors/colors';
+import {BLACK_COLOR, GRAY_92, PURPLE} from '../../utils/colors/colors';
 import {
   MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
-  MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
-import CustomSvg from '../customSvg/CustomSvg';
-import {Thumb} from '../../assets';
 
 const RangeSlider = props => {
   const {minPrice, maxPrice, onValueChange, min, max, currentValue} =

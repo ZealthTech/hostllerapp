@@ -9,6 +9,9 @@ import FooterButton from '../../components/footerButton/FooterButton';
 import Animated, {FadeInDown} from 'react-native-reanimated';
 import {CART_SCREEN} from '../../navigation/routes';
 import MealChart from '../../components/mealChart/MealChart';
+import {formatDateInNamedMonth} from '../kycDetails/helper';
+import {useDispatch} from 'react-redux';
+import {setBookingSummary} from '../../redux/reducers/bookingSummary';
 
 const ChooseRoom = () => {
   const route = useRoute();
@@ -23,9 +26,11 @@ const ChooseRoom = () => {
     index: null,
     option: null, // Tracks whether it's "with food" or "without food"
   });
+  const dispatch = useDispatch();
   const openBottomSheet = () => {
     setModalVisible(true);
   };
+
   const roomData = [
     {key: 'single', data: data?.singleBedRoom, roomType: 'Single Room'},
     {key: 'double', data: data?.doubleBedRoom, roomType: 'Twin Sharing Room'},
@@ -34,16 +39,16 @@ const ChooseRoom = () => {
     {key: 'dormitory', data: data?.dormitoryRoom, roomType: 'Dormitory'},
   ].filter(item => item.data);
 
-  const onChangeDate = (event, date) => {
-    setShowCalender(false); // Close the calendar after selecting a date
-    if (date) {
-      setSelectedDate(date); // Update selected date
-    }
+  const onChangeDate = date => {
+    const formattedDate = formatDateInNamedMonth(date);
+    setSelectedDate(formattedDate);
+    hideDatePicker();
   };
 
   const handleCheckout = () => {
+    const cartData = {...selectedRoomToCart, address: data?.address};
+    dispatch(setBookingSummary(cartData));
     navigation.navigate(CART_SCREEN, {
-      cartData: {...selectedRoomToCart, address: data?.address},
       mealChart: data?.mealChart,
       pgId: data?.pgId,
     });
@@ -51,16 +56,26 @@ const ChooseRoom = () => {
 
   const maximumDate = new Date();
   maximumDate.setMonth(maximumDate.getMonth() + 6);
+  const hideDatePicker = () => {
+    setShowCalender(false);
+  };
+  const showCalenderView = () => {
+    setShowCalender(true);
+  };
+  console.log('selected date ', selectedDate);
   return (
     <View style={styles.container}>
       <BackIconHeader title="Choose Room" />
       <CalenderView
-        openCalender={() => setShowCalender(true)}
+        openCalender={showCalenderView}
         showDatePicker={showCalender}
         value={selectedDate}
         onChangeDate={onChangeDate}
         maximumDate={maximumDate}
+        minimumDate={new Date()}
+        hideDatePicker={hideDatePicker}
       />
+
       <FlatList
         data={roomData}
         keyExtractor={item => item.key}
@@ -82,15 +97,12 @@ const ChooseRoom = () => {
         showsVerticalScrollIndicator={false}
       />
       {selectedRoom?.index !== null && (
-        <Animated.View
-          entering={FadeInDown.duration(300)} // Adjust duration for smoothness
-        >
+        <Animated.View entering={FadeInDown.duration(500)}>
           <FooterButton
             onPress={handleCheckout}
             price={
               selectedRoomToCart?.item?.rent +
-              selectedRoomToCart?.item?.foodPrice +
-              selectedRoomToCart?.item?.security
+              selectedRoomToCart?.item?.foodPrice
             }
           />
         </Animated.View>

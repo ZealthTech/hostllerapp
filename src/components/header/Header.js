@@ -1,4 +1,4 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet} from 'react-native';
 import React from 'react';
 import {
   getDeviceHeight,
@@ -8,12 +8,14 @@ import IconButton from '../iconButton/IconButton';
 import Person from '../../assets/svg/person.svg';
 import Bell from '../../assets/svg/bell.svg';
 import {PURPLE} from '../../utils/colors/colors';
+import Animated, {FadeInLeft} from 'react-native-reanimated';
 
 const Header = props => {
   const {onPressProfile, onPressBell} = props || {};
   return (
     <View style={styles.container}>
-      <Image
+      <Animated.Image
+        entering={FadeInLeft.duration(800).delay(200)}
         source={require('../../assets/images/splash_image.png')}
         style={styles.image}
       />

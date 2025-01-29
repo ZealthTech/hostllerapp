@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {
   BLACK_COLOR,
   GRAY_92,
+  GRAY_LIGHT_CB,
   ORANGE_DARK,
   TEXT_COLOR,
   WHITE,
@@ -13,19 +14,29 @@ import {
   MONTSERRAT_REGULAR,
   MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
-import {getDeviceHeight} from '../../utils/constants/commonFunctions';
+import {
+  getDeviceHeight,
+  getDeviceWidth,
+} from '../../utils/constants/commonFunctions';
 
 export const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: WHITE},
+  container: {flex: 1},
   itemView: {
     backgroundColor: WHITE_F5,
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: GRAY_92,
+    borderColor: GRAY_LIGHT_CB,
     marginHorizontal: 16,
     padding: 22,
     marginTop: 20,
   },
+  img_book: {height: getDeviceHeight() * 0.2, width: getDeviceWidth() * 0.4},
+  noBooking: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  contentContainerStyle: {paddingBottom: 20},
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -55,4 +66,10 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
   },
   perMonth: {fontFamily: MONTSERRAT_REGULAR, fontSize: 10, marginStart: 5},
+  noBookText: {
+    color: BLACK_COLOR,
+    fontFamily: MONTSERRAT_REGULAR,
+    fontSize: 14,
+    marginHorizontal: 20,
+  },
 });

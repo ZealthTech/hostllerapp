@@ -1,8 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {
-  getDeviceHeight,
-  isAndroid,
-} from '../../utils/constants/commonFunctions';
+import {isAndroid} from '../../utils/constants/commonFunctions';
 import {fontsSize, MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
 import {BLACK_COLOR, GRAY_92} from '../../utils/colors/colors';
 
@@ -26,7 +23,7 @@ export const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_REGULAR,
     marginTop: 5,
   },
-  containerStyle: (errorText, isFocused) => ({
+  containerStyle: (_errorText, _isFocused) => ({
     flexDirection: 'row',
     backgroundColor: 'white',
     alignItems: 'center',

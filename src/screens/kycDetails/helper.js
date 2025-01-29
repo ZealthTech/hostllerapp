@@ -29,6 +29,14 @@ export const formatDate = date => {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+export const formatDateInNamedMonth = date => {
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = date.toLocaleString('default', {month: 'short'}); // Short month name (e.g., Jan, Feb)
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
 export const bloodGroups = [
   {label: 'A+', name: 'A+'},
   {label: 'A-', name: 'A-'},

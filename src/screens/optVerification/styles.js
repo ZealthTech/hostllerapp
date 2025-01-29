@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  containerStyle: {marginTop: 30},
   enter: {
     fontFamily: MONTSERRAT_SEMIBOLD,
     fontSize: fontsSize.fs18,

@@ -1,6 +1,8 @@
-import {Dimensions, PermissionsAndroid, Platform} from 'react-native';
+import {Dimensions, Linking, PermissionsAndroid, Platform} from 'react-native';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
+import {ERROR_TOAST} from './constants';
+import {openComposer} from 'react-native-email-link';
 
 export const getDeviceWidth = () => {
   return Dimensions.get('window').width;
@@ -53,5 +55,37 @@ export const showToast = (type, desc, info = false) => {
       desc,
       info,
     },
+  });
+};
+
+export const makeCall = number => {
+  const _number = number?.toString();
+  Linking.openURL(`tel:+91${_number}`);
+};
+
+export const sendEmail = async email => {
+  if (isAndroid()) {
+    await Linking.openURL('mailto:' + email + '?subject=Help And Support');
+  } else {
+    try {
+      await openComposer({
+        to: email,
+        subject: 'Support',
+        body: 'Hi, can you help me with...',
+      });
+    } catch (error) {
+      showToast(ERROR_TOAST, 'Error opening Gmail');
+    }
+  }
+};
+
+export const openWhatsApp = phoneNumber => {
+  const msg = 'Hello 👋 Could you assist me today?';
+  // Format the phone number (must include country code)
+  let url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
+    msg,
+  )}`;
+  Linking.openURL(url).catch(() => {
+    alert('WhatsApp is not installed on your device!');
   });
 };

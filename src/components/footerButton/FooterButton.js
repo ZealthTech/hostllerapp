@@ -2,10 +2,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {
   BLACK_COLOR,
-  GRAY_92,
   GRAY_LIGHT_CB,
   PURPLE,
-  TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
 import Button from '../button/Button';

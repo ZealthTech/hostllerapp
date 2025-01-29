@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464732676344",
+    "project_id": "hostellers-360ba",
+    "storage_bucket": "hostellers-360ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464732676344:android:796a51a1a67b253c9fdb0d",
+        "android_client_info": {
+          "package_name": "in.hostellers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvaYwG9vfzjXt8DFDovisxGNAeoVumhzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

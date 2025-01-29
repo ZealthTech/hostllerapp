@@ -4,14 +4,10 @@ import {
   getDeviceWidth,
 } from '../../utils/constants/commonFunctions';
 import {
-  BOLD,
   fontsSize,
-  LIGHT,
-  MEDIUM,
   MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_SEMIBOLD,
-  SEMI_BOLD,
 } from '../../utils/styles/commonStyles';
 import {BLACK_COLOR, GRAY_92, ORANGE_DARK} from '../../utils/colors/colors';
 

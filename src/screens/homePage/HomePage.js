@@ -1,22 +1,18 @@
-import {View, ScrollView, RefreshControl} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import {View, ScrollView, RefreshControl, Text} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Header from '../../components/header/Header';
 import {useDispatch, useSelector} from 'react-redux';
-import {homeDataRequest} from '../../redux/reducers/homeReducer';
 import BannerView from '../../components/bannerView/BannerView';
 import Categories from '../../components/categories/Categories';
 import {categories, genderCategories} from './helper';
-import VibeTribeView from '../../components/VibeTribe/VibeTribeView';
 import Testimonial from '../../components/testimonial/Testimonial';
 import {getDeviceWidth} from '../../utils/constants/commonFunctions';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
-import {
+  AUTH_NAVIGATOR,
   HOME_NAVIGATOR,
   HOSTEL_LISTINGS,
+  LEADS_SCREEN,
   LOGIN,
   PROFILE_SCREEN,
   SEARCH_SCREEN,
@@ -25,53 +21,66 @@ import HomeScreenSkeleton from '../../components/skeletons/homeScreenSkeleton/Ho
 import {getDataFromStorage} from '../../utils/storage';
 import {REGISTER_DATA} from '../../utils/constants/constants';
 import {setUserInfo} from '../../redux/reducers/userInfoReducer';
+import {apiPost} from '../../network/axiosInstance';
+import {HOME_URL} from '../../utils/constants/apiEndPoints';
+import ListYourPropertyBanner from './ListYourPropertyBanner';
+import {styles} from './styles';
+import Button from '../../components/button/Button';
+import {MyHocExample} from './file';
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const route = useRoute();
-  const {fromLogin} = route?.params || {};
-  const {homeData, loading} = useSelector(state => state.homeReducer);
+  const {fromLogin = false} = route?.params || {};
   const {data} = useSelector(state => state.loginReducer);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userData, setUserData] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const _navigation = useNavigation();
   const width_dev = getDeviceWidth();
-  useFocusEffect(
-    React.useCallback(() => {
-      const initialize = async () => {
-        await findToken();
-        // Always call fetchHomeData when the screen is focused
-        fetchHomeData();
-      };
-      initialize();
-    }, [findToken, fetchHomeData]),
-  );
+  const [loading, setLoading] = useState(true);
+  const isFocus = useIsFocused();
+  const [homeData, setHomeData] = useState([]);
+
+  useEffect(() => {
+    const initialize = async () => {
+      await findToken(); // Wait for findToken to complete
+      fetchHomeData(); // Then call fetchHomeData
+    };
+    initialize();
+  }, [isFocus, fetchHomeData, findToken]);
 
   const findToken = useCallback(async () => {
     if (fromLogin) {
-      //if coming from login screen getting data from redux because getting datar from redux is faster than async storage
+      // If coming from login screen, get data from redux
       setUserData(data);
       dispatch(setUserInfo(data?.data));
     } else {
       const _userData = await getDataFromStorage(REGISTER_DATA);
-      const parsedData = _userData ? JSON.parse(_userData) : null;
-      setUserData(parsedData);
-      console.log('parsed data ', parsedData);
-      dispatch(setUserInfo(parsedData?.userData));
+      let parsedData;
+      if (_userData) {
+        parsedData = JSON.parse(_userData);
+        setUserData(parsedData);
+        dispatch(setUserInfo(parsedData));
+      }
     }
+    // No need for a callback parameter, as the function itself is async
   }, [dispatch, fromLogin, data]);
 
-  const fetchHomeData = useCallback(() => {
-    const payload = {
-      userId: userData?.userId || '', // Use userData if it exists, otherwise empty string
-      token: userData?.token || '',
-    };
-    dispatch(homeDataRequest(payload));
+  const fetchHomeData = useCallback(async () => {
+    const response = await apiPost(
+      HOME_URL,
+      {userId: userData?.userId},
+      userData?.token,
+    );
+    if (response.status) {
+      setHomeData(response?.data);
+    }
     if (!loading) {
       setRefreshing(false);
     }
-  }, [dispatch, userData, loading]);
+    setLoading(false);
+  }, [userData, loading]);
 
   const handleScroll = useCallback(
     e => {
@@ -112,11 +121,16 @@ const HomePage = () => {
       _navigation.navigate(PROFILE_SCREEN);
     }
   };
+
+  const listYourProperty = () => {
+    _navigation.navigate(LEADS_SCREEN);
+  };
+
   return (
-    <View>
+    <View style={styles.container}>
       <Header onPressProfile={onPressProfile} />
       <ScrollView
-        contentContainerStyle={{paddingBottom: 90}}
+        contentContainerStyle={styles.scroll}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -137,13 +151,15 @@ const HomePage = () => {
               data={categories}
               onPress={name => onPressCategory('', name)}
             />
-            <VibeTribeView />
+            {/* <VibeTribeView /> */}
             <Testimonial
               data={homeData?.testimonialListing}
               handleScroll={handleScroll}
               currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
             />
-            {/* <Scale /> */}
+            <ListYourPropertyBanner onPress={listYourProperty} />
+            {/* <MyHocExample isDeveloper={true} /> */}
           </>
         ) : (
           <HomeScreenSkeleton />

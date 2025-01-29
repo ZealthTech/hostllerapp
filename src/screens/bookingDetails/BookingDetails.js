@@ -12,12 +12,13 @@ import Loader from '../../components/loader/Loader';
 const BookingDetails = navigation => {
   console.log(navigation?.route?.params);
   const {bookingId, userId, token} = navigation?.route?.params || {};
-  console.log('bookingId,userId ', bookingId, userId);
   const [bookingDetails, setBookingDetails] = useState({});
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     getBookingDetails();
   }, [getBookingDetails]);
+
   const getBookingDetails = useCallback(async () => {
     const data = {userId, bookingId};
     const response = await apiPost(USER_BOOKING_DETAILS, data, token);
@@ -25,15 +26,15 @@ const BookingDetails = navigation => {
       setBookingDetails(response?.data);
     }
     setLoading(false);
-    console.log('response ', response);
   }, [userId, bookingId, token]);
+
   return (
     <>
       <BackIconHeader title="Booking Details" />
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 40}}>
+        contentContainerStyle={styles.scroll}>
         <FastImage
           source={{uri: bookingDetails?.pgDetail?.image}}
           style={styles.image}
@@ -60,11 +61,7 @@ const BookingDetails = navigation => {
         </Text>
         <Space height={30} />
         <View style={styles.line} />
-        <Text
-          style={[
-            styles.name,
-            {fontSize: 16, paddingHorizontal: 20, paddingVertical: 10},
-          ]}>
+        <Text style={[styles.name, styles.bookingDetails]}>
           Booking Details
         </Text>
         <View style={styles.line} />
@@ -120,13 +117,7 @@ const BookingDetails = navigation => {
         </View>
         <Space height={25} />
         <View style={styles.line} />
-        <Text
-          style={[
-            styles.name,
-            {fontSize: 16, paddingHorizontal: 20, paddingVertical: 10},
-          ]}>
-          Payment Details
-        </Text>
+        <Text style={[styles.name, styles.paymentDetail]}>Payment Details</Text>
         <View style={styles.line} />
         <View style={styles.contentRow}>
           <View style={styles.rowContent}>

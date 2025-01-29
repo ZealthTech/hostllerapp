@@ -1,10 +1,13 @@
-import {View, Text, Image, Pressable, ActivityIndicator} from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+  View,
+  Text,
+  Image,
+  Pressable,
+  ActivityIndicator,
+  ToastAndroid,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {styles} from './styles';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import CustomSvg from '../../components/customSvg/CustomSvg';
@@ -17,39 +20,51 @@ import {
 } from '../../utils/styles/commonStyles';
 import {LIGHT_GREEN, WHITE} from '../../utils/colors/colors';
 import {getDataFromStorage} from '../../utils/storage';
-import {
-  ERROR_TOAST,
-  REGISTER_DATA,
-  SUCCESS_TOAST,
-} from '../../utils/constants/constants';
+import {ERROR_TOAST, REGISTER_DATA} from '../../utils/constants/constants';
 import {apiPost} from '../../network/axiosInstance';
 import {BOOK_ROOM} from '../../utils/constants/apiEndPoints';
 import {showToast} from '../../utils/constants/commonFunctions';
 import Loader from '../../components/loader/Loader';
 import {
+  AUTH_NAVIGATOR,
   BOOKING_SUCCESS_SCREEN,
   CART_SCREEN,
-  CHOOSE_ROOM,
+  COUPONS_SCREEN,
   LOGIN,
 } from '../../navigation/routes';
 import {setBookingSummary} from '../../redux/reducers/bookingSummary';
 import {useDispatch, useSelector} from 'react-redux';
+import Button from '../../components/button/Button';
 
 const CartScreen = () => {
   const route = useRoute();
   const dispatch = useDispatch();
   const {userInfo} = useSelector(state => state.userInfoReducer);
-  const {cartData, mealChart, fromLogin, pgId} = route?.params || {};
+  const {
+    cartData,
+    mealChart,
+    fromLogin,
+    pgId,
+    couponCode = '',
+    key,
+  } = route?.params || {};
+  console.log('params ', route?.params);
   const foodInclude = cartData?.option === 'included';
   const [modalVisible, setModalVisible] = useState();
   const [buttonLoading, setButtonLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
   const navigation = useNavigation();
+  const [couponData, setCouponData] = useState();
   const {bookingSummary} = useSelector(state => state.bookingSummary);
+  console.log('booking summary ', bookingSummary);
+  console.log('cart data ', cartData);
+  console.log('value value ', key);
+  const focus = useIsFocused();
 
   useEffect(() => {
-    dispatch(setBookingSummary(cartData)); //storing booking info in redux so that we can get it after coming back from login
+    console.log('akanksha');
+    //storing booking info in redux so that we can get it after coming back from login
     setTimeout(() => {
       //showing loader for 300ms, so that until we get the data from redux, loader will be shown
       setLoading(false);
@@ -62,33 +77,20 @@ const CartScreen = () => {
     userInfo,
   );
 
-  // useEffect(()=>{
-  //   checkLogin();
-  // },[fromLogin])
-
-  console.log('is user data ', !userData);
-  // useEffect(() => {
-  //   if (fromLogin && !userData) {
-  //     setButtonLoading(true);
-  //   } else {
-  //     setButtonLoading(false);
-  //   }
-  // }, [fromLogin, userData]);
-
   const checkLogin = async () => {
     setButtonLoading(true);
     const _userData = await getDataFromStorage(REGISTER_DATA);
-    const parsedData = _userData ? JSON.parse(_userData) : null;
-
-    setUserData(parsedData);
-    console.log('84 ', parsedData);
-    if (parsedData) {
+    console.log('81 ', _userData);
+    if (_userData != null) {
+      const parsedData = _userData ? JSON.parse(_userData) : null;
+      setUserData(parsedData);
       return true;
+    } else {
+      return false;
     }
   };
 
   console.log('userData?.token ', userData?.token);
-  console.log('userData?.userId ', userData?.userData?.userId);
   const addRoomToCart = async _userData => {
     const isLogin = await checkLogin();
     console.log('is login ', isLogin);
@@ -113,10 +115,7 @@ const CartScreen = () => {
         paymentMode: 'Online', // Online | Cash
         checkinDate: bookingSummary?.checkinDate,
       };
-      console.log('bodyData, userData?.token ,', bodyData, userData?.token);
       const response = await apiPost(BOOK_ROOM, bodyData, userInfo.token);
-
-      console.log('response ', response);
       if (response?.status) {
         navigation.pop(4);
         navigation.replace(BOOKING_SUCCESS_SCREEN);
@@ -132,16 +131,21 @@ const CartScreen = () => {
         fromCart: true,
       });
     }
-
     setLoading(false);
   };
+
+  const goToCouponScreen = () => {
+    navigation.navigate(COUPONS_SCREEN, {
+      pgId: pgId,
+      onGoBack: data => setCouponData(data),
+      finalPrice: bookingSummary?.item?.rent,
+    });
+  };
+
+  console.log('data form coupon ', couponData);
   return (
     <View style={styles.container}>
-      <BackIconHeader
-        title="Booking Summary"
-        // fromCart={true}
-        //onPress={() => navigation.navigate(CHOOSE_ROOM)}
-      />
+      <BackIconHeader title="Booking Summary" />
       <View style={styles.card}>
         <View style={styles.imageView}>
           <Image
@@ -151,7 +155,7 @@ const CartScreen = () => {
           <View style={styles.titleView}>
             <Text style={styles.title}>{bookingSummary?.address?.trim()}</Text>
             <View style={styles.calenderView}>
-              <CustomSvg SvgComponent={<Calendar />} />
+              <CustomSvg SvgComponent={<Calendar height={15} width={15} />} />
               <Text style={styles.date}>{bookingSummary?.checkinDate}</Text>
             </View>
           </View>
@@ -179,29 +183,40 @@ const CartScreen = () => {
             <CustomSvg
               SvgComponent={<InfoIcon />}
               isClickable={true}
-              imgStyle={{marginBottom: 5}}
+              imgStyle={styles.svgImg}
               onPress={() => setModalVisible(true)}
             />
           </View>
         )}
-        <View style={styles.securityView}>
+        {/* <View style={styles.securityView}>
           <Text style={styles.meal}>Security Deposit</Text>
           <Text style={[styles.currentPrice, {fontFamily: MONTSERRAT_MEDIUM}]}>
             ₹{bookingSummary?.item?.security}
           </Text>
-        </View>
+        </View> */}
         <View style={styles.securityView}>
-          <Text style={[styles.meal, {color: LIGHT_GREEN}]}>
-            Discount Coupon(
-            <Text style={{fontFamily: MONTSERRAT_BOLD}}>SUPER30</Text>)
+          <Text style={[styles.meal]}>
+            Discount Coupon{' '}
+            {couponData && (
+              <Text style={{fontFamily: MONTSERRAT_MEDIUM}}>
+                ({couponData?.couponCode})
+              </Text>
+            )}
           </Text>
-          <Text
-            style={[
-              styles.meal,
-              {color: LIGHT_GREEN, fontFamily: MONTSERRAT_MEDIUM},
-            ]}>
-            -₹100
-          </Text>
+
+          {couponData ? (
+            <Text
+              style={[
+                styles.meal,
+                {color: LIGHT_GREEN, fontFamily: MONTSERRAT_MEDIUM},
+              ]}>
+              -₹{couponData?.couponDiscount}
+            </Text>
+          ) : (
+            <Pressable style={styles.applyButton} onPress={goToCouponScreen}>
+              <Text style={styles.apply}>Apply Coupon</Text>
+            </Pressable>
+          )}
         </View>
         <View style={styles.line} />
         <View style={styles.securityView}>
@@ -209,25 +224,20 @@ const CartScreen = () => {
             Total Payable
           </Text>
           <Text style={[styles.meal, {fontFamily: MONTSERRAT_SEMIBOLD}]}>
-            ₹
-            {bookingSummary?.item?.security +
-              bookingSummary?.item?.rent +
-              bookingSummary?.item?.foodPrice -
-              100}
+            ₹{couponData ? couponData?.finalAmount : bookingSummary?.item?.rent}
           </Text>
         </View>
         <Pressable style={styles.buttonView} onPress={addRoomToCart}>
           {buttonLoading ? (
-            <ActivityIndicator color={WHITE} style={{flex: 1}} />
+            <ActivityIndicator color={WHITE} style={styles.loader} />
           ) : (
             <>
               <Text style={styles.payNow}>Pay Now</Text>
               <Text style={styles.finalRs}>
                 ₹
-                {bookingSummary?.item?.security +
-                  bookingSummary?.item?.rent +
-                  bookingSummary?.item?.foodPrice -
-                  100}
+                {couponData
+                  ? couponData?.finalAmount
+                  : bookingSummary?.item?.rent}
               </Text>
             </>
           )}

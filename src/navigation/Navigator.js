@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
+  AUTH_NAVIGATOR,
   BOOKING_DETAILS,
   BOOKING_DETAILS_SCREEN,
   BOOKING_SUCCESS_SCREEN,
   CART_SCREEN,
   CHOOSE_ROOM,
+  COUPONS_SCREEN,
   FORGOT_PASSWORD,
+  HELP_AND_SUPPORT,
   HOME_NAVIGATOR,
   HOSTEL_LISTINGS,
   KYC_DETAILS_SCREEN,
@@ -43,8 +46,26 @@ import KycDetails from '../screens/kycDetails/KycDetails';
 import SuccessScreen from '../screens/successScreen/SuccessScreen';
 import HomePage from '../screens/homePage/HomePage';
 import PrivacyPolicy from '../screens/privacyPolicy/PrivacyPolicy';
+import {useDispatch} from 'react-redux';
+import {
+  getFirebaseToken,
+  requestNotificationPermission,
+} from '../utils/firebase/FirebasePushNotification';
+import {AuthNavigator} from './stackNavigator/AuthNavigator';
+import HelpAndSupport from '../screens/helpAndSupport/HelpAndSupport';
+import CouponsScreen from '../screens/couponsScreen/CouponsScreen';
 const Stack = createStackNavigator();
 const Navigator = ({navigationRef}) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getFirebaseToken();
+  }, []);
+
+  useEffect(() => {
+    requestNotificationPermission(dispatch);
+  }, [dispatch]);
+
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
@@ -150,6 +171,17 @@ const Navigator = ({navigationRef}) => {
         <Stack.Screen
           name={PRIVACY_POLICY}
           component={PrivacyPolicy}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name={HELP_AND_SUPPORT}
+          component={HelpAndSupport}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={COUPONS_SCREEN}
+          component={CouponsScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

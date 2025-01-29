@@ -97,7 +97,7 @@ const ListingDetails = () => {
   };
   const allPhotosView = () => {
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.photoView}>
         <View style={styles.header}>
           <Text style={styles.photos}>All Photos</Text>
           <CustomSvg
@@ -108,7 +108,7 @@ const ListingDetails = () => {
         </View>
         <View style={styles.line} />
         <ScrollView showsVerticalScrollIndicator={false}>
-          {images?.map((item, index) => (
+          {images?.map(item => (
             <FastImage
               source={{uri: item}}
               style={styles.sheetImg}
@@ -120,8 +120,8 @@ const ListingDetails = () => {
     );
   };
 
-  const handleStarPress = (rating, setRating, selectedRating) => {
-    if (selectedRating < rating) {
+  const handleStarPress = (rating, setRating, _selectedRating) => {
+    if (_selectedRating < rating) {
       setRating(rating);
     } else {
       setRating(rating - 1);
@@ -136,32 +136,37 @@ const ListingDetails = () => {
     }
   };
 
+  const isImages = images?.length > 0;
   return (
-    <View style={{flex: 1, backgroundColor: WHITE}}>
+    <View style={styles.container}>
       <BackIconHeader title={details?.address} />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 20}}
+        contentContainerStyle={styles.contentContainer}
         onScroll={handleScroll}
         scrollEventThrottle={16}>
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[styles.flat, {paddingEnd: 20}]}>
-          {images?.map((item, index) => {
-            return (
-              <Pressable
-                style={styles.imageView}
-                onPress={showAllImages}
-                key={item}>
-                <FastImage
-                  source={{uri: item}}
-                  style={styles.imgMain(index, images.length)}
-                />
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        {isImages ? (
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.flat, {paddingEnd: 20}]}>
+            {images?.map((item, index) => {
+              return (
+                <Pressable
+                  style={styles.imageView}
+                  onPress={showAllImages}
+                  key={item}>
+                  <FastImage
+                    source={{uri: item}}
+                    style={styles.imgMain(index, images.length)}
+                  />
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <Text style={styles.noImg}>No Images Found</Text>
+        )}
         <SelectionChip
           data={imageTypeData}
           selectedCategory={selectedCategory}
@@ -177,7 +182,7 @@ const ListingDetails = () => {
               <View>
                 <View style={styles.ratingCountView(details?.rating)}>
                   <CustomSvg SvgComponent={<MulticolorStar fill={WHITE} />} />
-                  <Text style={[styles.pgTitle, {marginTop: 2, color: WHITE}]}>
+                  <Text style={[styles.pgTitle, styles.pgTitle2]}>
                     {details?.rating}
                   </Text>
                 </View>

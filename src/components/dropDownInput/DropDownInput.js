@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Pressable,
   Modal,
@@ -11,8 +10,6 @@ import React from 'react';
 import {styles} from './styles';
 import CustomSvg from '../customSvg/CustomSvg';
 import {DownArrow} from '../../assets';
-import {COLOR_GRAY_7F} from '../../utils/colors/colors';
-import InputText from '../inputText/InputText';
 import Button from '../button/Button';
 
 const DropDownInput = props => {
@@ -25,13 +22,20 @@ const DropDownInput = props => {
     handleCitySelect,
     setModalVisible,
     modalVisible,
+    placeholder,
+    state = false,
+    disabled = false,
   } = props || {};
   const isValue = value !== '';
+  console.log('disabled ', disabled);
   return (
     <>
-      <Pressable style={styles.container} onPress={onPressIcon}>
+      <Pressable
+        style={[styles.container, disabled && styles.disabled]}
+        disabled={disabled}
+        onPress={onPressIcon}>
         <Text style={styles.city(isValue)}>
-          {!isValue ? 'Enter City' : value}
+          {!isValue ? placeholder : value}
         </Text>
         <CustomSvg SvgComponent={<DownArrow />} />
       </Pressable>
@@ -51,8 +55,10 @@ const DropDownInput = props => {
                 renderItem={({item}) => (
                   <TouchableOpacity
                     style={styles.cityItem}
-                    onPress={() => handleCitySelect(item?.name)}>
-                    <Text style={styles.cityName}>{item?.name}</Text>
+                    onPress={() => handleCitySelect(item)}>
+                    <Text style={styles.cityName}>
+                      {state ? item?.state_title : item?.name}
+                    </Text>
                   </TouchableOpacity>
                 )}
               />

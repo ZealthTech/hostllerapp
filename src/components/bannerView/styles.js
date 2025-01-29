@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {PURPLE, WHITE} from '../../utils/colors/colors';
+import {LIGHT_PURPLE_B1, PURPLE, WHITE} from '../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_BOLD,

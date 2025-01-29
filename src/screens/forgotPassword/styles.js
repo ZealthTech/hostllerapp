@@ -3,9 +3,7 @@ import {BLACK_COLOR, GRAY_92, WHITE} from '../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_BOLD,
-  MONTSERRAT_MEDIUM,
   MONTSERRAT_REGULAR,
-  MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
 import {
   getDeviceHeight,
@@ -17,15 +15,14 @@ export const styles = StyleSheet.create({
   gradient: {
     flex: 1,
     alignItems: 'center',
-    // paddingHorizontal: 20,
   },
+  scroll: {flexGrow: 1},
+  containerStyle: {width: 200},
   signup: {
     color: BLACK_COLOR,
     fontFamily: MONTSERRAT_BOLD,
     fontSize: fontsSize.fs18,
-    // marginBottom: 25,
     marginTop: 20,
-    //marginTop: getDeviceHeight() * 0.2,
   },
   enter: {
     fontFamily: MONTSERRAT_REGULAR,

@@ -1,15 +1,24 @@
 import {View, Text, Image, Pressable, ScrollView} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {apiGet, postDataWithImages} from '../../network/axiosInstance';
+import {apiGet, apiPost, postDataWithImages} from '../../network/axiosInstance';
 import {
+  LOGOUT_URL,
   PROFILE_DETAIL,
   UPDATE_PROFILE_IMAGE,
 } from '../../utils/constants/apiEndPoints';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import {styles} from './styles';
 import CustomSvg from '../../components/customSvg/CustomSvg';
-import {Camera, Inbox, Kyc, Logout, Phone, Policy} from '../../assets';
+import {
+  Camera,
+  Inbox,
+  Kyc,
+  Logout,
+  Phone,
+  Policy,
+  TermAndConditions,
+} from '../../assets';
 import Space from '../../components/space/Space';
 import {ORANGE_DARK} from '../../utils/colors/colors';
 import ItemRow from './ItemRow';
@@ -32,66 +41,35 @@ import {
   PRIVACY_POLICY,
 } from '../../navigation/routes';
 import Button from '../../components/button/Button';
-import FooterButton from '../../components/footerButton/FooterButton';
-import {useFocusEffect} from '@react-navigation/native';
-import {getDataFromStorage} from '../../utils/storage';
-import {setUserInfo} from '../../redux/reducers/userInfoReducer';
+import {useIsFocused} from '@react-navigation/native';
+import {version} from '../../../package.json';
+import {removeItemFromStorage, setDataToStorage} from '../../utils/storage';
+import {clearUserInfo} from '../../redux/reducers/userInfoReducer';
 
 const ProfileScreen = navigation => {
   const {userInfo} = useSelector(state => state.userInfoReducer);
-  //const {data: userInfo} = useSelector(state => state.loginReducer);
-  console.log('userInfo ', userInfo);
-  const {fromLogin} = navigation?.route?.params || {};
   const [userData, setUserData] = useState();
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  //const [userDetail, setUserDetail] = useState();
+  const focus = useIsFocused();
   const dispatch = useDispatch();
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const initialize = async () => {
-  //       findToken();
-  //     };
-  //     initialize();
-  //   }, [findToken]),
-  // );
 
   useEffect(() => {
     getProfileDetail();
-  }, [getProfileDetail, userInfo]);
+  }, [getProfileDetail, userInfo, focus]);
 
   const getProfileDetail = useCallback(async () => {
     const response = await apiGet(PROFILE_DETAIL, {}, userInfo?.token);
     if (response?.status) {
       setUserData(response?.data);
-      console.log('response?.data ', response?.data);
     }
     setLoading(false);
   }, [userInfo]);
 
-  const findToken = useCallback(async () => {
-    setLoading(true);
-    if (fromLogin) {
-      //if coming from login screen getting data from redux because getting datar from redux is faster than async storage
-      // setUserDetail(userInfo);
-      dispatch(setUserInfo(userInfo?.data));
-    } else {
-      const _userData = await getDataFromStorage(REGISTER_DATA);
-      console.log('_userData ', _userData);
-      const parsedData = _userData ? JSON.parse(_userData) : null;
-      console.log('parsed data ', parsedData);
-      setUserData(parsedData);
-      dispatch(setUserInfo(parsedData));
-      setLoading(false);
-    }
-  }, [dispatch, fromLogin, userInfo]);
-
   const goItemDetail = () => {
     navigation?.navigation?.navigate(KYC_DETAILS_SCREEN, {userData: userInfo});
   };
-  const logout = () => {};
 
   const selectFromGallery = async () => {
     try {
@@ -147,12 +125,6 @@ const ProfileScreen = navigation => {
       name: 'userUpdatedProfile.jpg',
     });
     formData.append('userId', userInfo?.userId);
-    console.log(
-      'userInfo?.token ',
-      userInfo?.token,
-      ' user id ',
-      userInfo?.userId,
-    );
     const sendImageResponse = await postDataWithImages(
       UPDATE_PROFILE_IMAGE,
       formData,
@@ -164,6 +136,7 @@ const ProfileScreen = navigation => {
       showToast(ERROR_TOAST, sendImageResponse?.message);
     }
   };
+
   const onPressTakePhoto = () => {
     takePhoto();
     setModal(false);
@@ -173,15 +146,19 @@ const ProfileScreen = navigation => {
     selectFromGallery();
     setModal(false);
   };
-  const goToPrivacyPolicy = () => {
-    navigation?.navigation?.navigate(PRIVACY_POLICY);
+  const goToPrivacyPolicy = slug => {
+    navigation?.navigation?.navigate(PRIVACY_POLICY, {
+      slug: slug,
+      userData: userInfo,
+    });
   };
   const gotToLoginScreen = () => {
     navigation?.navigation?.navigate(LOGIN, {
-      userData: userData,
+      userData: userInfo,
       targetRoute: HOME_NAVIGATOR,
     });
   };
+
   const renderLoginView = () => {
     return (
       <View style={styles.emptyProfileView}>
@@ -191,19 +168,31 @@ const ProfileScreen = navigation => {
         />
         <Text style={styles.myProfile}>My Profile</Text>
         <Text style={styles.content}>
-          Discover and explore unlimited PG, Hotels etc. with us SignUp/Login
-          with us to start
+          Discover and explore a wide range of PGs and hostels with us.{'\n'}{' '}
+          Sign up or log in now to get started!
         </Text>
-        <Button
-          title="Log in or sign up"
-          containerStyle={styles.buttonView}
-          onPress={gotToLoginScreen}
-        />
+        <Button title="Log in or sign up" onPress={gotToLoginScreen} />
       </View>
     );
   };
-  const showProfileData = !loading && userInfo != null;
-  console.log('showProfileData');
+  const showProfileData = !loading && userInfo?.token;
+
+  const logout = async () => {
+    const response = await apiPost(
+      LOGOUT_URL,
+      {userId: userInfo.userId},
+      userInfo?.token,
+    );
+    if (response?.status) {
+      dispatch(clearUserInfo());
+      // Pass a callback to execute after AsyncStorage is cleared
+      removeItemFromStorage(REGISTER_DATA, () => {
+        showToast(SUCCESS_TOAST, response?.message);
+        navigation.navigation.replace(HOME_NAVIGATOR);
+      });
+    }
+    console.log('179 ', response);
+  };
   return (
     <View style={styles.container}>
       <BackIconHeader title="Profile" />
@@ -260,7 +249,13 @@ const ProfileScreen = navigation => {
           <ItemRow
             Icon={Policy}
             title={'Privacy Policy'}
-            onPress={goToPrivacyPolicy}
+            onPress={() => goToPrivacyPolicy('privacypolicy')}
+          />
+          <View style={styles.line} />
+          <ItemRow
+            Icon={TermAndConditions}
+            title={'Terms & Conditions'}
+            onPress={() => goToPrivacyPolicy('termsandconditions')}
           />
           <View style={styles.line} />
           <ItemRow
@@ -270,6 +265,7 @@ const ProfileScreen = navigation => {
             nextReq={false}
             textColor={{color: ORANGE_DARK}}
           />
+          <Text style={styles.version}>Version {version}</Text>
           <PhotoSelectionModal
             showModal={modal}
             closeModal={() => setModal(false)}

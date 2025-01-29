@@ -23,11 +23,12 @@ const Splash = () => {
 
   useEffect(() => {
     // Animate the size of the image
-    imageWidth.value = withTiming(getDeviceWidth() * 0.75, {duration: 3000});
-    imageHeight.value = withTiming(getDeviceHeight() * 0.14, {duration: 3000});
+    imageWidth.value = withTiming(getDeviceWidth() * 0.74, {duration: 2500});
+    imageHeight.value = withTiming(getDeviceHeight() * 0.13, {duration: 2500});
 
     const checkOnboardingStatus = async () => {
       const isFirstTimeUser = await getDataFromStorage('isFirstTimeUser');
+      console.log('isFirstTimeUser ', isFirstTimeUser);
       if (isFirstTimeUser === null) {
         navigation.dispatch(StackActions.replace(ONBOARDING_PAGE));
       } else {

@@ -14,12 +14,10 @@ import {
 import {
   BLACK_COLOR,
   GRAY_92,
-  LIGHT_PURPLE,
   ORANGE_DARK,
   PINK_LIGHT,
-  PURPLE,
+  TEXT_COLOR,
   WHITE,
-  YELLOW,
 } from '../../utils/colors/colors';
 
 const imgRadiusTopLeft = index => {
@@ -37,13 +35,6 @@ const imgRadiusRightLeft = (index, length) => {
   }
 };
 
-const imgRadiusBottomRight = (index, length) => {
-  if (index === length - 1) {
-    return 30;
-  } else {
-    return 0;
-  }
-};
 export const getStarColor = rating => {
   if (rating < 2) {
     return ORANGE_DARK;
@@ -61,10 +52,11 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: imgRadiusTopLeft(index),
     marginEnd: 16,
     borderBottomLeftRadius: imgRadiusTopLeft(index),
-    borderBottomRightRadius: imgRadiusBottomRight(index, length),
+    borderBottomRightRadius: imgRadiusRightLeft(index, length),
     borderTopRightRadius: imgRadiusRightLeft(index, length),
     resizeMode: 'cover',
   }),
+  photoView: {flex: 1},
   contentView: {marginHorizontal: 20},
   titleView: {flexDirection: 'row', justifyContent: 'space-between'},
   ratingCountView: rating => ({
@@ -82,6 +74,7 @@ export const styles = StyleSheet.create({
     color: ORANGE_DARK,
     fontSize: fontsSize.fs18,
   },
+  pgTitle2: {marginTop: 2, color: WHITE},
   reviewCount: {fontFamily: MONTSERRAT_REGULAR, fontSize: 12},
   genderRow: {flexDirection: 'row', gap: 5, marginTop: 10},
   genderText: {color: BLACK_COLOR, fontFamily: MONTSERRAT_REGULAR},
@@ -160,4 +153,12 @@ export const styles = StyleSheet.create({
     borderTopEndRadius: 16,
     borderTopLeftRadius: 16,
   },
+  noImg: {
+    textAlign: 'center',
+    marginVertical: 30,
+    fontFamily: MONTSERRAT_MEDIUM,
+    color: TEXT_COLOR,
+  },
+  container: {flex: 1, backgroundColor: WHITE},
+  contentContainer: {paddingBottom: 20},
 });

@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
     width: '31%',
     alignItems: 'center',
     marginBottom: 12,
-    // marginEnd: 10,
     marginTop: 3,
   },
   icon: {

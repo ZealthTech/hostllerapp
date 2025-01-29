@@ -66,7 +66,7 @@ const HostelListings = props => {
       facility: selectedChips,
     };
     const response = await apiPost(LISTINGS_URL, data, null);
-    console.log('response ', response);
+    console.log('dataToSend ', response);
     if (response?.status) {
       setListingData(response?.data);
       setMinValue(response?.data?.minPrice);
@@ -153,6 +153,7 @@ const HostelListings = props => {
     setSelectedStar(0);
     setSelectedGender('');
     setRoomType('');
+    setDataToSend(0);
     setResetFilter(true);
     closeFilterSheet();
   };

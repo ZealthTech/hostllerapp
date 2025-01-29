@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import {View, Text, SafeAreaView, StyleSheet, StatusBar} from 'react-native';
 import React, {createRef, useEffect, useRef, useState} from 'react';
 import NetInfo from '@react-native-community/netinfo';
@@ -7,6 +8,8 @@ import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
 import Toast from 'react-native-toast-message';
 import ToastMessage from './src/components/toastMessage/ToastMessage';
+import {showToast} from './src/utils/constants/commonFunctions';
+import {ERROR_TOAST} from './src/utils/constants/constants';
 
 const RootWrapper = () => {
   const [isOnline, setIsOnline] = useState(true);
@@ -33,26 +36,14 @@ const RootWrapper = () => {
   useEffect(() => {
     setTimeout(() => {
       if (!isOnline) {
-        // showToast(ERROR_TOAST, {
-        //   title: strings('common.app.nointernet'),
-        //   desc: strings('common.app.nointernetDesc'),
-        // });
+        showToast(ERROR_TOAST, 'Please check Internet Connection');
       }
     }, 200);
   }, [isOnline]);
+
   return <Navigator navigationRef={navigationRef} />;
 };
 
-// const toastConfig = {
-//   errorToast: ({type, props}) => {
-//     console.log('49 ');
-//     return <ToastMessage type={type} title={props.title} desc={props.desc} />;
-//   },
-//   successToast: ({type, props}) => {
-//     console.log('53 ');
-//     return <ToastMessage type={type} title={props.title} desc={props.desc} />;
-//   },
-// };
 const toastConfig = {
   errorToast: ({type, props}) => {
     return (

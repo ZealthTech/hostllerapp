@@ -1,59 +1,30 @@
-import {View, Text, Alert, Image, ScrollView, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Text, Image, ScrollView} from 'react-native';
+import React, {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import InputText from '../../components/inputText/InputText';
 import Button from '../../components/button/Button';
-import {
-  BLACK_COLOR,
-  GRAY_92,
-  ORANGE_DARK,
-  WHITE,
-} from '../../utils/colors/colors';
+import {ORANGE_DARK} from '../../utils/colors/colors';
 import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  forgotPassRequest,
-  resetForgotPass,
-} from '../../redux/reducers/authenticationReducer';
-import {OTP_VERIFICATION, RESET_PASSWORD_SCREEN} from '../../navigation/routes';
+import {LOGIN} from '../../navigation/routes';
 import {apiPost} from '../../network/axiosInstance';
-import {
-  FORGOT_PASSWORD,
-  RESET_PASSWORD,
-} from '../../utils/constants/apiEndPoints';
+import {RESET_PASSWORD} from '../../utils/constants/apiEndPoints';
 import Space from '../../components/space/Space';
-import {
-  getDeviceHeight,
-  getDeviceWidth,
-  showToast,
-} from '../../utils/constants/commonFunctions';
+import {showToast} from '../../utils/constants/commonFunctions';
 import {ERROR_TOAST, SUCCESS_TOAST} from '../../utils/constants/constants';
-import {
-  fontsSize,
-  MONTSERRAT_BOLD,
-  MONTSERRAT_MEDIUM,
-  MONTSERRAT_SEMIBOLD,
-} from '../../utils/styles/commonStyles';
+import {styles} from './styles';
 
 const ResetPassword = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {data, targetRoute} = route?.params || {};
-  const dispatch = useDispatch();
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmError, setConfirmError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
-  console.log('userData47 ', data);
-  // useEffect(() => {
-  //   if (status) {
-  //     dispatch(resetForgotPass());
-  //     navigation.navigate(OTP_VERIFICATION);
-  //   }
-  // }, [status, responseMsgPass, dispatch, navigation]);
+  console.log('userData47 ', data, targetRoute);
   const changePasswordRequest = async () => {
     if (password !== confirmPassword && confirmPassword?.length > 1) {
       showToast(ERROR_TOAST, 'Password and confirm password must match');
@@ -80,7 +51,7 @@ const ResetPassword = () => {
       return;
     }
     const _data = {
-      userId: data?.userData?.userId,
+      userId: data?.userId,
       password: password,
       confirmPassword: confirmPassword,
     };
@@ -89,38 +60,12 @@ const ResetPassword = () => {
     if (response?.status) {
       setPassword(false);
       showToast(SUCCESS_TOAST, response?.message);
-      navigation.dispatch(StackActions.replace(targetRoute));
+      navigation.pop(1);
+      navigation.dispatch(StackActions.replace(LOGIN));
     } else {
       setPassword(false);
       showToast(ERROR_TOAST, response?.message);
     }
-    console.log('response ', response);
-    // else {
-    //   setLoading(true);
-    //   // const bodyData = JSON.stringify({phone: number});
-    //   // console.log("'body data ", bodyData);
-    //   const response = await apiPost(FORGOT_PASSWORD, {
-    //     // phone: number,
-    //   });
-    //   setLoading(false);
-    //   if (response?.status) {
-    //     console.log('response53 ', response);
-    //     showToast(SUCCESS_TOAST, response?.message);
-    //     navigation.dispatch(
-    //       StackActions.replace(OTP_VERIFICATION, {
-    //         data: userData,
-    //         fromForgot: true,
-    //       }),
-    //     );
-    //     // navigation.navigate(OTP_VERIFICATION, {
-    //     //   data: userData,
-    //     //   fromForgot: true,
-    //     // });
-    //   } else {
-    //     //console.log('response?.message ', response?.message);
-    //     showToast(ERROR_TOAST, response?.message);
-    //   }
-    // }
   };
   return (
     <ScrollView
@@ -128,8 +73,6 @@ const ResetPassword = () => {
       contentContainerStyle={{flexGrow: 1}}
       showsVerticalScrollIndicator={false}>
       <LinearGradient colors={['#EE685C', '#FFE4AE']} style={styles.gradient}>
-        {/* <View style={{alignItems: 'center', flex: 1}}> */}
-        {/* <View style={styles.firstView}> */}
         <Image
           source={require('../../assets/images/otpFrame.png')}
           style={styles.image}
@@ -138,8 +81,6 @@ const ResetPassword = () => {
         <Text style={styles.sent}>
           The Password must be different than before
         </Text>
-        {/* </View> */}
-        {/* <View style={styles.secondView}> */}
         <Space height={20} />
         <InputText
           placeholder={'Password'}
@@ -152,9 +93,8 @@ const ResetPassword = () => {
           error={errorText}
           passwordIcon={true}
           secureTextEntry={true}
-          inputContainer={{width: '100%'}}
+          inputContainer={{width: '90%'}}
           containerStyle={styles.inputView}
-          //containerStyle={styles.inputView}
         />
         <Space height={14} />
         <InputText
@@ -168,14 +108,10 @@ const ResetPassword = () => {
           error={errorText}
           passwordIcon={true}
           secureTextEntry={true}
-          inputContainer={{width: '100%'}}
+          inputContainer={{width: '90%'}}
           containerStyle={styles.inputView}
-          //containerStyle={styles.inputView}
         />
         <Space height={14} />
-
-        {/* </View> */}
-        {/* <View style={styles.thirdView}> */}
         <Space height={40} />
         <Button
           title="Continue"
@@ -191,57 +127,9 @@ const ResetPassword = () => {
           textStyle={{color: ORANGE_DARK}}
           onPress={() => navigation?.goBack()}
         />
-        {/* </View> */}
-        {/* </View> */}
       </LinearGradient>
     </ScrollView>
   );
 };
 
 export default ResetPassword;
-const styles = StyleSheet.create({
-  container: {flex: 1},
-  gradient: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  enter: {
-    fontFamily: MONTSERRAT_SEMIBOLD,
-    fontSize: fontsSize.fs18,
-    marginTop: 10,
-    color: BLACK_COLOR,
-  },
-  sent: {
-    fontFamily: MONTSERRAT_MEDIUM,
-    width: '85%',
-    marginTop: 20,
-    textAlign: 'center',
-    color: BLACK_COLOR,
-  },
-  resendView: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: 14,
-    gap: 5,
-  },
-  dont: {fontFamily: MONTSERRAT_MEDIUM, color: BLACK_COLOR},
-  resent: {fontFamily: MONTSERRAT_BOLD, color: ORANGE_DARK},
-  image: {
-    height: getDeviceHeight() * 0.36,
-    width: getDeviceWidth() * 0.56,
-    marginTop: getDeviceHeight() * 0.03,
-    padding: 15,
-  },
-  btn: {width: 200, backgroundColor: WHITE, marginTop: 10},
-  inputView: {
-    elevation: 10,
-    shadowOpacity: 3,
-    shadowRadius: 3,
-    shadowColor: GRAY_92,
-    shadowOffset: {
-      height: 3,
-      width: 3,
-    },
-  },
-});

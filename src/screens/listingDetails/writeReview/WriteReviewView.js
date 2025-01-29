@@ -1,19 +1,11 @@
-import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  Text,
-  View,
-} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import CustomSvg from '../../../components/customSvg/CustomSvg';
-import {CrossIcon, PlusSingle} from '../../../assets';
+import {CrossIcon} from '../../../assets';
 import InputText from '../../../components/inputText/InputText';
 import Space from '../../../components/space/Space';
 import StarView from '../StarView';
 import ImagePicker from 'react-native-image-crop-picker';
-import {PURPLE} from '../../../utils/colors/colors';
 import {
   requestCameraPermission,
   showToast,
@@ -51,7 +43,6 @@ const WriteReviewView = props => {
   const [review, setReview] = useState('');
   const [reviewError, setReviewError] = useState(false);
   const [isReviewSubmit, setIsReviewSubmit] = useState(false);
-  const [ratingError, setRatingError] = useState(false);
   const [ratingErrorText, setRatingErrorText] = useState('');
   const {userInfo} = useSelector(state => state.userInfoReducer);
   console.log('user data ', userInfo);
@@ -62,7 +53,6 @@ const WriteReviewView = props => {
 
   useEffect(() => {
     if (status && !loading && isReviewSubmit) {
-      console.log('163 ', status && !loading && isReviewSubmit);
       showToast(SUCCESS_TOAST, message);
       setReview('');
       clearAllRatings();
@@ -80,7 +70,27 @@ const WriteReviewView = props => {
     loading,
     error,
     isReviewSubmit,
+    clearAllRatings,
   ]);
+
+  const clearAllRatings = useCallback(() => {
+    setIsReviewSubmit(false);
+    setSelectedRating(0);
+    setLocationRate(0);
+    setFoodRate(0);
+    setCleanRate(0);
+    setStaffRate(0);
+    setAmenitiesRate(0);
+  }, [
+    setIsReviewSubmit,
+    setLocationRate,
+    setFoodRate,
+    setCleanRate,
+    setStaffRate,
+    setAmenitiesRate,
+    setSelectedRating,
+  ]);
+
   const selectFromGallery = async () => {
     try {
       const ifPermission = await requestCameraPermission();
@@ -101,13 +111,11 @@ const WriteReviewView = props => {
           setSelectedImages([...selectedImages, image]); // Add selected images to state
         }
       }, 1000);
-    } catch (error) {
-      if (error?.message?.includes('User cancelled')) {
-        console.log('86 ');
+    } catch (_error) {
+      if (_error?.message?.includes('User cancelled')) {
         showToast(ERROR_TOAST, 'Image selection cancelled');
       } else {
-        console.log('error ', error);
-        showToast(ERROR_TOAST, error);
+        showToast(ERROR_TOAST, _error);
       }
     }
   };
@@ -119,37 +127,25 @@ const WriteReviewView = props => {
         console.log('Permission denied ');
         return;
       }
-      console.log('99 ');
-      //set timeout to resolve automatically closed camera
       setTimeout(async () => {
         const image = await ImagePicker.openCamera({
           width: 300,
           height: 400,
           cropping: true,
         });
-        console.log('Images selected ----', image);
         if (image) {
           setSelectedImages([...selectedImages, image]); // Add selected images to state
         }
       }, 1000);
-    } catch (error) {
-      if (error?.message?.includes('User cancelled')) {
-        console.log('You have cancelled the image selection');
+    } catch (_error) {
+      if (_error?.message?.includes('User cancelled')) {
+        showToast(ERROR_TOAST, 'Image selection cancelled');
       } else {
-        console.log('error ', error);
+        showToast(ERROR_TOAST, _error);
       }
     }
   };
 
-  const clearAllRatings = () => {
-    setIsReviewSubmit(false);
-    setSelectedRating(0);
-    setLocationRate(0);
-    setFoodRate(0);
-    setCleanRate(0);
-    setStaffRate(0);
-    setAmenitiesRate(0);
-  };
   const onPressTakePhoto = () => {
     takePhoto();
     setShowModal(false);
@@ -161,7 +157,6 @@ const WriteReviewView = props => {
   };
 
   const submitReview = () => {
-    console.log('selectedRating ', selectedRating);
     let isValid = true;
     if (selectedRating < 1) {
       isValid = false;
@@ -180,7 +175,6 @@ const WriteReviewView = props => {
     }
     if (isValid) {
       setIsReviewSubmit(true);
-      console.log('isValid ', isValid);
       const formData = new FormData();
       if (selectedImages?.length > 0) {
         selectedImages.forEach((image, index) => {
@@ -209,7 +203,7 @@ const WriteReviewView = props => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.photos}>Write Your Review</Text>
         <CustomSvg
@@ -223,7 +217,7 @@ const WriteReviewView = props => {
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         showsVerticalScrollIndicator={false}>
         <ScrollView
-          contentContainerStyle={{paddingBottom: 20}} // Adjust bottom padding to avoid cutoff
+          contentContainerStyle={styles.scroll}
           showsVerticalScrollIndicator={false}>
           <Text style={styles.yourReview}>Your Review</Text>
           <InputText

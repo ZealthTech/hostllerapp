@@ -48,8 +48,8 @@ const DropDownForSmallData = props => {
                 key={item.name}
                 style={styles.dropdownItem}
                 onPress={() => {
-                  selectOccupation(item.name); // Pass selected value
-                  onPressIcon(); // Close dropdown
+                  selectOccupation(item.name);
+                  onPressIcon();
                 }}>
                 <Text style={styles.name}>{item.name}</Text>
                 {selectedValue === item.name && (
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderColor: GRAY_92,
     backgroundColor: WHITE,
-    zIndex: 100, // Ensure it's above other elements
+    zIndex: 100,
     padding: 12,
     elevation: 5,
     shadowColor: '#000',

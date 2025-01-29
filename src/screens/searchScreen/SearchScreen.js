@@ -1,8 +1,6 @@
 import {
   ActivityIndicator,
   FlatList,
-  Image,
-  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
@@ -36,12 +34,10 @@ const SearchScreen = navigation => {
       searchInput: searchText,
     };
     const response = await apiPost(SEARCH_PRODUCTS, data, token);
-    console.log('response ', response);
     setSearchList(response?.data);
     setLoading(false);
   }, [searchText, token, userId]);
 
-  console.log('data  ', searchList);
   const handleSearch = text => {
     setSearchText(text);
   };
@@ -112,9 +108,7 @@ const SearchScreen = navigation => {
       {loading && (
         <ActivityIndicator
           size={'large'}
-          style={{
-            marginTop: 70,
-          }}
+          style={styles.loader}
           color={PURPLE}
         />
       )}

@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import {
@@ -29,13 +22,11 @@ const Rooms = props => {
     data,
     roomType,
     type,
-    foodChart,
     onPress,
     selectedRoom,
     setSelectedRoom,
     selectedDate,
     setSelectedRoomToCart,
-    selectedRoomToCart,
   } = props || {};
 
   const getSvgIcon = () => {
@@ -72,7 +63,7 @@ const Rooms = props => {
         });
         setSelectedRoomToCart({
           item,
-          checkinDate: formatedDateDMY(selectedDate),
+          checkinDate: selectedDate,
           roomType,
           option,
         });
@@ -98,7 +89,7 @@ const Rooms = props => {
             <View style={styles.mainView}>
               <View style={styles.imgView}>
                 <Image source={{uri: item?.image}} style={styles.img} />
-                <View>
+                <View style={styles.titleView}>
                   <Text style={styles.room}>{roomType}</Text>
                   <View style={styles.genderRow}>
                     <CustomSvg SvgComponent={getSvgIcon()} />

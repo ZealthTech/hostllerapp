@@ -51,4 +51,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentRow: {paddingHorizontal: 20, paddingVertical: 10},
+  paymentDetail: {fontSize: 16, paddingHorizontal: 20, paddingVertical: 10},
+  bookingDetails: {fontSize: 16, paddingHorizontal: 20, paddingVertical: 10},
+  scroll: {paddingBottom: 40},
 });

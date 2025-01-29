@@ -1,20 +1,13 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 import {
-  forgotPassFailure,
-  forgotPassRequest,
-  forgotPassSuccess,
   otpSendRequest,
   otpVerificationFailure,
   otpVerificationSuccess,
 } from '../../reducers/authenticationReducer';
-import {
-  FORGOT_PASSWORD,
-  SIGNUP_URL,
-  VERIFY_OTP,
-} from '../../../utils/constants/apiEndPoints';
+import {SIGNUP_URL, VERIFY_OTP} from '../../../utils/constants/apiEndPoints';
 import {apiPost} from '../../../network/axiosInstance';
 import {setDataToStorage} from '../../../utils/storage';
-import {REGISTER_DATA, TOKEN} from '../../../utils/constants/constants';
+import {REGISTER_DATA} from '../../../utils/constants/constants';
 import {
   registerUserFailure,
   registerUserRequest,
@@ -30,17 +23,15 @@ function* registerUser(action) {
     if (response?.status) {
       yield put(registerUserSuccess(response));
       let updatedUserData;
-      updatedUserData = {
-        userData: response?.data,
-        token: response?.data?.token,
-      };
+      updatedUserData = response?.data;
+
       yield call(
         setDataToStorage,
         REGISTER_DATA,
         JSON.stringify(updatedUserData),
       );
       console.log('updatedUserData42 ', updatedUserData?.userData);
-      yield put(setUserInfo(updatedUserData?.userData));
+      yield put(setUserInfo(updatedUserData));
     } else {
       yield put(registerUserFailure(response));
     }
