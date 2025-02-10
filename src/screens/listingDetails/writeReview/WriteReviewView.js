@@ -1,19 +1,24 @@
-import {Image, Modal, Pressable, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {KeyboardAvoidingView, Platform, Text, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import CustomSvg from '../../../components/customSvg/CustomSvg';
-import {Camera, CrossIcon, Gallery, PlusSingle} from '../../../assets';
+import {CrossIcon} from '../../../assets';
 import InputText from '../../../components/inputText/InputText';
 import Space from '../../../components/space/Space';
 import StarView from '../StarView';
 import ImagePicker from 'react-native-image-crop-picker';
-import {PURPLE} from '../../../utils/colors/colors';
-import {requestCameraPermission} from '../../../utils/constants/commonFunctions';
+import {
+  requestCameraPermission,
+  showToast,
+} from '../../../utils/constants/commonFunctions';
 import Button from '../../../components/button/Button';
-import Animated, {FadeInDown} from 'react-native-reanimated';
 import {ScrollView} from 'react-native-gesture-handler';
 import {styles} from './styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {addReviewRequest} from '../../../redux/reducers/addReviewReducer';
+import {ERROR_TOAST, SUCCESS_TOAST} from '../../../utils/constants/constants';
+import {DEFAULT_ERROR_STRING} from '../../../utils/constants/apiCodes';
+import PhotoSelectionModal from '../../../components/photoSelectionModal/PhotoSelectionModal';
+import SelectedImagesFrame from '../../../components/selectedImagesFrame/SelectedImagesFrame';
 
 const WriteReviewView = props => {
   const {
@@ -31,22 +36,66 @@ const WriteReviewView = props => {
     setStaffRate,
     setAmenitiesRate,
     setLocationRate,
+    pgId,
   } = props || {};
   const [showModal, setShowModal] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [review, setReview] = useState('');
   const [reviewError, setReviewError] = useState(false);
+  const [isReviewSubmit, setIsReviewSubmit] = useState(false);
+  const [ratingErrorText, setRatingErrorText] = useState('');
+  const {userInfo} = useSelector(state => state.userInfoReducer);
+
   const dispatch = useDispatch();
-  const {message, loading, status} = useSelector(
+  const {loading, status, message, error} = useSelector(
     state => state.addReviewReducer,
   );
 
-  console.log('message 42', message);
+  useEffect(() => {
+    if (status && !loading && isReviewSubmit) {
+      showToast(SUCCESS_TOAST, message);
+      setReview('');
+      clearAllRatings();
+      setSelectedImages([]);
+      reviewSheetRef?.current?.close();
+      setIsReviewSubmit(false);
+    } else if (!status && !loading && error) {
+      showToast(ERROR_TOAST, DEFAULT_ERROR_STRING);
+    }
+  }, [
+    status,
+    reviewSheetRef,
+    message,
+    dispatch,
+    loading,
+    error,
+    isReviewSubmit,
+    clearAllRatings,
+  ]);
+
+  const clearAllRatings = useCallback(() => {
+    setIsReviewSubmit(false);
+    setSelectedRating(0);
+    setLocationRate(0);
+    setFoodRate(0);
+    setCleanRate(0);
+    setStaffRate(0);
+    setAmenitiesRate(0);
+  }, [
+    setIsReviewSubmit,
+    setLocationRate,
+    setFoodRate,
+    setCleanRate,
+    setStaffRate,
+    setAmenitiesRate,
+    setSelectedRating,
+  ]);
+
   const selectFromGallery = async () => {
     try {
       const ifPermission = await requestCameraPermission();
       if (!ifPermission) {
-        console.log('Permission denied ');
+        showToast(ERROR_TOAST, 'Permissions not allowed');
 
         return;
       }
@@ -58,15 +107,14 @@ const WriteReviewView = props => {
           cropping: true,
         });
         if (image) {
-          console.log('image ', image);
           setSelectedImages([...selectedImages, image]); // Add selected images to state
         }
       }, 1000);
-    } catch (error) {
-      if (error?.message?.includes('User cancelled')) {
-        console.log('You have cancelled the image selection');
+    } catch (_error) {
+      if (_error?.message?.includes('User cancelled')) {
+        showToast(ERROR_TOAST, 'Image selection cancelled');
       } else {
-        console.log('error ', error);
+        showToast(ERROR_TOAST, _error);
       }
     }
   };
@@ -75,27 +123,23 @@ const WriteReviewView = props => {
     try {
       const ifPermission = await requestCameraPermission();
       if (!ifPermission) {
-        console.log('Permission denied ');
         return;
       }
-      console.log('99 ');
-      //set timeout to resolve automatically closed camera
       setTimeout(async () => {
         const image = await ImagePicker.openCamera({
           width: 300,
           height: 400,
           cropping: true,
         });
-        console.log('Images selected ----', image);
         if (image) {
           setSelectedImages([...selectedImages, image]); // Add selected images to state
         }
       }, 1000);
-    } catch (error) {
-      if (error?.message?.includes('User cancelled')) {
-        console.log('You have cancelled the image selection');
+    } catch (_error) {
+      if (_error?.message?.includes('User cancelled')) {
+        showToast(ERROR_TOAST, 'Image selection cancelled');
       } else {
-        console.log('error ', error);
+        showToast(ERROR_TOAST, _error);
       }
     }
   };
@@ -112,6 +156,12 @@ const WriteReviewView = props => {
 
   const submitReview = () => {
     let isValid = true;
+    if (selectedRating < 1) {
+      isValid = false;
+      setRatingErrorText('This field is required');
+    } else {
+      setRatingErrorText('');
+    }
     if (review.trim() === '') {
       setReviewError('Review is required');
       isValid = false;
@@ -122,7 +172,7 @@ const WriteReviewView = props => {
       setReviewError('');
     }
     if (isValid) {
-      const user_id = 'USRW7HOXB';
+      setIsReviewSubmit(true);
       const formData = new FormData();
       if (selectedImages?.length > 0) {
         selectedImages.forEach((image, index) => {
@@ -132,11 +182,13 @@ const WriteReviewView = props => {
             name: `ratingImage_${index}.jpg`, // Ensure unique names
           });
         });
+      } else {
+        formData.append('ratingImages', []);
       }
 
       // Add other fields
-      formData.append('userId', 'USRW7HOXB');
-      formData.append('pgId', '67319c0ff6fd2696708c3750');
+      formData.append('userId', userInfo?.userId);
+      formData.append('pgId', pgId);
       formData.append('rating', selectedRating);
       formData.append('review', review);
       formData.append('location', locationRate);
@@ -144,23 +196,12 @@ const WriteReviewView = props => {
       formData.append('staffBehaviour', staffRate);
       formData.append('clean', cleanRate);
       formData.append('amenities', amenitiesRate);
-
-      dispatch(addReviewRequest(formData));
+      dispatch(addReviewRequest({formData: formData, token: userInfo?.token}));
     }
   };
-  useEffect(() => {
-    if (status) {
-      setReview('');
-      setSelectedImages([]);
-      //reviewSheetRef?.current?.close(); // Close the bottom sheet
-    }
-  }, [status, reviewSheetRef]);
-  console.log('selected images ', selectedImages);
-  console.log('stars ', amenitiesRate);
-  console.log('status ', status);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.photos}>Write Your Review</Text>
         <CustomSvg
@@ -169,123 +210,99 @@ const WriteReviewView = props => {
           onPress={() => reviewSheetRef?.current?.close()}
         />
       </View>
-      <ScrollView style={styles.writeView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.yourReview}>Your Review</Text>
-        <InputText
-          inputContainer={styles.reviewContainer}
-          value={review}
-          onChange={text => setReview(text)}
-          placeholder="Write your review"
-          keyboardType={'ascii-capable'}
-          multiline={true}
-          onChangeText={txt => {
-            setReview(txt);
-            if (txt.trim() !== '') {
-              setReviewError('');
+      <KeyboardAvoidingView
+        style={styles.writeView}
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={false}>
+          <Text style={styles.yourReview}>Your Review</Text>
+          <InputText
+            inputContainer={styles.reviewContainer}
+            value={review}
+            onChange={text => setReview(text)}
+            placeholder="Write your review"
+            keyboardType={'ascii-capable'}
+            multiline={true}
+            onChangeText={txt => {
+              setReview(txt);
+              if (txt.trim() !== '') {
+                setReviewError('');
+              }
+            }}
+            isErrorMsgRequired={reviewError?.length > 0}
+            error={reviewError}
+          />
+          <Space height={20} />
+          <StarView
+            reviewFor="Ratings"
+            handleStarPress={ind => {
+              setRatingErrorText('');
+              handleStarPress(ind, setSelectedRating, selectedRating);
+            }}
+            selectedRating={selectedRating}
+            ratingErrorText={ratingErrorText}
+            errorReq={true}
+          />
+          <StarView
+            reviewFor="Location"
+            handleStarPress={ind =>
+              handleStarPress(ind, setLocationRate, locationRate)
             }
-          }}
-          isErrorMsgRequired={reviewError?.length > 0}
-          error={reviewError}
-        />
-        <Space height={20} />
-        <StarView
-          reviewFor="Ratings"
-          handleStarPress={ind =>
-            handleStarPress(ind, setSelectedRating, selectedRating)
-          }
-          selectedRating={selectedRating}
-        />
-        <StarView
-          reviewFor="Location"
-          handleStarPress={ind =>
-            handleStarPress(ind, setLocationRate, locationRate)
-          }
-          selectedRating={locationRate}
-        />
-        <StarView
-          reviewFor="Food"
-          handleStarPress={ind => handleStarPress(ind, setFoodRate, foodRate)}
-          selectedRating={foodRate}
-        />
-        <StarView
-          reviewFor="Cleanliness"
-          handleStarPress={ind => handleStarPress(ind, setCleanRate, cleanRate)}
-          selectedRating={cleanRate}
-        />
-        <StarView
-          reviewFor="StaffBehaviour"
-          handleStarPress={ind => handleStarPress(ind, setStaffRate, staffRate)}
-          selectedRating={staffRate}
-        />
-        <StarView
-          reviewFor="Amenities"
-          handleStarPress={ind =>
-            handleStarPress(ind, setAmenitiesRate, amenitiesRate)
-          }
-          selectedRating={amenitiesRate}
-        />
-        <Space height={16} />
-        <Text style={styles.yourReview}>Add Photos</Text>
-        {/* Render selected images */}
-        <View style={styles.selectedImagesContainer}>
-          <Pressable
-            style={styles.photosView}
-            onPress={() => setShowModal(true)}>
-            <CustomSvg
-              SvgComponent={<PlusSingle fill={PURPLE} height={15} width={15} />}
-            />
-          </Pressable>
-
-          {selectedImages.map((image, index) => (
-            <View key={index} style={styles.selectedImg}>
-              <Pressable
-                onPress={() => {
-                  const updatedImages = selectedImages.filter(
-                    (_, i) => i !== index,
-                  );
-                  setSelectedImages(updatedImages);
-                }}
-                style={styles.crossIcon}>
-                <CustomSvg
-                  SvgComponent={<CrossIcon fill="red" height={10} width={12} />}
-                />
-              </Pressable>
-              <Image
-                source={{uri: image.path}} // Assuming 'image.path' is the path of the selected image
-                style={styles.selectedImage}
-              />
-            </View>
-          ))}
-        </View>
-
-        <Modal visible={showModal} transparent={true}>
-          <View style={styles.modalOverlay}>
-            <Animated.View style={styles.modalContent} entering={FadeInDown}>
-              <Text style={styles.select}>Select Photo</Text>
-              <View style={styles.line} />
-              <Pressable style={styles.row} onPress={onPressTakePhoto}>
-                <CustomSvg SvgComponent={<Camera height={20} width={20} />} />
-                <Text style={styles.take}>Take a Photo</Text>
-              </Pressable>
-              <View style={styles.line} />
-              <Pressable style={styles.row} onPress={onPressChooseFromGallery}>
-                <CustomSvg SvgComponent={<Gallery height={20} width={20} />} />
-                <Text style={styles.take}>Choose from Gallery</Text>
-              </Pressable>
-              <Button
-                title="Cancel"
-                containerStyle={styles.button}
-                onPress={() => setShowModal(false)}
-              />
-            </Animated.View>
-          </View>
-        </Modal>
-      </ScrollView>
-      <Button
-        title="Submit"
-        containerStyle={styles.bottomBtn}
-        onPress={submitReview}
-        loading={loading}
+            selectedRating={locationRate}
+          />
+          <StarView
+            reviewFor="Food"
+            handleStarPress={ind => handleStarPress(ind, setFoodRate, foodRate)}
+            selectedRating={foodRate}
+          />
+          <StarView
+            reviewFor="Cleanliness"
+            handleStarPress={ind =>
+              handleStarPress(ind, setCleanRate, cleanRate)
+            }
+            selectedRating={cleanRate}
+          />
+          <StarView
+            reviewFor="StaffBehaviour"
+            handleStarPress={ind =>
+              handleStarPress(ind, setStaffRate, staffRate)
+            }
+            selectedRating={staffRate}
+          />
+          <StarView
+            reviewFor="Amenities"
+            handleStarPress={ind =>
+              handleStarPress(ind, setAmenitiesRate, amenitiesRate)
+            }
+            selectedRating={amenitiesRate}
+          />
+          <Space height={16} />
+          <Text style={styles.yourReview}>Add Photos</Text>
+          {/* Render selected images */}
+          <SelectedImagesFrame
+            selectedImages={selectedImages}
+            setSelectedImages={setSelectedImages}
+            showModalPress={() => setShowModal(true)}
+            showSelectionFrame={true}
+          />
+          {/* </View> */}
+          <Button
+            title="Submit"
+            containerStyle={styles.bottomBtn}
+            onPress={() => {
+              submitReview();
+            }}
+            loading={loading}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+      <PhotoSelectionModal
+        showModal={showModal}
+        onPressTakePhoto={onPressTakePhoto}
+        closeModal={() => setShowModal(false)}
+        onPressChooseFromGallery={onPressChooseFromGallery}
       />
     </View>
   );

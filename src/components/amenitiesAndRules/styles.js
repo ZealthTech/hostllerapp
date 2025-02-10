@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
     width: '31%',
     alignItems: 'center',
     marginBottom: 12,
-    marginEnd: 10,
     marginTop: 3,
   },
   icon: {
@@ -43,5 +42,9 @@ export const styles = StyleSheet.create({
     borderColor: GRAY_92,
     borderRadius: 10,
     marginBottom: 16,
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 });

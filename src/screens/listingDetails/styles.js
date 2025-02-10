@@ -14,12 +14,10 @@ import {
 import {
   BLACK_COLOR,
   GRAY_92,
-  LIGHT_PURPLE,
   ORANGE_DARK,
   PINK_LIGHT,
-  PURPLE,
+  TEXT_COLOR,
   WHITE,
-  YELLOW,
 } from '../../utils/colors/colors';
 
 const imgRadiusTopLeft = index => {
@@ -37,13 +35,6 @@ const imgRadiusRightLeft = (index, length) => {
   }
 };
 
-const imgRadiusBottomRight = (index, length) => {
-  if (index === length - 1) {
-    return 30;
-  } else {
-    return 0;
-  }
-};
 export const getStarColor = rating => {
   if (rating < 2) {
     return ORANGE_DARK;
@@ -57,14 +48,15 @@ export const styles = StyleSheet.create({
   flat: {margin: 20},
   imgMain: (index, length) => ({
     height: getDeviceHeight() * 0.26,
-    width: getDeviceWidth() * 0.64,
+    width: length === 1 ? getDeviceWidth() * 0.9 : getDeviceWidth() * 0.64,
     borderTopLeftRadius: imgRadiusTopLeft(index),
     marginEnd: 16,
     borderBottomLeftRadius: imgRadiusTopLeft(index),
-    borderBottomRightRadius: imgRadiusBottomRight(index, length),
+    borderBottomRightRadius: imgRadiusRightLeft(index, length),
     borderTopRightRadius: imgRadiusRightLeft(index, length),
     resizeMode: 'cover',
   }),
+  photoView: {flex: 1},
   contentView: {marginHorizontal: 20},
   titleView: {flexDirection: 'row', justifyContent: 'space-between'},
   ratingCountView: rating => ({
@@ -82,6 +74,7 @@ export const styles = StyleSheet.create({
     color: ORANGE_DARK,
     fontSize: fontsSize.fs18,
   },
+  pgTitle2: {marginTop: 2, color: WHITE},
   reviewCount: {fontFamily: MONTSERRAT_REGULAR, fontSize: 12},
   genderRow: {flexDirection: 'row', gap: 5, marginTop: 10},
   genderText: {color: BLACK_COLOR, fontFamily: MONTSERRAT_REGULAR},
@@ -105,38 +98,7 @@ export const styles = StyleSheet.create({
     marginTop: 5,
     lineHeight: 20,
   },
-  imgView: {
-    flexDirection: 'row',
-    marginHorizontal: 35,
-    gap: 8,
-    marginBottom: 10,
-  },
-  extTch: {
-    borderWidth: 0.5,
-    borderColor: PURPLE,
-    paddingHorizontal: 16,
-    paddingVertical: 5,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  extTxt: {
-    color: PURPLE,
-    fontFamily: MONTSERRAT_MEDIUM,
-    fontSize: fontsSize.fs14,
-  },
-  selectedButton: {
-    backgroundColor: LIGHT_PURPLE,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  selectedText: {
-    color: PURPLE,
-    fontFamily: MONTSERRAT_SEMIBOLD,
-  },
+
   sheetImg: {
     height: getDeviceHeight() * 0.28,
     alignSelf: 'center',
@@ -191,4 +153,12 @@ export const styles = StyleSheet.create({
     borderTopEndRadius: 16,
     borderTopLeftRadius: 16,
   },
+  noImg: {
+    textAlign: 'center',
+    marginVertical: 30,
+    fontFamily: MONTSERRAT_MEDIUM,
+    color: TEXT_COLOR,
+  },
+  container: {flex: 1, backgroundColor: WHITE},
+  contentContainer: {paddingBottom: 20},
 });

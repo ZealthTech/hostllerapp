@@ -7,15 +7,14 @@ import {BackArrow} from '../../assets';
 import {useNavigation} from '@react-navigation/native';
 
 const BackIconHeader = props => {
-  const {title} = props || {};
-  console.log('title ', title);
+  const {title, fromCart = false, onPress} = props || {};
   const navigation = useNavigation();
   return (
     <View style={styles.view}>
       <CustomSvg
-        SvgComponent={<BackArrow />}
+        SvgComponent={<BackArrow fill={WHITE} />}
         isClickable={true}
-        onPress={() => navigation?.goBack()}
+        onPress={() => (fromCart ? onPress : navigation?.goBack())}
       />
       <Text style={styles.text} numberOfLines={1} ellipsizeMode={'tail'}>
         {title}
@@ -23,7 +22,6 @@ const BackIconHeader = props => {
     </View>
   );
 };
-//'head' | 'middle' | 'tail' | 'clip'
 export default BackIconHeader;
 const styles = StyleSheet.create({
   view: {

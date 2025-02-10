@@ -29,8 +29,26 @@ import Gallery from '../assets/svg/gallery.svg';
 import PlusSingle from '../assets/svg/plus_single.svg';
 import OpenEye from '../assets/svg/eye_open.svg';
 import Lock from '../assets/svg/lock.svg';
-//import Calendar from '../assets/svg/calender.svg';
-
+import HomeIcon from '../assets/svg/home.svg';
+import HandShake from '../assets/svg/hand_shake.svg';
+import PersonStar from '../assets/svg/peron_star.svg';
+import VerifiedTick from '../assets/svg/verified_tick.svg';
+import Tools from '../assets/svg/tools.svg';
+import CommentIcon from '../assets/svg/comment.svg';
+import Hand from '../assets/svg/hand.svg';
+import CalendarTick from '../assets/svg/calender_tick.svg';
+import Tag from '../assets/svg/tag.svg';
+import DownArrow from '../assets/svg/down_arrow.svg';
+import Thumb from '../assets/svg/thum.svg';
+import OutlinedStar from '../assets/svg/outlined_star';
+import Kyc from '../assets/svg/kyc.svg';
+import Logout from '../assets/svg/logout.svg';
+import Inbox from '../assets/svg/inbox.svg';
+import Phone from '../assets/svg/phone.svg';
+import Policy from '../assets/svg/policy.svg';
+import NextArrow from '../assets/svg/nextArrow.svg';
+import Upload from '../assets/svg/upload.svg';
+import TermAndConditions from '../assets/svg/terms-and-conditions.svg';
 export {
   Road,
   Temple,
@@ -64,4 +82,24 @@ export {
   PlusSingle,
   OpenEye,
   Lock,
+  HomeIcon,
+  HandShake,
+  PersonStar,
+  VerifiedTick,
+  Tools,
+  CommentIcon,
+  Hand,
+  CalendarTick,
+  Tag,
+  DownArrow,
+  Thumb,
+  OutlinedStar,
+  Kyc,
+  Inbox,
+  Logout,
+  Phone,
+  Policy,
+  NextArrow,
+  Upload,
+  TermAndConditions,
 };

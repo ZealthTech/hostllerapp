@@ -5,46 +5,53 @@ import {
   getDeviceHeight,
   getDeviceWidth,
 } from '../../utils/constants/commonFunctions';
-import Animated, {FadeIn} from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 import {StackActions, useNavigation} from '@react-navigation/native';
-import {
-  HOME_NAVIGATOR,
-  HOME_PAGE,
-  LOGIN,
-  ONBOARDING_PAGE,
-} from '../../navigation/routes';
-import {getDataFromStorage, setDataToStorage} from '../../utils/storage';
-import {REGISTER_DATA} from '../../utils/constants/constants';
+import {HOME_NAVIGATOR, ONBOARDING_PAGE} from '../../navigation/routes';
+import {getDataFromStorage} from '../../utils/storage';
 
 const Splash = () => {
-  console.log('Splash screen loaded');
   const navigation = useNavigation();
 
+  // Define shared values for width and height
+  const imageWidth = useSharedValue(getDeviceWidth() * 0.5);
+  const imageHeight = useSharedValue(getDeviceHeight() * 0.1);
+
   useEffect(() => {
+    // Animate the size of the image
+    imageWidth.value = withTiming(getDeviceWidth() * 0.74, {duration: 2500});
+    imageHeight.value = withTiming(getDeviceHeight() * 0.13, {duration: 2500});
+
     const checkOnboardingStatus = async () => {
       const isFirstTimeUser = await getDataFromStorage('isFirstTimeUser');
       if (isFirstTimeUser === null) {
-        console.log('isFirstTimeUser27 ', isFirstTimeUser);
-        // First-time user, navigate to Onboarding
         navigation.dispatch(StackActions.replace(ONBOARDING_PAGE));
       } else {
-        // Returning user, navigate to Home
-        console.log('isFirstTimeUser32 ', isFirstTimeUser);
         navigation.dispatch(StackActions.replace(HOME_NAVIGATOR));
       }
     };
-    setTimeout(() => {
+    const time = setTimeout(() => {
       checkOnboardingStatus();
     }, 3000);
-  }, [navigation]);
+    return () => clearTimeout(time);
+  }, [navigation, imageWidth, imageHeight]);
+
+  // Define the animated style for the image
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: imageWidth.value,
+    height: imageHeight.value,
+  }));
 
   return (
     <LinearGradient colors={['#FFE4AE', '#EE685C']} style={styles.gradient}>
-      {/* You can add other components here if needed */}
+      {/* Animated Image */}
       <Animated.Image
         source={require('../../assets/images/splash_image.png')}
-        style={styles.img}
-        entering={FadeIn.duration(600)}
+        style={[styles.img, animatedStyle]}
       />
     </LinearGradient>
   );
@@ -58,13 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    color: 'white',
-    fontSize: 24,
-  },
   img: {
-    width: getDeviceWidth() * 0.8,
-    height: getDeviceHeight() * 0.15,
-    padding: 10,
+    resizeMode: 'contain',
   },
 });

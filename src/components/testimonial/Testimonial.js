@@ -1,18 +1,10 @@
-import {View, Text, FlatList, Image, Animated} from 'react-native';
-import React, {useState} from 'react';
-import RenderHTML from 'react-native-render-html';
-import {
-  getDeviceWidth,
-  stripHTMLTags,
-} from '../../utils/constants/commonFunctions';
+import {View, Text, FlatList, Image} from 'react-native';
+import React from 'react';
+import {stripHTMLTags} from '../../utils/constants/commonFunctions';
 import {styles} from './styles';
-import Space from '../space/Space';
 
 const Testimonial = props => {
   const {data, handleScroll, currentIndex} = props || {};
-
-  //const scrollX = new Animated.Value(0);
-  console.log('data ', data);
   return (
     <View style={styles.container}>
       <Text style={styles.levelText}>Testimonial</Text>
@@ -33,16 +25,15 @@ const Testimonial = props => {
                 <View style={styles.textContent}>
                   <Text style={styles.name}>{item.name}</Text>
                   <Text style={styles.designation}>({item.designation})</Text>
-                  {/* <View style={styles.htmlContainer}> */}
                   <Text style={styles.content} numberOfLines={5}>
                     {plainText}
                   </Text>
-                  {/* </View> */}
                 </View>
               </View>
             </View>
           );
         }}
+        snapToAlignment="center"
       />
       <View style={styles.pagination}>
         {data?.map((_, index) => (

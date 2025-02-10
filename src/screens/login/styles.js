@@ -4,14 +4,10 @@ import {
   getDeviceWidth,
 } from '../../utils/constants/commonFunctions';
 import {
-  BOLD,
   fontsSize,
-  LIGHT,
-  MEDIUM,
   MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_SEMIBOLD,
-  SEMI_BOLD,
 } from '../../utils/styles/commonStyles';
 import {BLACK_COLOR, GRAY_92, ORANGE_DARK} from '../../utils/colors/colors';
 
@@ -54,9 +50,9 @@ export const styles = StyleSheet.create({
       width: 3,
     },
   },
-  btnContainer: loginView => ({
-    marginTop: loginView ? getDeviceHeight() * 0.15 : 25,
-  }),
+  btnContainer: {
+    marginTop: getDeviceHeight() * 0.15,
+  },
   forgotText: {
     color: ORANGE_DARK,
     fontFamily: MONTSERRAT_MEDIUM,

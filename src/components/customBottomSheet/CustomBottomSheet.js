@@ -6,7 +6,7 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import {isAndroid} from '../../utils/constants/commonFunctions';
 
-export const CustomBottomSheet = forwardRef(
+const CustomBottomSheet = forwardRef(
   ({children, snapPoints, handleComponent, scrollable}, ref) => {
     const memoizedSnapPoints = useMemo(() => snapPoints, [snapPoints]);
     const showScrollView = scrollable && isAndroid();
@@ -33,13 +33,9 @@ export const CustomBottomSheet = forwardRef(
   },
 );
 
+export default CustomBottomSheet;
 const styles = StyleSheet.create({
-  background: {
-    borderRadius: 20,
-  },
   contentContainer: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     overflow: 'hidden',
     flex: 1,
   },

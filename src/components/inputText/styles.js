@@ -1,8 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {
-  getDeviceHeight,
-  isAndroid,
-} from '../../utils/constants/commonFunctions';
+import {isAndroid} from '../../utils/constants/commonFunctions';
 import {fontsSize, MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
 import {BLACK_COLOR, GRAY_92} from '../../utils/colors/colors';
 
@@ -11,9 +8,11 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 5,
+    fontSize: 15,
+    color: BLACK_COLOR,
+    fontFamily: MONTSERRAT_REGULAR,
+    marginBottom: 8,
+    marginTop: 20,
   },
   inputError: {
     borderColor: 'red',
@@ -24,12 +23,12 @@ export const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_REGULAR,
     marginTop: 5,
   },
-  containerStyle: (errorText, isFocused) => ({
+  containerStyle: (_errorText, _isFocused) => ({
     flexDirection: 'row',
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 10,
-    borderWidth: 0.4,
+    borderWidth: 0.6,
     paddingVertical: isAndroid() ? 0 : 12,
     width: '84%',
     borderColor: GRAY_92,

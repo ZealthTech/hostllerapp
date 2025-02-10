@@ -7,6 +7,7 @@ import {
 } from '../../utils/styles/commonStyles';
 import {
   BLACK_COLOR,
+  GRAY_LIGHT,
   LIGHT_PURPLE,
   ORANGE_DARK,
   WHITE,
@@ -25,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   card: {
     width: getDeviceWidth() * 0.9,
-    backgroundColor: LIGHT_PURPLE,
+    backgroundColor: GRAY_LIGHT,
     borderRadius: 25,
     marginHorizontal: 20,
     shadowColor: '#000',

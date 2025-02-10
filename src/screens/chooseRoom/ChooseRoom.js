@@ -1,27 +1,32 @@
 import React, {useState} from 'react';
-import {View, Text, FlatList, Modal, Pressable} from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {View, FlatList} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import {styles} from './styles';
 import Rooms from '../../components/rooms/Rooms';
-import CustomSvg from '../../components/customSvg/CustomSvg';
-import {Cancel, CheckGreen} from '../../assets';
-import Loader from '../../components/loader/Loader';
 import CalenderView from '../../components/calenderView/CalenderView';
+import FooterButton from '../../components/footerButton/FooterButton';
+import Animated, {FadeInDown} from 'react-native-reanimated';
+import {CART_SCREEN} from '../../navigation/routes';
+import MealChart from '../../components/mealChart/MealChart';
+import {formatDateInNamedMonth} from '../kycDetails/helper';
+import {useDispatch} from 'react-redux';
+import {setBookingSummary} from '../../redux/reducers/bookingSummary';
 
 const ChooseRoom = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const {data, type} = route?.params || {};
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showCalender, setShowCalender] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedRoomToCart, setSelectedRoomToCart] = useState({});
   const [selectedRoom, setSelectedRoom] = useState({
     roomType: null,
     index: null,
     option: null, // Tracks whether it's "with food" or "without food"
   });
-
+  const dispatch = useDispatch();
   const openBottomSheet = () => {
     setModalVisible(true);
   };
@@ -34,25 +39,47 @@ const ChooseRoom = () => {
     {key: 'dormitory', data: data?.dormitoryRoom, roomType: 'Dormitory'},
   ].filter(item => item.data);
 
-  const onChangeDate = (event, date) => {
-    setShowCalender(false); // Close the calendar after selecting a date
-    if (date) {
-      setSelectedDate(date); // Update selected date
-    }
+  const onChangeDate = date => {
+    const formattedDate = formatDateInNamedMonth(date);
+    setSelectedDate(formattedDate);
+    hideDatePicker();
+  };
+
+  const handleCheckout = () => {
+    const cartData = {...selectedRoomToCart, address: data?.address};
+    dispatch(setBookingSummary(cartData));
+    navigation.navigate(CART_SCREEN, {
+      mealChart: data?.mealChart,
+      pgId: data?.pgId,
+    });
+  };
+
+  const maximumDate = new Date();
+  maximumDate.setMonth(maximumDate.getMonth() + 6);
+  const hideDatePicker = () => {
+    setShowCalender(false);
+  };
+  const showCalenderView = () => {
+    setShowCalender(true);
   };
 
   return (
     <View style={styles.container}>
       <BackIconHeader title="Choose Room" />
       <CalenderView
-        openCalender={() => setShowCalender(true)}
+        openCalender={showCalenderView}
         showDatePicker={showCalender}
         value={selectedDate}
         onChangeDate={onChangeDate}
+        maximumDate={maximumDate}
+        minimumDate={new Date()}
+        hideDatePicker={hideDatePicker}
       />
+
       <FlatList
         data={roomData}
         keyExtractor={item => item.key}
+        contentContainerStyle={styles.flatContainer}
         renderItem={({item}) => (
           <Rooms
             data={item.data}
@@ -61,71 +88,31 @@ const ChooseRoom = () => {
             foodChart={data?.mealChart}
             onPress={openBottomSheet}
             selectedRoom={selectedRoom}
+            selectedDate={selectedDate}
             setSelectedRoom={setSelectedRoom}
+            setSelectedRoomToCart={setSelectedRoomToCart}
+            selectedRoomToCart={selectedRoomToCart}
           />
         )}
-        ListFooterComponent={<View style={{height: 20}} />} // Add some spacing at the bottom
+        ListFooterComponent={<View style={styles.footerView} />}
         showsVerticalScrollIndicator={false}
       />
-
-      <Modal visible={modalVisible} transparent={true}>
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}>
-          <View style={styles.modalContent}>
-            {/* Header */}
-            <Text style={styles.modalTitle}>MENU SCHEDULE</Text>
-
-            <View style={styles.table}>
-              {/* Header Row */}
-              <View style={styles.tableHeader}>
-                <Text style={[styles.tableCellUp, {flex: 1.2}]}>Day/Meal</Text>
-                <Text style={styles.tableCellUp}>Breakfast</Text>
-                <Text style={styles.tableCellUp}>Lunch</Text>
-                <Text style={styles.tableCellUp}>Snacks</Text>
-                <Text style={styles.tableCellUp}>Dinner</Text>
-              </View>
-              {data?.mealChart?.map(day => (
-                <View style={styles.tableRow} key={day._id}>
-                  <View style={styles.tableCell}>
-                    <Text style={styles.days}>{day.title}</Text>
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.breakfast === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.lunch === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.snacks === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                  <View style={styles.iconCell}>
-                    <CustomSvg
-                      SvgComponent={
-                        day?.dinner === 1 ? <CheckGreen /> : <Cancel />
-                      }
-                    />
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        </Pressable>
-      </Modal>
-
-      <Loader loading={loading} />
+      {selectedRoom?.index !== null && (
+        <Animated.View entering={FadeInDown.duration(500)}>
+          <FooterButton
+            onPress={handleCheckout}
+            price={
+              selectedRoomToCart?.item?.rent +
+              selectedRoomToCart?.item?.foodPrice
+            }
+          />
+        </Animated.View>
+      )}
+      <MealChart
+        modalVisible={modalVisible}
+        data={data?.mealChart}
+        onPressOutside={() => setModalVisible(false)}
+      />
     </View>
   );
 };

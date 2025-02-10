@@ -1,13 +1,21 @@
-import {View, Text, Pressable, ActivityIndicator} from 'react-native';
+import {Text, Pressable, ActivityIndicator, View} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import {WHITE} from '../../utils/colors/colors';
 
 const Button = props => {
-  const {title, onPress, containerStyle, textStyle, loading, elevation} =
-    props || {};
+  const {
+    title,
+    onPress,
+    containerStyle,
+    textStyle,
+    loading,
+    elevation,
+    isPressable = true,
+  } = props || {};
+  const ViewWrapper = isPressable ? Pressable : View;
   return (
-    <Pressable
+    <ViewWrapper
       onPress={onPress}
       style={[
         styles.container,
@@ -19,7 +27,7 @@ const Button = props => {
       ) : (
         <Text style={[styles.textStyle, textStyle]}>{title}</Text>
       )}
-    </Pressable>
+    </ViewWrapper>
   );
 };
 

@@ -1,16 +1,23 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  userInfo: [],
+  userInfo: null,
+  fcmToken: '',
 };
 export const userInfoSlice = createSlice({
   name: 'userInfoReducer',
   initialState,
   reducers: {
-    userInfo: (state, action) => {
+    setUserInfo: (state, action) => {
       state.userInfo = action?.payload;
+    },
+    clearUserInfo: state => {
+      state.userInfo = null;
+    },
+    setFcmToken: (state, action) => {
+      state.fcmToken = action?.payload;
     },
   },
 });
-export const {userInfo} = userInfoSlice.actions;
+export const {setUserInfo, clearUserInfo, setFcmToken} = userInfoSlice.actions;
 export default userInfoSlice.reducer;

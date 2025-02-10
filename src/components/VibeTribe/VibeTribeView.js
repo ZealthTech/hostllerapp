@@ -1,9 +1,8 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import CustomSvg from '../customSvg/CustomSvg';
 import {Building, Garden, Road, Temple} from '../../assets';
-import {BLACK_COLOR, LIGHT_PURPLE, PURPLE} from '../../utils/colors/colors';
-import Space from '../space/Space';
+import {BLACK_COLOR, GRAY_LIGHT, PURPLE} from '../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_REGULAR,
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   },
   imageView: {flexDirection: 'row', alignItems: 'center', flex: 1},
   container: {
-    backgroundColor: LIGHT_PURPLE,
+    backgroundColor: GRAY_LIGHT,
     borderRadius: 25,
     margin: 20,
     padding: 20,

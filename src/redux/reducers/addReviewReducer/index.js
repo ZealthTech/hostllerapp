@@ -23,8 +23,16 @@ const addReviewSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    resetWriteReview: (state, action) => {
+      state.error = null;
+      state.message = null;
+    },
   },
 });
-export const {addReviewRequest, addReviewSuccess, addReviewFailure} =
-  addReviewSlice.actions;
+export const {
+  addReviewRequest,
+  addReviewSuccess,
+  addReviewFailure,
+  resetWriteReview,
+} = addReviewSlice.actions;
 export default addReviewSlice.reducer;

@@ -1,15 +1,9 @@
 import {StyleSheet} from 'react-native';
-import {
-  BLACK_COLOR,
-  ORANGE_DARK,
-  RED_DARK,
-  WHITE,
-} from '../../../utils/colors/colors';
+import {BLACK_COLOR, ORANGE_DARK, WHITE} from '../../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_BOLD,
   MONTSERRAT_REGULAR,
-  MONTSERRAT_SEMIBOLD,
 } from '../../../utils/styles/commonStyles';
 
 export const styles = StyleSheet.create({
@@ -49,10 +43,11 @@ export const styles = StyleSheet.create({
   },
   content: {marginTop: 10, marginHorizontal: 3},
   postImg: {
-    height: 50,
+    height: 60,
     width: 65,
     borderRadius: 5,
     marginTop: 10,
     marginStart: 2,
+    marginEnd: 4,
   },
 });

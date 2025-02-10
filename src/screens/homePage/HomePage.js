@@ -1,59 +1,86 @@
-import {View, Text, ScrollView} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {View, ScrollView, RefreshControl, Text} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Header from '../../components/header/Header';
 import {useDispatch, useSelector} from 'react-redux';
-import {homeDataRequest} from '../../redux/reducers/homeReducer';
 import BannerView from '../../components/bannerView/BannerView';
 import Categories from '../../components/categories/Categories';
 import {categories, genderCategories} from './helper';
-import VibeTribeView from '../../components/VibeTribe/VibeTribeView';
 import Testimonial from '../../components/testimonial/Testimonial';
 import {getDeviceWidth} from '../../utils/constants/commonFunctions';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {
   HOME_NAVIGATOR,
   HOSTEL_LISTINGS,
+  LEADS_SCREEN,
   LOGIN,
-  OTP_VERIFICATION,
+  NOTIFICATION_SCREEN,
+  PROFILE_SCREEN,
+  SEARCH_SCREEN,
 } from '../../navigation/routes';
 import HomeScreenSkeleton from '../../components/skeletons/homeScreenSkeleton/HomeScreenSkeleton';
 import {getDataFromStorage} from '../../utils/storage';
-import {REGISTER_DATA, TOKEN} from '../../utils/constants/constants';
+import {REGISTER_DATA} from '../../utils/constants/constants';
+import {setUserInfo} from '../../redux/reducers/userInfoReducer';
+import {apiPost} from '../../network/axiosInstance';
+import {HOME_URL} from '../../utils/constants/apiEndPoints';
+import ListYourPropertyBanner from './ListYourPropertyBanner';
+import {styles} from './styles';
+import SearchView from '../../components/searchView/SearchView';
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const {homeData, loading} = useSelector(state => state.homeReducer);
-  // const {token} = useSelector(state => state.authReducer);
+  const route = useRoute();
+  const {fromLogin = false} = route?.params || {};
+  const {data} = useSelector(state => state.loginReducer);
+  const {fcmToken} = useSelector(state => state.userInfoReducer);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userData, setUserData] = useState();
-  const [dataGet, setDataGet] = useState(false);
-  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+  const _navigation = useNavigation();
   const width_dev = getDeviceWidth();
+  const [loading, setLoading] = useState(true);
+  const isFocus = useIsFocused();
+  const [homeData, setHomeData] = useState([]);
 
   useEffect(() => {
     const initialize = async () => {
-      await findToken();
-      // Always call fetchHomeData, userData will either have valid data or be undefined
-      fetchHomeData();
+      await findToken(); // Wait for findToken to complete
+      fetchHomeData(); // Then call fetchHomeData
     };
     initialize();
-  }, [findToken, fetchHomeData]);
+  }, [isFocus, fetchHomeData, findToken]);
 
   const findToken = useCallback(async () => {
-    const _userData = await getDataFromStorage(REGISTER_DATA);
-    console.log('user data ', _userData);
-    const parsedData = _userData ? JSON.parse(_userData) : null;
-    setUserData(parsedData);
-  }, []);
+    if (fromLogin) {
+      // If coming from login screen, get data from redux
+      setUserData(data);
+      dispatch(setUserInfo(data?.data));
+    } else {
+      const _userData = await getDataFromStorage(REGISTER_DATA);
+      let parsedData;
+      if (_userData) {
+        parsedData = JSON.parse(_userData);
+        setUserData(parsedData);
+        dispatch(setUserInfo(parsedData));
+      }
+    }
+    // No need for a callback parameter, as the function itself is async
+  }, [dispatch, fromLogin, data]);
 
-  const fetchHomeData = useCallback(() => {
-    const payload = {
-      userId: userData?.userId || '', // Use userData if it exists, otherwise empty string
-      token: userData?.token || '',
-    };
-    console.log('fetchHomeData payload:', payload);
-    dispatch(homeDataRequest(payload));
-  }, [dispatch, userData]);
+  const fetchHomeData = useCallback(async () => {
+    const response = await apiPost(
+      HOME_URL,
+      {userId: userData?.userId, fcmToken: fcmToken},
+      userData?.token,
+    );
+    if (response.status) {
+      setHomeData(response?.data);
+    }
+    if (!loading) {
+      setRefreshing(false);
+    }
+    setLoading(false);
+  }, [userData, loading, fcmToken]);
 
   const handleScroll = useCallback(
     e => {
@@ -67,42 +94,80 @@ const HomePage = () => {
     [homeData, width_dev],
   );
 
-  const onPressCategory = name => {
-    navigation?.navigate(HOSTEL_LISTINGS, {title: name, userData: userData});
+  const onPressCategory = (name, bedType) => {
+    _navigation?.navigate(HOSTEL_LISTINGS, {
+      title: name,
+      userData: userData,
+      _gender: name,
+      bedType: bedType,
+    });
   };
-  //Gender neutral
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchHomeData();
+  };
+  const goToSearchScreen = () => {
+    _navigation.navigate(SEARCH_SCREEN);
+  };
+
+  //if user is logged in navigate to Profile Screen otherwise navigate to Login screen
+  const onPressProfile = () => {
+    if (userData == null) {
+      _navigation?.navigate(LOGIN, {
+        userData: userData,
+        targetRoute: HOME_NAVIGATOR,
+      });
+    } else {
+      _navigation.navigate(PROFILE_SCREEN);
+    }
+  };
+
+  const listYourProperty = () => {
+    _navigation.navigate(LEADS_SCREEN);
+  };
+
+  const onPressBell = () => {
+    _navigation.navigate(NOTIFICATION_SCREEN);
+  };
+
   return (
-    <View>
-      <Header
-        onPressProfile={() =>
-          navigation?.navigate(LOGIN, {
-            userData: userData,
-            targetRoute: HOME_NAVIGATOR,
-          })
-        }
-      />
+    <View style={styles.container}>
+      <Header onPressProfile={onPressProfile} onPressBell={onPressBell} />
       <ScrollView
-        contentContainerStyle={{paddingBottom: 90}}
+        contentContainerStyle={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsVerticalScrollIndicator={false}>
         {!loading ? (
           <>
-            <BannerView data={homeData?.topBanner} />
+            <SearchView
+              onPressSearchInput={goToSearchScreen}
+              containerStyle={styles.searchView}
+            />
+            <BannerView
+              data={homeData?.homeBanner}
+              onPressSearchInput={goToSearchScreen}
+            />
             <Categories
               level="Explore for"
               data={genderCategories}
-              onPress={name => onPressCategory(name)}
+              onPress={name => onPressCategory(name, '')}
             />
             <Categories
               level="Category"
               data={categories}
-              onPress={name => onPressCategory(name)}
+              onPress={name => onPressCategory('', name)}
             />
-            <VibeTribeView />
+            {/* <VibeTribeView /> */}
             <Testimonial
               data={homeData?.testimonialListing}
               handleScroll={handleScroll}
               currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
             />
+            <ListYourPropertyBanner onPress={listYourProperty} />
           </>
         ) : (
           <HomeScreenSkeleton />

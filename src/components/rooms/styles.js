@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
 import {
   BLACK_COLOR,
+  COLOR_GRAY_7F,
   ORANGE_DARK,
-  ORANGE_EXTRA_LIGHT,
-  ORANGE_MEDIUM,
-  PINK_EXTRA_LIGHT,
+  PURPLE,
+  PURPLE_EXTRA_LIGHT,
   WHITE,
 } from '../../utils/colors/colors';
 import {
@@ -15,19 +15,21 @@ import {
 
 export const styles = StyleSheet.create({
   imgView: {
-    backgroundColor: PINK_EXTRA_LIGHT,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
+    flex: 1,
     gap: 10,
   },
+  titleView: {flex: 1},
   mainView: {
     marginHorizontal: 20,
     borderWidth: 0.5,
-    borderColor: BLACK_COLOR,
+    borderColor: COLOR_GRAY_7F,
     marginTop: 20,
     borderRadius: 15,
     overflow: 'hidden',
+    backgroundColor: WHITE,
   },
   img: {height: 100, width: 105},
   genderRow: {
@@ -64,7 +66,7 @@ export const styles = StyleSheet.create({
   btn: selected => ({
     flexDirection: 'row',
     gap: 5,
-    backgroundColor: selected ? ORANGE_EXTRA_LIGHT : ORANGE_DARK,
+    backgroundColor: selected ? PURPLE_EXTRA_LIGHT : PURPLE,
     alignSelf: 'flex-start',
     alignItems: 'center',
     paddingVertical: 8,
@@ -75,5 +77,5 @@ export const styles = StyleSheet.create({
   add: {fontFamily: MONTSERRAT_BOLD, color: WHITE},
   mealView: {flexDirection: 'row', gap: 5, alignItems: 'center'},
   meal: {fontFamily: MONTSERRAT_REGULAR, color: BLACK_COLOR, marginBottom: 5},
-  container: {flex: 1, paddingBottom: 20},
+  container: {flex: 1},
 });

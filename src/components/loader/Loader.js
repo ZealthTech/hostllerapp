@@ -1,6 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import Video from 'react-native-video';
+import {View, StyleSheet, Image} from 'react-native';
 import {
   getDeviceHeight,
   getDeviceWidth,
@@ -14,11 +13,9 @@ const Loader = ({loading}) => {
 
   return (
     <View style={styles.overlay}>
-      <Video
+      <Image
+        source={require('../../assets/images/loader.gif')}
         style={styles.video}
-        source={require('../../assets/images/loader.mp4')}
-        paused={!loading}
-        repeat={true}
       />
     </View>
   );
@@ -32,7 +29,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 20,
+    bottom: 0,
     backgroundColor: WHITE,
     justifyContent: 'center',
     alignItems: 'center',

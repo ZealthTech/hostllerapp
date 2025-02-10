@@ -1,12 +1,12 @@
-import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import {View, Text, Image, FlatList, Pressable} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import CustomSvg from '../customSvg/CustomSvg';
 import {ArrowDownCircle, ArrowUpCircle, CrossArrows, Star} from '../../assets/';
-import {LISTINGS_DETAILS} from '../../navigation/routes';
+import FastImage from 'react-native-fast-image';
 
 const Listings = props => {
-  const {data, navigation} = props || {};
+  const {data, onPressCard} = props || {};
   const getSvgIcon = type => {
     if (type === 'Girls') {
       return <ArrowDownCircle />;
@@ -17,41 +17,28 @@ const Listings = props => {
     }
   };
 
-  const navigateToDetail = (pgId, type, rent, security) => {
-    navigation?.navigate(LISTINGS_DETAILS, {
-      pgId: pgId,
-      type: type,
-      security: security,
-      rent: rent,
-    });
-  };
   return (
     <FlatList
       data={data}
       style={{marginBottom: 20}}
       showsVerticalScrollIndicator={false}
-      renderItem={({item, index}) => {
-        console.log('amenities ', item?.allServices);
+      renderItem={({item, _index}) => {
         const amenities = item?.allServices?.slice(0, 8);
-        console.log('amenites ', amenities);
         return (
-          <TouchableOpacity
+          <Pressable
             style={styles.tchContainer}
             onPress={() =>
-              navigateToDetail(
-                item?.pgId,
-                item?.type,
-                item?.rent,
-                item?.security,
-              )
+              onPressCard(item?.pgId, item?.type, item?.rent, item?.security)
             }>
-            <Image source={{uri: item?.image}} style={styles.imageBnr} />
+            <FastImage source={{uri: item?.image}} style={styles.imageBnr} />
             <Text style={styles.pgName}>{item?.name}</Text>
-            <View style={styles.ratingView}>
-              <CustomSvg SvgComponent={<Star />} />
-              <Text style={styles.rating}>{item?.rating}</Text>
-              <Text style={styles.totalRatings}>({item?.totalRating})</Text>
-            </View>
+            {item.totalRating > 0 && (
+              <View style={styles.ratingView}>
+                <CustomSvg SvgComponent={<Star />} />
+                <Text style={styles.rating}>{item?.rating}</Text>
+                <Text style={styles.totalRatings}>({item?.totalRating})</Text>
+              </View>
+            )}
             <View style={styles.genderRow}>
               <CustomSvg SvgComponent={getSvgIcon(item?.type)} />
               <Text style={styles.genderText}>{item?.type}</Text>
@@ -82,7 +69,7 @@ const Listings = props => {
                 <Text style={styles.deposPrice}>₹ {item?.security}</Text>
               </View>
             </View>
-          </TouchableOpacity>
+          </Pressable>
         );
       }}
     />

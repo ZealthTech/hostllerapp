@@ -19,3 +19,45 @@ A separate saga function to handle async API calls, dispatched by Redux actions.
 
 Store Configuration: 
 Combines slices and integrates Redux-Saga middleware for centralized async handling, enhancing scalability as the app grows.
+
+
+# react native reanimated
+This library is used for animation in react native 
+
+• Installation document
+  https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started
+
+• Usage document
+  https://docs.swmansion.com/react-native-reanimated/docs
+
+
+# Android Build
+
+cd android
+
+- Clean build:
+./gradlew clean
+
+- Create apk release build:
+./gradlew assembleRelease
+
+- Create Bundle release build:
+./gradlew bundleRelease
+
+
+# Android/iOS pre-activities for GO LIVE Build
+- Change the version number in package.json
+- versionCode,versionName for android in android/app/build.gradle
+- Change the build number and version for iOS in Xcode manually
+
+
+# React Native Payment Gateway - Razorpay
+   • It is a library or package that allows developers to integrate the Razorpay payment gateway into their React Native applications.      
+
+Prerequisites
+1) Create a Razorpay Account(It is not for developer it is for merchant)
+2) Generate API Keys(It is not for developer it is for merchant)
+
+Install Razorpay React Native SDK
+- npm install react-native-razorpay --save && cd ios && pod install
+

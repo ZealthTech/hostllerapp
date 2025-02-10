@@ -17,12 +17,12 @@ export const styles = StyleSheet.create({
     fontFamily: MONTSERRAT_BOLD,
   },
   elevation: {
-    elevation: 3,
+    elevation: 5,
     shadowOpacity: 0.2,
     shadowRadius: 2,
     shadowOffset: {
       height: 5,
-      width: 0,
+      width: 2,
     },
   },
 });
