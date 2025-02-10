@@ -7,4 +7,5 @@ export const styles = StyleSheet.create({
   scroll: {
     paddingBottom: 10,
   },
+  searchView: {marginHorizontal: 20, marginTop: 5},
 });

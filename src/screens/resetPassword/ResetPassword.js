@@ -16,7 +16,7 @@ import {styles} from './styles';
 const ResetPassword = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {data, targetRoute} = route?.params || {};
+  const {data} = route?.params || {};
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +24,6 @@ const ResetPassword = () => {
   const [confirmError, setConfirmError] = useState(false);
   const [loading] = useState(false);
 
-  console.log('userData47 ', data, targetRoute);
   const changePasswordRequest = async () => {
     if (password !== confirmPassword && confirmPassword?.length > 1) {
       showToast(ERROR_TOAST, 'Password and confirm password must match');

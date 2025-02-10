@@ -20,7 +20,6 @@ export function stripHTMLTags(inputString) {
   return inputString?.replace(/<\/?[^>]+(>|$)/g, '');
 }
 export const requestCameraPermission = async () => {
-  console.log('request permission asked');
   if (isAndroid()) {
     try {
       const granted = await PermissionsAndroid.request(
@@ -38,7 +37,6 @@ export const requestCameraPermission = async () => {
       return false;
     }
   } else {
-    console.log('request permission asked2....');
     return true;
   }
 };
@@ -88,4 +86,8 @@ export const openWhatsApp = phoneNumber => {
   Linking.openURL(url).catch(() => {
     alert('WhatsApp is not installed on your device!');
   });
+};
+
+export const isNullorUndefined = val => {
+  return val === undefined || val === null || val === 'undefined';
 };

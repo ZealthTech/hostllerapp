@@ -28,12 +28,10 @@ const RegisterScreen = () => {
   const {loading, status, message, data} = useSelector(
     state => state.registerReducer,
   );
-  console.log('loading, status, message ', loading, status, message);
 
   useEffect(() => {
     if (hasAttemptedRegister && !loading) {
       if (status) {
-        console.log('status36 ', status);
         showToast(SUCCESS_TOAST, message);
         navigation.navigate(OTP_VERIFICATION, {
           data: data,
@@ -41,7 +39,6 @@ const RegisterScreen = () => {
           targetRoute: targetRoute,
         });
       } else {
-        console.log('status44 ', status);
         showToast(ERROR_TOAST, message || 'Register Failed, please try again');
       }
       setHasAttemptedRegister(false); // Reset after handling response
@@ -68,7 +65,6 @@ const RegisterScreen = () => {
   };
 
   const registerUser = userInfo => {
-    console.log('register data', userInfo);
     dispatch(registerUserRequest(userInfo));
     setHasAttemptedRegister(true);
   };
@@ -78,7 +74,6 @@ const RegisterScreen = () => {
     validationSchema: signUpValidationSchema,
     initialValues: initialValues,
     onSubmit: inputValues => {
-      console.log('96 ', initialValues);
       registerUser(inputValues);
     },
   });

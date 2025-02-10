@@ -8,7 +8,6 @@ import {StackActions} from '@react-navigation/native';
 const SuccessScreen = navigation => {
   useEffect(() => {
     // Handle the back button press
-    console.log('10');
     const backAction = () => {
       // Navigate to HOME_SCREEN when back is pressed
       navigation.navigation.dispatch(StackActions.replace(HOME_NAVIGATOR));

@@ -22,7 +22,6 @@ const ForgotPassword = () => {
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
 
-  console.log('userData31 ', userData);
   const submitPhoneNumber = async () => {
     if (number?.length < 10) {
       setError(true);

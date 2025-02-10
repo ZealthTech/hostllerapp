@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const setDataToStorage = async (key, value, callback) => {
   try {
-    console.log('[AsyncStorage] Data being saved', value);
     await AsyncStorage.setItem(key, value);
     if (callback) {
       callback();
@@ -14,7 +13,6 @@ export const setDataToStorage = async (key, value, callback) => {
 
 export const getDataFromStorage = async key => {
   try {
-    console.log(`[AsyncStorage] Attempting to retrieve data for key: ${key}`);
     const data = await AsyncStorage.getItem(key);
     return data;
   } catch (error) {

@@ -45,7 +45,7 @@ const WriteReviewView = props => {
   const [isReviewSubmit, setIsReviewSubmit] = useState(false);
   const [ratingErrorText, setRatingErrorText] = useState('');
   const {userInfo} = useSelector(state => state.userInfoReducer);
-  console.log('user data ', userInfo);
+
   const dispatch = useDispatch();
   const {loading, status, message, error} = useSelector(
     state => state.addReviewReducer,
@@ -107,7 +107,6 @@ const WriteReviewView = props => {
           cropping: true,
         });
         if (image) {
-          console.log('image ', image);
           setSelectedImages([...selectedImages, image]); // Add selected images to state
         }
       }, 1000);
@@ -124,7 +123,6 @@ const WriteReviewView = props => {
     try {
       const ifPermission = await requestCameraPermission();
       if (!ifPermission) {
-        console.log('Permission denied ');
         return;
       }
       setTimeout(async () => {

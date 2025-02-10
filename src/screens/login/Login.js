@@ -62,7 +62,6 @@ const Login = () => {
             fromLogin: true,
           });
         } else {
-          console.log('going to home screen', targetRoute);
           navigation.reset({
             index: 0,
             routes: [

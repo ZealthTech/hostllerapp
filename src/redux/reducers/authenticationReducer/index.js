@@ -22,14 +22,12 @@ const authSlice = createSlice({
       state.otpAttempted = true;
     },
     otpVerificationSuccess: (state, action) => {
-      console.log('23 ', action?.payload);
       state.loading = false;
       state.otpStatus = action?.payload?.status;
       state.message = action?.payload?.message;
       state.otpAttempted = true;
     },
     otpVerificationFailure: (state, action) => {
-      console.log('29 ', action?.payload);
       state.loading = false;
       state.message = action?.payload?.message;
       state.otpStatus = action?.payload?.status;

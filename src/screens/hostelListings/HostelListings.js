@@ -53,7 +53,6 @@ const HostelListings = props => {
   }, [fetchAllListings, resetFilter]);
 
   const fetchAllListings = useCallback(async () => {
-    console.log('48 called after reset filters', selectedGender, title);
     setLoading(true);
     const data = {
       searchInput: searchInput,
@@ -66,7 +65,6 @@ const HostelListings = props => {
       facility: selectedChips,
     };
     const response = await apiPost(LISTINGS_URL, data, null);
-    console.log('dataToSend ', response);
     if (response?.status) {
       setListingData(response?.data);
       setMinValue(response?.data?.minPrice);

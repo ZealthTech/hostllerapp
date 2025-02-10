@@ -62,7 +62,7 @@ const ChooseRoom = () => {
   const showCalenderView = () => {
     setShowCalender(true);
   };
-  console.log('selected date ', selectedDate);
+
   return (
     <View style={styles.container}>
       <BackIconHeader title="Choose Room" />
@@ -79,6 +79,7 @@ const ChooseRoom = () => {
       <FlatList
         data={roomData}
         keyExtractor={item => item.key}
+        contentContainerStyle={styles.flatContainer}
         renderItem={({item}) => (
           <Rooms
             data={item.data}
@@ -93,7 +94,7 @@ const ChooseRoom = () => {
             selectedRoomToCart={selectedRoomToCart}
           />
         )}
-        ListFooterComponent={<View style={{height: 20}} />}
+        ListFooterComponent={<View style={styles.footerView} />}
         showsVerticalScrollIndicator={false}
       />
       {selectedRoom?.index !== null && (

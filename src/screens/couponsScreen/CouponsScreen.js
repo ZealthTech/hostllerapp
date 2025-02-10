@@ -31,8 +31,6 @@ const CouponsScreen = () => {
     }
   }, [pgId]);
 
-  console.log('couponse ', coupons);
-
   const applyCoupon = async item => {
     const body = {
       userId: 'USRF32K2X',
@@ -41,7 +39,7 @@ const CouponsScreen = () => {
       type: item.type,
       totalAmount: finalPrice,
     };
-    console.log('body ', body);
+
     const response = await apiPost(APPLY_COUPON_URL, body);
     if (response?.status) {
       route?.params?.onGoBack({
@@ -53,7 +51,6 @@ const CouponsScreen = () => {
     } else {
       showToast(ERROR_TOAST, response?.message);
     }
-    console.log('response39 ', response);
   };
   const renderItem = ({item}) => {
     return (

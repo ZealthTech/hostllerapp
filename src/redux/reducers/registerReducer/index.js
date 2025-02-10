@@ -20,7 +20,6 @@ const registerSlice = createSlice({
       state.message = action?.payload?.message;
     },
     registerUserFailure: (state, action) => {
-      console.log('24 ', action?.payload);
       state.loading = false;
       state.message = action?.payload?.message;
       state.status = action?.payload?.status;

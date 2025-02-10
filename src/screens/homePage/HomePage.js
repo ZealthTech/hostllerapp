@@ -9,11 +9,11 @@ import Testimonial from '../../components/testimonial/Testimonial';
 import {getDeviceWidth} from '../../utils/constants/commonFunctions';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {
-  AUTH_NAVIGATOR,
   HOME_NAVIGATOR,
   HOSTEL_LISTINGS,
   LEADS_SCREEN,
   LOGIN,
+  NOTIFICATION_SCREEN,
   PROFILE_SCREEN,
   SEARCH_SCREEN,
 } from '../../navigation/routes';
@@ -25,14 +25,14 @@ import {apiPost} from '../../network/axiosInstance';
 import {HOME_URL} from '../../utils/constants/apiEndPoints';
 import ListYourPropertyBanner from './ListYourPropertyBanner';
 import {styles} from './styles';
-import Button from '../../components/button/Button';
-import {MyHocExample} from './file';
+import SearchView from '../../components/searchView/SearchView';
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const route = useRoute();
   const {fromLogin = false} = route?.params || {};
   const {data} = useSelector(state => state.loginReducer);
+  const {fcmToken} = useSelector(state => state.userInfoReducer);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userData, setUserData] = useState();
   const [refreshing, setRefreshing] = useState(false);
@@ -70,7 +70,7 @@ const HomePage = () => {
   const fetchHomeData = useCallback(async () => {
     const response = await apiPost(
       HOME_URL,
-      {userId: userData?.userId},
+      {userId: userData?.userId, fcmToken: fcmToken},
       userData?.token,
     );
     if (response.status) {
@@ -80,7 +80,7 @@ const HomePage = () => {
       setRefreshing(false);
     }
     setLoading(false);
-  }, [userData, loading]);
+  }, [userData, loading, fcmToken]);
 
   const handleScroll = useCallback(
     e => {
@@ -111,6 +111,7 @@ const HomePage = () => {
     _navigation.navigate(SEARCH_SCREEN);
   };
 
+  //if user is logged in navigate to Profile Screen otherwise navigate to Login screen
   const onPressProfile = () => {
     if (userData == null) {
       _navigation?.navigate(LOGIN, {
@@ -126,9 +127,13 @@ const HomePage = () => {
     _navigation.navigate(LEADS_SCREEN);
   };
 
+  const onPressBell = () => {
+    _navigation.navigate(NOTIFICATION_SCREEN);
+  };
+
   return (
     <View style={styles.container}>
-      <Header onPressProfile={onPressProfile} />
+      <Header onPressProfile={onPressProfile} onPressBell={onPressBell} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         refreshControl={
@@ -137,8 +142,12 @@ const HomePage = () => {
         showsVerticalScrollIndicator={false}>
         {!loading ? (
           <>
+            <SearchView
+              onPressSearchInput={goToSearchScreen}
+              containerStyle={styles.searchView}
+            />
             <BannerView
-              data={homeData?.topBanner}
+              data={homeData?.homeBanner}
               onPressSearchInput={goToSearchScreen}
             />
             <Categories
@@ -159,7 +168,6 @@ const HomePage = () => {
               setCurrentIndex={setCurrentIndex}
             />
             <ListYourPropertyBanner onPress={listYourProperty} />
-            {/* <MyHocExample isDeveloper={true} /> */}
           </>
         ) : (
           <HomeScreenSkeleton />

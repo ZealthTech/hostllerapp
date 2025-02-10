@@ -8,7 +8,6 @@ const bookingSummarySlice = createSlice({
   name: 'bookingSummary',
   reducers: {
     setBookingSummary: (state, action) => {
-      console.log('action.payload ', action.payload);
       state.bookingSummary = action.payload;
     },
   },

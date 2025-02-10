@@ -146,10 +146,11 @@ const ProfileScreen = navigation => {
     selectFromGallery();
     setModal(false);
   };
-  const goToPrivacyPolicy = slug => {
+  const goToPrivacyPolicy = (slug, title) => {
     navigation?.navigation?.navigate(PRIVACY_POLICY, {
       slug: slug,
       userData: userInfo,
+      title: title,
     });
   };
   const gotToLoginScreen = () => {
@@ -191,7 +192,6 @@ const ProfileScreen = navigation => {
         navigation.navigation.replace(HOME_NAVIGATOR);
       });
     }
-    console.log('179 ', response);
   };
   return (
     <View style={styles.container}>
@@ -249,13 +249,15 @@ const ProfileScreen = navigation => {
           <ItemRow
             Icon={Policy}
             title={'Privacy Policy'}
-            onPress={() => goToPrivacyPolicy('privacypolicy')}
+            onPress={() => goToPrivacyPolicy('privacypolicy', 'Privacy Policy')}
           />
           <View style={styles.line} />
           <ItemRow
             Icon={TermAndConditions}
             title={'Terms & Conditions'}
-            onPress={() => goToPrivacyPolicy('termsandconditions')}
+            onPress={() =>
+              goToPrivacyPolicy('termsandconditions', 'Terms & Conditions')
+            }
           />
           <View style={styles.line} />
           <ItemRow

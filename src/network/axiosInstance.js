@@ -14,7 +14,6 @@ export const apiGet = async (endpoint, params = {}, token = null) => {
       params,
       headers: token ? {Authorization: `${token}`} : {},
     });
-    console.log('response ', response?.data);
     return response.data; // Return only the data from the response
   } catch (error) {
     return handleError(error); // Handle errors centrally
@@ -28,7 +27,6 @@ export const apiPost = async (endpoint, data, token = null) => {
     const response = await axiosInstance.post(endpoint, data, {
       headers: token ? {Authorization: `${token}`} : {},
     });
-    console.log('29 ', response);
     return response.data; // Return only the data from the response
   } catch (error) {
     return handleError(error); // Handle errors centrally
@@ -62,7 +60,6 @@ export const apiDelete = async (endpoint, params = {}, token = null) => {
 
 export const postDataWithImages = async (endpoint, formData, token = null) => {
   console.log('Sending data to:', endpoint);
-  console.log(' send data ', formData);
   try {
     const headers = {
       'Content-Type': 'multipart/form-data', // Set the Content-Type explicitly

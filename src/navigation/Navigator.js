@@ -17,6 +17,7 @@ import {
   LEADS_SCREEN,
   LISTINGS_DETAILS,
   LOGIN,
+  NOTIFICATION_SCREEN,
   ONBOARDING_PAGE,
   OTP_VERIFICATION,
   PRIVACY_POLICY,
@@ -54,13 +55,14 @@ import {
 import {AuthNavigator} from './stackNavigator/AuthNavigator';
 import HelpAndSupport from '../screens/helpAndSupport/HelpAndSupport';
 import CouponsScreen from '../screens/couponsScreen/CouponsScreen';
+import Notifications from '../screens/notification/Notifications';
 const Stack = createStackNavigator();
 const Navigator = ({navigationRef}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getFirebaseToken();
-  }, []);
+    getFirebaseToken(dispatch);
+  }, [dispatch]);
 
   useEffect(() => {
     requestNotificationPermission(dispatch);
@@ -182,6 +184,11 @@ const Navigator = ({navigationRef}) => {
         <Stack.Screen
           name={COUPONS_SCREEN}
           component={CouponsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={NOTIFICATION_SCREEN}
+          component={Notifications}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

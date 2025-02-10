@@ -1,53 +1,39 @@
-import {
-  View,
-  Text,
-  Image,
-  Pressable,
-  ActivityIndicator,
-  ToastAndroid,
-} from 'react-native';
+import {View, Text, Image, Pressable, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {styles} from './styles';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import CustomSvg from '../../components/customSvg/CustomSvg';
 import {Calendar, InfoIcon} from '../../assets';
 import MealChart from '../../components/mealChart/MealChart';
 import {
-  MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
 import {LIGHT_GREEN, WHITE} from '../../utils/colors/colors';
 import {getDataFromStorage} from '../../utils/storage';
-import {ERROR_TOAST, REGISTER_DATA} from '../../utils/constants/constants';
-import {apiPost} from '../../network/axiosInstance';
-import {BOOK_ROOM} from '../../utils/constants/apiEndPoints';
+import {
+  ERROR_TOAST,
+  REGISTER_DATA,
+  SUCCESS_TOAST,
+} from '../../utils/constants/constants';
 import {showToast} from '../../utils/constants/commonFunctions';
 import Loader from '../../components/loader/Loader';
 import {
-  AUTH_NAVIGATOR,
-  BOOKING_SUCCESS_SCREEN,
   CART_SCREEN,
   COUPONS_SCREEN,
   LOGIN,
+  PRIVACY_POLICY,
 } from '../../navigation/routes';
-import {setBookingSummary} from '../../redux/reducers/bookingSummary';
 import {useDispatch, useSelector} from 'react-redux';
-import Button from '../../components/button/Button';
+import TermsAndConditionTxt from '../../components/termsAndConditionTxt/TermsAndConditionTxt';
+import RazorpayCheckout from 'react-native-razorpay';
 
 const CartScreen = () => {
   const route = useRoute();
   const dispatch = useDispatch();
   const {userInfo} = useSelector(state => state.userInfoReducer);
-  const {
-    cartData,
-    mealChart,
-    fromLogin,
-    pgId,
-    couponCode = '',
-    key,
-  } = route?.params || {};
+  const {cartData, mealChart, fromLogin, pgId, key} = route?.params || {};
   console.log('params ', route?.params);
   const foodInclude = cartData?.option === 'included';
   const [modalVisible, setModalVisible] = useState();
@@ -57,10 +43,7 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const [couponData, setCouponData] = useState();
   const {bookingSummary} = useSelector(state => state.bookingSummary);
-  console.log('booking summary ', bookingSummary);
-  console.log('cart data ', cartData);
-  console.log('value value ', key);
-  const focus = useIsFocused();
+  const [agreeTAndC, setAgreeTAndC] = useState(false);
 
   useEffect(() => {
     console.log('akanksha');
@@ -71,16 +54,9 @@ const CartScreen = () => {
     }, 300);
   }, [cartData, dispatch]);
 
-  console.log('from login', fromLogin);
-  console.log(
-    '  const {userInfo} = useSelector(state => state.userInfoReducer); ',
-    userInfo,
-  );
-
   const checkLogin = async () => {
     setButtonLoading(true);
     const _userData = await getDataFromStorage(REGISTER_DATA);
-    console.log('81 ', _userData);
     if (_userData != null) {
       const parsedData = _userData ? JSON.parse(_userData) : null;
       setUserData(parsedData);
@@ -90,13 +66,45 @@ const CartScreen = () => {
     }
   };
 
-  console.log('userData?.token ', userData?.token);
+  const openPaymentGateway = async () => {
+    let options = {
+      description: 'Credits towards consultation',
+      image: require('../../assets/images/boys_frame.png'),
+      currency: 'INR', //In USD - only card option will exist rest(like wallet, UPI, EMI etc) will hide
+      //  key: RAZORPAY_KEY,
+      amount: '5000',
+      name: 'Acme Corp',
+      order_id: '', //Replace this with an order_id(response.data.orderId) created using Orders API.
+      prefill: {
+        email: 'hasan@example.com',
+        contact: '9191919191',
+        name: 'Hasan',
+      },
+      theme: {color: '#53a20e'},
+    };
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // handle success
+        alert(`Success: ${data.razorpay_payment_id}`);
+      })
+      .catch(error => {
+        // handle failure
+        alert(`Error: ${error.code} | ${error.description}`);
+      });
+  };
+
   const addRoomToCart = async _userData => {
+    if (!agreeTAndC) {
+      showToast(ERROR_TOAST, 'Please Agree Terms and Conditions');
+      return;
+    }
     const isLogin = await checkLogin();
-    console.log('is login ', isLogin);
     setButtonLoading(false);
     setLoading(true);
     if (isLogin) {
+      await openPaymentGateway();
+
+      //below data is required in book room api params
       const bodyData = {
         userId: userInfo.userId,
         pgId: pgId,
@@ -115,13 +123,13 @@ const CartScreen = () => {
         paymentMode: 'Online', // Online | Cash
         checkinDate: bookingSummary?.checkinDate,
       };
-      const response = await apiPost(BOOK_ROOM, bodyData, userInfo.token);
-      if (response?.status) {
-        navigation.pop(4);
-        navigation.replace(BOOKING_SUCCESS_SCREEN);
-      } else {
-        showToast(ERROR_TOAST, response?.message);
-      }
+      // const response = await apiPost(BOOK_ROOM, bodyData, userInfo.token);
+      // if (response?.status) {
+      //   navigation.pop(4);
+      //   navigation.replace(BOOKING_SUCCESS_SCREEN);
+      // } else {
+      //   showToast(ERROR_TOAST, response?.message);
+      // }
     } else {
       navigation.navigate(LOGIN, {
         targetRoute: CART_SCREEN,
@@ -142,7 +150,18 @@ const CartScreen = () => {
     });
   };
 
-  console.log('data form coupon ', couponData);
+  const agreeTermsAndCondition = () => {
+    setAgreeTAndC(!agreeTAndC);
+  };
+
+  const goToPrivacyScreen = () => {
+    navigation?.navigate(PRIVACY_POLICY, {
+      slug: 'termsandconditions',
+      userData: userData,
+      title: 'Terms & Conditions',
+    });
+  };
+
   return (
     <View style={styles.container}>
       <BackIconHeader title="Booking Summary" />
@@ -188,12 +207,6 @@ const CartScreen = () => {
             />
           </View>
         )}
-        {/* <View style={styles.securityView}>
-          <Text style={styles.meal}>Security Deposit</Text>
-          <Text style={[styles.currentPrice, {fontFamily: MONTSERRAT_MEDIUM}]}>
-            ₹{bookingSummary?.item?.security}
-          </Text>
-        </View> */}
         <View style={styles.securityView}>
           <Text style={[styles.meal]}>
             Discount Coupon{' '}
@@ -227,6 +240,15 @@ const CartScreen = () => {
             ₹{couponData ? couponData?.finalAmount : bookingSummary?.item?.rent}
           </Text>
         </View>
+        <Text style={styles.deposit}>
+          You have to deposit security amount before checkin
+        </Text>
+        <TermsAndConditionTxt
+          agreeTermsAndCondition={agreeTermsAndCondition}
+          agreeTAndC={agreeTAndC}
+          onPressTAndC={goToPrivacyScreen}
+          container={styles.tAndCContainer}
+        />
         <Pressable style={styles.buttonView} onPress={addRoomToCart}>
           {buttonLoading ? (
             <ActivityIndicator color={WHITE} style={styles.loader} />

@@ -13,7 +13,6 @@ import {Cancel, CheckGreen} from '../../assets';
 import {MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
 
 const ToastMessage = ({type, title, desc, info}) => {
-  console.log('type, title ', type, title);
   const styles = getStyles(type);
   return (
     <View style={[styles.toastContainer(info)]}>

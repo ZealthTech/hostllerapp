@@ -31,6 +31,8 @@ import {GRAY_LIGHT_CB, ORANGE_DARK, PURPLE} from '../../utils/colors/colors';
 import Loader from '../../components/loader/Loader';
 import DropDownForSmallData from '../../components/dropDownForSmallData/DropDownForSmallData';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import TermsAndConditionTxt from '../../components/termsAndConditionTxt/TermsAndConditionTxt';
+import {PRIVACY_POLICY} from '../../navigation/routes';
 
 const KycDetails = navigation => {
   const {route} = navigation || {};
@@ -267,6 +269,14 @@ const KycDetails = navigation => {
   const agreeTermsAndCondition = () => {
     setAgreeTAndC(!agreeTAndC);
   };
+
+  const goToPrivacyScreen = () => {
+    navigation?.navigation?.navigate(PRIVACY_POLICY, {
+      slug: 'termsandconditions',
+      userData: userData,
+      title: 'Terms & Conditions',
+    });
+  };
   return (
     <View style={styles.container}>
       <BackIconHeader title="KYC Verification" />
@@ -401,22 +411,11 @@ const KycDetails = navigation => {
           imageContainer={styles.frameContainer}
           imageStyle={styles.images}
         />
-        <Pressable
-          style={styles.termPolicyView}
-          onPress={agreeTermsAndCondition}>
-          <View style={styles.rightIconContainer}>
-            {agreeTAndC && (
-              <CustomSvg
-                SvgComponent={
-                  <RightTick height={15} width={15} fill={ORANGE_DARK} />
-                }
-              />
-            )}
-          </View>
-          <Text style={styles.agree}>
-            I Agree to the <Text style={styles.terms}>Terms & Conditions</Text>
-          </Text>
-        </Pressable>
+        <TermsAndConditionTxt
+          agreeTermsAndCondition={agreeTermsAndCondition}
+          agreeTAndC={agreeTAndC}
+          onPressTAndC={goToPrivacyScreen}
+        />
         <Button
           title="Submit"
           containerStyle={styles.button}

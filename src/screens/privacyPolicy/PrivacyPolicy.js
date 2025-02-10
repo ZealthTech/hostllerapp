@@ -9,7 +9,7 @@ import {styles} from './styles';
 import Space from '../../components/space/Space';
 const PrivacyPolicy = navigation => {
   const route = navigation?.route || {};
-  const {slug, userData} = route.params || {};
+  const {slug, userData, title} = route.params || {};
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
   const {width} = useWindowDimensions();
@@ -33,7 +33,7 @@ const PrivacyPolicy = navigation => {
 
   return (
     <View style={styles.container}>
-      <BackIconHeader title="Privacy Policy" />
+      <BackIconHeader title={title} />
       <ScrollView
         style={styles.contentContainer}
         contentContainerStyle={styles.scroll}

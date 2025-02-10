@@ -1,6 +1,12 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {BLACK_COLOR, PURPLE, WHITE} from '../../utils/colors/colors';
+import {
+  BLACK_COLOR,
+  COLOR_GRAY_7F,
+  GRAY_92,
+  PURPLE,
+  WHITE,
+} from '../../utils/colors/colors';
 import CustomSvg from '../customSvg/CustomSvg';
 import {Calendar} from '../../assets';
 import {MONTSERRAT_MEDIUM} from '../../utils/styles/commonStyles';
@@ -44,7 +50,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginHorizontal: 20,
     borderWidth: 0.5,
-    borderColor: BLACK_COLOR,
+    borderColor: COLOR_GRAY_7F,
     marginTop: 25,
     borderRadius: 12,
     paddingVertical: 10,

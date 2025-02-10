@@ -3,7 +3,12 @@ import React, {useEffect, useState} from 'react';
 import CustomSvg from '../customSvg/CustomSvg';
 import LocationIcon from '../../assets/svg/location_pin.svg';
 import SearchIcon from '../../assets/svg/search.svg';
-import {BLACK_COLOR, TEXT_COLOR, WHITE} from '../../utils/colors/colors';
+import {
+  BLACK_COLOR,
+  GRAY_92,
+  TEXT_COLOR,
+  WHITE,
+} from '../../utils/colors/colors';
 import {
   fontsSize,
   MONTSERRAT_MEDIUM,
@@ -56,10 +61,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    //paddingVertical: 16,
     height: 50,
+    elevation: 4,
+    shadowColor: GRAY_92,
+    shadowRadius: 3,
+    shadowOpacity: 0.4,
+    shadowOffset: {
+      height: 3,
+      width: 0,
+    },
     borderRadius: 12,
-    marginTop: 14,
     marginBottom: 5,
   },
   searchTxt: {

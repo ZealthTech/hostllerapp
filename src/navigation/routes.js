@@ -22,3 +22,4 @@ export const PRIVACY_POLICY = 'PrivacyPolicy';
 export const AUTH_NAVIGATOR = 'AuthNavigator';
 export const HELP_AND_SUPPORT = 'HelpAndSupport';
 export const COUPONS_SCREEN = 'CouponsScreen';
+export const NOTIFICATION_SCREEN = 'Notifications';

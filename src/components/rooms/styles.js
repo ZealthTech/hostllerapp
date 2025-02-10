@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {
   BLACK_COLOR,
+  COLOR_GRAY_7F,
   ORANGE_DARK,
   PURPLE,
   PURPLE_EXTRA_LIGHT,
@@ -24,7 +25,7 @@ export const styles = StyleSheet.create({
   mainView: {
     marginHorizontal: 20,
     borderWidth: 0.5,
-    borderColor: BLACK_COLOR,
+    borderColor: COLOR_GRAY_7F,
     marginTop: 20,
     borderRadius: 15,
     overflow: 'hidden',
@@ -76,5 +77,5 @@ export const styles = StyleSheet.create({
   add: {fontFamily: MONTSERRAT_BOLD, color: WHITE},
   mealView: {flexDirection: 'row', gap: 5, alignItems: 'center'},
   meal: {fontFamily: MONTSERRAT_REGULAR, color: BLACK_COLOR, marginBottom: 5},
-  container: {flex: 1, paddingBottom: 20},
+  container: {flex: 1},
 });

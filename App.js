@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
-import {View, Text, SafeAreaView, StyleSheet, StatusBar} from 'react-native';
-import React, {createRef, useEffect, useRef, useState} from 'react';
+import {View, SafeAreaView, StyleSheet, StatusBar} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import Navigator from './src/navigation/Navigator';
 import {PURPLE} from './src/utils/colors/colors';
@@ -44,6 +44,7 @@ const RootWrapper = () => {
   return <Navigator navigationRef={navigationRef} />;
 };
 
+//toast message when there is not internet connection
 const toastConfig = {
   errorToast: ({type, props}) => {
     return (

@@ -27,7 +27,7 @@ const DropDownInput = props => {
     disabled = false,
   } = props || {};
   const isValue = value !== '';
-  console.log('disabled ', disabled);
+
   return (
     <>
       <Pressable

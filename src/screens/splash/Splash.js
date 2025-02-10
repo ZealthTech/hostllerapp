@@ -28,7 +28,6 @@ const Splash = () => {
 
     const checkOnboardingStatus = async () => {
       const isFirstTimeUser = await getDataFromStorage('isFirstTimeUser');
-      console.log('isFirstTimeUser ', isFirstTimeUser);
       if (isFirstTimeUser === null) {
         navigation.dispatch(StackActions.replace(ONBOARDING_PAGE));
       } else {

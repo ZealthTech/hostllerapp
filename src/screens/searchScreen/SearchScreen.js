@@ -45,7 +45,7 @@ const SearchScreen = navigation => {
   const handlePress = item => {
     navigation?.navigation?.navigate(HOSTEL_LISTINGS, {
       searchInput: item,
-      title: 'Search Results',
+      title: 'Search Results', //it will use to show title of the header
       fromSearch: true,
     });
   };

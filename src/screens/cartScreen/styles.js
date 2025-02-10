@@ -4,8 +4,6 @@ import {
   GRAY_92,
   LIGHT_GREEN,
   ORANGE_DARK,
-  ORANGE_EXTRA_LIGHT,
-  PINK_EXTRA_LIGHT,
   TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
@@ -20,6 +18,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  tAndCContainer: {marginStart: 10, marginTop: 10},
   svgImg: {marginBottom: 5},
   imageView: {
     flexDirection: 'row',
@@ -97,4 +96,10 @@ export const styles = StyleSheet.create({
   },
   payNow: {color: WHITE, fontFamily: MONTSERRAT_BOLD, fontSize: 16},
   finalRs: {fontFamily: MONTSERRAT_BOLD, fontSize: 18, color: WHITE},
+  deposit: {
+    fontSize: 11,
+    marginHorizontal: 10,
+    fontFamily: MONTSERRAT_REGULAR,
+    color: TEXT_COLOR,
+  },
 });
