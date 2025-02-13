@@ -61,3 +61,5 @@ Prerequisites
 Install Razorpay React Native SDK
 - npm install react-native-razorpay --save && cd ios && pod install
 
+and many more to go
+
