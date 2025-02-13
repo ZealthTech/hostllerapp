@@ -2,7 +2,12 @@ import {StyleSheet} from 'react-native';
 import {
   BLACK_COLOR,
   GRAY_92,
+  GRAY_LIGHT,
   ORANGE_DARK,
+  ORANGE_EXTRA_LIGHT,
+  PURPLE,
+  PURPLE_EXTRA_LIGHT,
+  TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
 import {getDeviceHeight} from '../../utils/constants/commonFunctions';
@@ -10,6 +15,7 @@ import {
   MONTSERRAT_BOLD,
   MONTSERRAT_MEDIUM,
   MONTSERRAT_REGULAR,
+  MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
 
 export const styles = StyleSheet.create({
@@ -54,4 +60,27 @@ export const styles = StyleSheet.create({
   paymentDetail: {fontSize: 16, paddingHorizontal: 20, paddingVertical: 10},
   bookingDetails: {fontSize: 16, paddingHorizontal: 20, paddingVertical: 10},
   scroll: {paddingBottom: 40},
+  security_view: {
+    backgroundColor: ORANGE_EXTRA_LIGHT,
+    paddingVertical: 12,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    marginTop: 14,
+  },
+  security_txt: {fontSize: 12, fontFamily: MONTSERRAT_MEDIUM},
+  mapButton: {
+    marginHorizontal: 18,
+    backgroundColor: PURPLE_EXTRA_LIGHT,
+    alignSelf: 'flex-start',
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderWidth: 0.6,
+    borderRadius: 10,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  mapText: {color: TEXT_COLOR, fontFamily: MONTSERRAT_SEMIBOLD, fontSize: 12},
+  img_arrow: {height: 18, width: 18},
 });

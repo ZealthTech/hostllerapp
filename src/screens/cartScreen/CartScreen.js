@@ -10,16 +10,13 @@ import {
   MONTSERRAT_MEDIUM,
   MONTSERRAT_SEMIBOLD,
 } from '../../utils/styles/commonStyles';
-import {LIGHT_GREEN, WHITE} from '../../utils/colors/colors';
+import {LIGHT_GREEN, PURPLE, WHITE} from '../../utils/colors/colors';
 import {getDataFromStorage} from '../../utils/storage';
-import {
-  ERROR_TOAST,
-  REGISTER_DATA,
-  SUCCESS_TOAST,
-} from '../../utils/constants/constants';
+import {ERROR_TOAST, REGISTER_DATA} from '../../utils/constants/constants';
 import {showToast} from '../../utils/constants/commonFunctions';
 import Loader from '../../components/loader/Loader';
 import {
+  BOOKING_SUCCESS_SCREEN,
   CART_SCREEN,
   COUPONS_SCREEN,
   LOGIN,
@@ -34,7 +31,6 @@ const CartScreen = () => {
   const dispatch = useDispatch();
   const {userInfo} = useSelector(state => state.userInfoReducer);
   const {cartData, mealChart, fromLogin, pgId, key} = route?.params || {};
-  console.log('params ', route?.params);
   const foodInclude = cartData?.option === 'included';
   const [modalVisible, setModalVisible] = useState();
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -45,6 +41,7 @@ const CartScreen = () => {
   const {bookingSummary} = useSelector(state => state.bookingSummary);
   const [agreeTAndC, setAgreeTAndC] = useState(false);
 
+  console.log('booking summary ', bookingSummary);
   useEffect(() => {
     console.log('akanksha');
     //storing booking info in redux so that we can get it after coming back from login
@@ -69,23 +66,26 @@ const CartScreen = () => {
   const openPaymentGateway = async () => {
     let options = {
       description: 'Credits towards consultation',
-      image: require('../../assets/images/boys_frame.png'),
+      image:
+        'https://api.hostellers.in/uploads/reviewImage/reviewImage-1732032799305-gg7kw.jpeg',
       currency: 'INR', //In USD - only card option will exist rest(like wallet, UPI, EMI etc) will hide
-      //  key: RAZORPAY_KEY,
-      amount: '5000',
-      name: 'Acme Corp',
+      key: 'rzp_test_L0erCkhGxzsJET',
+      amount: '1',
+      name: 'Hostellers',
       order_id: '', //Replace this with an order_id(response.data.orderId) created using Orders API.
       prefill: {
         email: 'hasan@example.com',
         contact: '9191919191',
         name: 'Hasan',
       },
-      theme: {color: '#53a20e'},
+      theme: {color: PURPLE},
     };
     RazorpayCheckout.open(options)
       .then(data => {
         // handle success
-        alert(`Success: ${data.razorpay_payment_id}`);
+        console.log('razorpay response ', data);
+        navigation.pop(4);
+        navigation.replace(BOOKING_SUCCESS_SCREEN);
       })
       .catch(error => {
         // handle failure
@@ -102,6 +102,7 @@ const CartScreen = () => {
     setButtonLoading(false);
     setLoading(true);
     if (isLogin) {
+      // showToast(SUCCESS_TOAST, 'You will be redirect to payment page');
       await openPaymentGateway();
 
       //below data is required in book room api params
@@ -162,6 +163,12 @@ const CartScreen = () => {
     });
   };
 
+  const totalPayableAmount =
+    bookingSummary?.option === 'no food'
+      ? bookingSummary?.item?.rent
+      : bookingSummary?.item?.rent + bookingSummary?.item?.foodPrice;
+
+  console.log('couponData?.finalAmount ', couponData?.finalAmount);
   return (
     <View style={styles.container}>
       <BackIconHeader title="Booking Summary" />
@@ -189,11 +196,9 @@ const CartScreen = () => {
             </Text>
           </View>
           <View>
-            <Text style={styles.originalPrice}>₹15084</Text>
-            <Text style={styles.currentPrice}>
-              ₹{bookingSummary?.item?.rent + bookingSummary?.item?.foodPrice}
-            </Text>
-            <Text style={styles.off}>20% OFF</Text>
+            {/* <Text style={styles.originalPrice}>₹15084</Text> */}
+            <Text style={styles.currentPrice}>₹{totalPayableAmount}</Text>
+            {/* <Text style={styles.off}>20% OFF</Text> */}
           </View>
         </View>
         {foodInclude && (
@@ -237,11 +242,11 @@ const CartScreen = () => {
             Total Payable
           </Text>
           <Text style={[styles.meal, {fontFamily: MONTSERRAT_SEMIBOLD}]}>
-            ₹{couponData ? couponData?.finalAmount : bookingSummary?.item?.rent}
+            ₹{couponData ? couponData?.finalAmount : totalPayableAmount}
           </Text>
         </View>
         <Text style={styles.deposit}>
-          You have to deposit security amount before checkin
+          The security amount must be pay upon check-in.
         </Text>
         <TermsAndConditionTxt
           agreeTermsAndCondition={agreeTermsAndCondition}
@@ -256,10 +261,7 @@ const CartScreen = () => {
             <>
               <Text style={styles.payNow}>Pay Now</Text>
               <Text style={styles.finalRs}>
-                ₹
-                {couponData
-                  ? couponData?.finalAmount
-                  : bookingSummary?.item?.rent}
+                ₹{couponData ? couponData?.finalAmount : totalPayableAmount}
               </Text>
             </>
           )}

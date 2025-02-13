@@ -105,7 +105,7 @@ const LeadPage = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header rightView={false} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}>
@@ -189,6 +189,7 @@ const LeadPage = () => {
             isErrorMsgRequired={touched.phone && !!errors.phone}
             error={errors.phone}
             maxLength={10}
+            keyboardType="number-pad"
           />
           <Text style={styles.labelText}>Email ID</Text>
           <InputText

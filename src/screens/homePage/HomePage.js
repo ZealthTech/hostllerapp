@@ -1,5 +1,5 @@
-import {View, ScrollView, RefreshControl, Text} from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View, ScrollView, RefreshControl} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import Header from '../../components/header/Header';
 import {useDispatch, useSelector} from 'react-redux';
 import BannerView from '../../components/bannerView/BannerView';
@@ -32,7 +32,6 @@ const HomePage = () => {
   const route = useRoute();
   const {fromLogin = false} = route?.params || {};
   const {data} = useSelector(state => state.loginReducer);
-  const {fcmToken} = useSelector(state => state.userInfoReducer);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userData, setUserData] = useState();
   const [refreshing, setRefreshing] = useState(false);
@@ -41,6 +40,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const isFocus = useIsFocused();
   const [homeData, setHomeData] = useState([]);
+  const {fcmToken} = useSelector(state => state.userInfoReducer);
 
   useEffect(() => {
     const initialize = async () => {
@@ -70,7 +70,7 @@ const HomePage = () => {
   const fetchHomeData = useCallback(async () => {
     const response = await apiPost(
       HOME_URL,
-      {userId: userData?.userId, fcmToken: fcmToken},
+      {userId: userData?.userId},
       userData?.token,
     );
     if (response.status) {
@@ -80,7 +80,7 @@ const HomePage = () => {
       setRefreshing(false);
     }
     setLoading(false);
-  }, [userData, loading, fcmToken]);
+  }, [userData, loading]);
 
   const handleScroll = useCallback(
     e => {

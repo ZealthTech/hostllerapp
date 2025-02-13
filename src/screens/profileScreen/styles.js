@@ -13,6 +13,8 @@ import {
   BLACK_COLOR,
   GRAY_LIGHT_CB,
   ORANGE_DARK,
+  ORANGE_EXTRA_LIGHT,
+  ORANGE_LIGHT,
   TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
@@ -107,8 +109,23 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: TEXT_COLOR,
     fontSize: 14,
-    marginVertical: 40,
+    marginVertical: 20,
     fontFamily: MONTSERRAT_REGULAR,
   },
   arrowStyle: {transform: [{rotate: '270deg'}]},
+  sheetView: {padding: 20},
+  sure_text: {
+    fontSize: 16,
+    marginHorizontal: 6,
+    color: BLACK_COLOR,
+    fontFamily: MONTSERRAT_BOLD,
+  },
+  buttonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 20,
+    gap: 10,
+  },
+  cancelBtn: {backgroundColor: ORANGE_LIGHT},
+  btn_text_cancel: {color: ORANGE_DARK},
 });

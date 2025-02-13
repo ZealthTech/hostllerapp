@@ -26,7 +26,7 @@ import {
   FORGOT_PASS_VERIFY_OTP,
   FORGOT_PASSWORD,
 } from '../../utils/constants/apiEndPoints';
-import {showToast} from '../../utils/constants/commonFunctions';
+import {isAndroid, showToast} from '../../utils/constants/commonFunctions';
 import OTPInput from '../../components/otpInput/OtpInput';
 import Space from '../../components/space/Space';
 
@@ -81,7 +81,7 @@ const OtpVerification = () => {
       userId: data?.userId,
       OTP: otpString,
     };
-
+    console.log('body data ', bodyData);
     if (fromForgot) {
       const response = await apiPost(FORGOT_PASS_VERIFY_OTP, bodyData);
       if (response.status) {

@@ -11,7 +11,7 @@ import {PURPLE} from '../../utils/colors/colors';
 import Animated, {FadeInLeft} from 'react-native-reanimated';
 
 const Header = props => {
-  const {onPressProfile, onPressBell} = props || {};
+  const {onPressProfile, onPressBell,rightView=true} = props || {};
   return (
     <View style={styles.container}>
       <Animated.Image
@@ -19,7 +19,7 @@ const Header = props => {
         source={require('../../assets/images/splash_image.png')}
         style={styles.image}
       />
-      <View style={styles.rightView}>
+      {rightView && <View style={styles.rightView}>
         <IconButton
           icon={<Person fill={PURPLE} height={25} width={25} />}
           onPress={onPressProfile}
@@ -28,7 +28,7 @@ const Header = props => {
           icon={<Bell fill={PURPLE} height={25} width={25} />}
           onPress={onPressBell}
         />
-      </View>
+      </View>}
     </View>
   );
 };

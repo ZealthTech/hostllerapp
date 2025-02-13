@@ -38,6 +38,13 @@ const Rooms = props => {
 
   //only one room can be selected at a time, if user select other previous should be deselected
   const handleSelection = (roomType, index, option, item) => {
+    console.log(
+      'roomType, index, option, item ',
+      roomType,
+      index,
+      option,
+      item,
+    );
     if (selectedDate !== '') {
       if (
         selectedRoom?.roomType === roomType &&

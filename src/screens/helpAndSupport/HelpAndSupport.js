@@ -22,7 +22,7 @@ import {DownArrow} from '../../assets';
 
 const HelpAndSupport = () => {
   const NUMBER = '+918002023999'; //put support phone number here
-  const EMAIL_ID = 'dev.hostellers@gmail.com'; //put support email id here
+  const EMAIL_ID = 'info@hostellers.in'; //support email
 
   return (
     <View style={styles.container}>
@@ -73,7 +73,7 @@ const HelpAndSupport = () => {
               style={styles.image}
             />
             <View style={styles.content}>
-              <Text style={styles.title}>Whatsapp</Text>
+              <Text style={styles.title}>WhatsApp</Text>
               <Text style={styles.subTitle}>{NUMBER}</Text>
             </View>
           </View>
