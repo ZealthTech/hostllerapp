@@ -47,6 +47,7 @@ const ChooseRoom = () => {
 
   const handleCheckout = () => {
     const cartData = {...selectedRoomToCart, address: data?.address};
+    console.log('selectedRoomToCart ', selectedRoomToCart);
     dispatch(setBookingSummary(cartData));
     navigation.navigate(CART_SCREEN, {
       mealChart: data?.mealChart,
@@ -102,8 +103,10 @@ const ChooseRoom = () => {
           <FooterButton
             onPress={handleCheckout}
             price={
-              selectedRoomToCart?.item?.rent +
-              selectedRoomToCart?.item?.foodPrice
+              selectedRoomToCart?.option === 'no food'
+                ? selectedRoomToCart?.item?.rent
+                : selectedRoomToCart?.item?.rent +
+                  selectedRoomToCart?.item?.foodPrice
             }
           />
         </Animated.View>

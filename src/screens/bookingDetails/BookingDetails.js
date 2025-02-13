@@ -1,13 +1,29 @@
-import {View, Text, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  Image,
+  Platform,
+  Linking,
+  Alert,
+} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {apiPost} from '../../network/axiosInstance';
 import {USER_BOOKING_DETAILS} from '../../utils/constants/apiEndPoints';
 import {styles} from './styles';
 import BackIconHeader from '../../components/backIconHeader/BackIconHeader';
 import FastImage from 'react-native-fast-image';
-import {MONTSERRAT_BOLD} from '../../utils/styles/commonStyles';
+import {
+  MONTSERRAT_BOLD,
+  MONTSERRAT_MEDIUM,
+  MONTSERRAT_SEMIBOLD,
+} from '../../utils/styles/commonStyles';
 import Space from '../../components/space/Space';
 import Loader from '../../components/loader/Loader';
+import CustomSvg from '../../components/customSvg/CustomSvg';
+import {NextArrow} from '../../assets';
+import {PURPLE} from '../../utils/colors/colors';
 
 const BookingDetails = navigation => {
   console.log(navigation?.route?.params);
@@ -28,6 +44,30 @@ const BookingDetails = navigation => {
     setLoading(false);
   }, [userId, bookingId, token]);
 
+  const openGoogleMaps = () => {
+    const latitude = 28.58534820176442;
+    const longitude = 77.36198163441654;
+    if (!latitude || !longitude) {
+      Alert.alert('Error', 'Location coordinates are missing.');
+      return;
+    }
+
+    const url = Platform.select({
+      ios: `http://maps.apple.com/?daddr=${latitude},${longitude}`,
+      android: `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`,
+    });
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          Alert.alert('Error', 'Could not open map app.');
+        }
+      })
+      .catch(err => console.error('Error opening map:', err));
+  };
+  console.log('bookingDetails?.bookingDetail ', bookingDetails?.bookingDetail);
   return (
     <>
       <BackIconHeader title="Booking Details" />
@@ -56,9 +96,14 @@ const BookingDetails = navigation => {
             <Text style={styles.perMonth}>Per Month</Text>
           </View>
         </View>
-        <Text style={[styles.perMonth, styles.security]}>
-          Security Deposit ₹{bookingDetails?.bookingDetail?.security}
-        </Text>
+        <Pressable style={styles.mapButton} onPress={openGoogleMaps}>
+          <Text style={styles.mapText}>See Location On Map</Text>
+          <Image
+            source={require('../../assets/images/direction.png')}
+            tintColor={PURPLE}
+            style={styles.img_arrow}
+          />
+        </Pressable>
         <Space height={30} />
         <View style={styles.line} />
         <Text style={[styles.name, styles.bookingDetails]}>
@@ -94,12 +139,6 @@ const BookingDetails = navigation => {
             <Text style={styles.bookingId}>Rent: </Text>
             <Text style={styles.idValue}>
               {bookingDetails?.bookingDetail?.rent}
-            </Text>
-          </View>
-          <View style={styles.rowContent}>
-            <Text style={styles.bookingId}>Security: </Text>
-            <Text style={styles.idValue}>
-              {bookingDetails?.bookingDetail?.security}
             </Text>
           </View>
           <View style={styles.rowContent}>
@@ -149,6 +188,12 @@ const BookingDetails = navigation => {
             <Text style={styles.bookingId}>Date: </Text>
             <Text style={styles.idValue}>
               {bookingDetails?.paymentHistory?.[0]?.paymentDate}
+            </Text>
+          </View>
+          <View style={styles.security_view}>
+            <Text style={[styles.idValue, styles.security_txt]}>
+              *Security amount of {bookingDetails?.bookingDetail?.security} need
+              to pay during checkin
             </Text>
           </View>
         </View>

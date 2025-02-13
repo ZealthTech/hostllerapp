@@ -14,8 +14,8 @@ import {
 import {
   BLACK_COLOR,
   GRAY_92,
+  LIGHT_PURPLE_B1,
   ORANGE_DARK,
-  PINK_LIGHT,
   TEXT_COLOR,
   WHITE,
 } from '../../utils/colors/colors';
@@ -114,18 +114,18 @@ export const styles = StyleSheet.create({
   line: {height: 0.5, backgroundColor: GRAY_92, marginBottom: 10},
   priceView: {marginLeft: 10},
   start: {fontFamily: MONTSERRAT_REGULAR},
-  price: {fontFamily: MONTSERRAT_BOLD, color: BLACK_COLOR, fontSize: 20},
+  price: {fontFamily: MONTSERRAT_BOLD, color: WHITE, fontSize: 20},
   rupee: {
     fontFamily: MONTSERRAT_REGULAR,
     fontSize: 18,
-    color: BLACK_COLOR,
+    color: WHITE,
   },
-  startFrom: {fontFamily: MONTSERRAT_REGULAR, color: BLACK_COLOR},
-  perMonth: {fontFamily: MONTSERRAT_REGULAR, color: BLACK_COLOR},
+  startFrom: {fontFamily: MONTSERRAT_MEDIUM, color: WHITE},
+  perMonth: {fontFamily: MONTSERRAT_MEDIUM, color: WHITE},
   deposit: {
-    fontFamily: MONTSERRAT_REGULAR,
+    fontFamily: MONTSERRAT_SEMIBOLD,
     fontSize: fontsSize.fs12,
-    color: BLACK_COLOR,
+    color: WHITE,
     marginBottom: isAndroid() ? 0 : 5,
   },
   choose: {color: ORANGE_DARK, fontFamily: MONTSERRAT_BOLD},
@@ -145,7 +145,7 @@ export const styles = StyleSheet.create({
     },
   },
   footerView: {
-    backgroundColor: PINK_LIGHT,
+    backgroundColor: LIGHT_PURPLE_B1,
     paddingHorizontal: 26,
     paddingVertical: 12,
     flexDirection: 'row',

@@ -22,3 +22,4 @@ export const LIGHT_GREEN = '#28A44A';
 export const WHITE_F5 = '#F5F5F5';
 export const DARK_YELLOW = '#FFC107';
 export const WHITE_EF = '#EFEFEF';
+export const ORANGE_LIGHT = '#fdebe5';

@@ -21,7 +21,7 @@ import {
   REGISTER_DATA,
   SUCCESS_TOAST,
 } from '../../utils/constants/constants';
-import {showToast} from '../../utils/constants/commonFunctions';
+import {isAndroid, showToast} from '../../utils/constants/commonFunctions';
 import {loginRequest} from '../../redux/reducers/loginReducer';
 
 const Login = () => {
@@ -32,7 +32,7 @@ const Login = () => {
   const [userData, setUserData] = useState();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
+  const {fcmToken} = useSelector(state => state.userInfoReducer);
   const {loginStatus, message, loading, data} = useSelector(
     state => state.loginReducer,
   );
@@ -99,7 +99,12 @@ const Login = () => {
     password: '',
   };
   const loginUser = userInfo => {
-    dispatch(loginRequest(userInfo));
+    const bodyData = {
+      ...userInfo,
+      fcm: fcmToken,
+      deviceType: isAndroid() ? 1 : 2,
+    };
+    dispatch(loginRequest(bodyData));
     setHasAttemptedLogin(true);
   };
 

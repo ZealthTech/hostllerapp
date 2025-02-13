@@ -10,7 +10,7 @@ import {
 } from '../../utils/colors/colors';
 import CustomSvg from '../customSvg/CustomSvg';
 import {Cancel, CheckGreen} from '../../assets';
-import {MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
+import {fontsSize, MONTSERRAT_REGULAR} from '../../utils/styles/commonStyles';
 
 const ToastMessage = ({type, title, desc, info}) => {
   const styles = getStyles(type);
@@ -48,11 +48,12 @@ const getStyles = type => {
           alignItems: 'center',
           gap: 5,
           paddingVertical: 15,
-          paddingHorizontal: 10,
+          paddingHorizontal: 8,
         },
         title: {fontWeight: 'bold', color: BLACK_COLOR, paddingHorizontal: 10},
         desc: info => ({
           color: info ? WHITE : BLACK_COLOR,
+          fontsSize: 12,
           fontFamily: MONTSERRAT_REGULAR,
         }),
         line: info => ({height: 4, backgroundColor: LIGHT_GREEN}),
@@ -61,7 +62,7 @@ const getStyles = type => {
       return {
         toastContainer: info => ({
           borderRadius: 5,
-          width: '80%',
+          width: '90%',
           marginBottom: 30,
           overflow: 'hidden',
           backgroundColor: info ? BLACK_COLOR : WHITE,
@@ -71,11 +72,12 @@ const getStyles = type => {
           alignItems: 'center',
           gap: 5,
           paddingVertical: 15,
-          paddingHorizontal: 10,
+          paddingHorizontal: 8,
         },
         title: {fontWeight: 'bold', color: BLACK_COLOR, paddingHorizontal: 10},
         desc: info => ({
           color: info ? WHITE : BLACK_COLOR,
+          fontsSize: 12,
           fontFamily: MONTSERRAT_REGULAR,
         }),
         line: _info => ({height: 4, backgroundColor: RED_DARK}),

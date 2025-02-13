@@ -49,6 +49,7 @@ const KycDetails = navigation => {
   const [selectedDate, setSelectedDate] = useState('');
   const [showBloodGroups, setShowBloodGroups] = useState(false);
   const [agreeTAndC, setAgreeTAndC] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     getKycDetails();
@@ -77,7 +78,7 @@ const KycDetails = navigation => {
 
   const submitKycDetails = async values => {
     if (!agreeTAndC) {
-      showToast(ERROR_TOAST, 'Please Agree Terms and Conditions');
+      showToast(ERROR_TOAST, 'Please check Terms and Conditions');
       return;
     }
     //one of the ID is required Aadhar or other government ID
@@ -113,6 +114,7 @@ const KycDetails = navigation => {
       formData.append('familyNumber', values?.familyPhone);
       formData.append('dob', selectedDate);
       formData.append('bloodGroup', values?.bloodGroup);
+      setButtonLoading(true);
       const sendKycDetails = await postDataWithImages(
         UPDATE_KYC_DETAILS,
         formData,
@@ -125,6 +127,7 @@ const KycDetails = navigation => {
     } else {
       showToast(ERROR_TOAST, 'Please upload any ID');
     }
+    setButtonLoading(false);
   };
   const {handleChange, handleSubmit, errors, touched, values, setFieldValue} =
     useFormik({
@@ -277,6 +280,14 @@ const KycDetails = navigation => {
       title: 'Terms & Conditions',
     });
   };
+
+  const today = new Date();
+  const maximumDate = new Date(
+    today.getFullYear() - 12,
+    today.getMonth(),
+    today.getDate(),
+  ); // At least 12 years minimum age
+
   return (
     <View style={styles.container}>
       <BackIconHeader title="KYC Verification" />
@@ -284,7 +295,7 @@ const KycDetails = navigation => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}>
         <InputText
-          label="Father Name"
+          label="Guardian’s Name"
           labelReq={true}
           onChangeText={text => {
             const stringText = text.replace(/[^a-zA-Z\s]/g, '');
@@ -368,7 +379,7 @@ const KycDetails = navigation => {
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
           buttonTextColorIOS={PURPLE}
-          maximumDate={new Date()}
+          maximumDate={maximumDate}
         />
         <Text style={styles.label}>Aadhar ID Card</Text>
         <Pressable
@@ -421,6 +432,8 @@ const KycDetails = navigation => {
           containerStyle={styles.button}
           textStyle={styles.textStyle}
           onPress={handleSubmit}
+          loading={buttonLoading}
+          color={ORANGE_DARK}
         />
       </ScrollView>
       <PhotoSelectionModal

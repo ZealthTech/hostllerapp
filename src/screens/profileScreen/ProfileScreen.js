@@ -1,5 +1,5 @@
 import {View, Text, Image, Pressable, ScrollView} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {apiGet, apiPost, postDataWithImages} from '../../network/axiosInstance';
 import {
@@ -45,6 +45,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {version} from '../../../package.json';
 import {removeItemFromStorage, setDataToStorage} from '../../utils/storage';
 import {clearUserInfo} from '../../redux/reducers/userInfoReducer';
+import CustomBottomSheet from '../../components/customBottomSheet/CustomBottomSheet';
 
 const ProfileScreen = navigation => {
   const {userInfo} = useSelector(state => state.userInfoReducer);
@@ -54,6 +55,8 @@ const ProfileScreen = navigation => {
   const [selectedImage, setSelectedImage] = useState('');
   const focus = useIsFocused();
   const dispatch = useDispatch();
+  const confirmationRef = useRef();
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   useEffect(() => {
     getProfileDetail();
@@ -178,7 +181,12 @@ const ProfileScreen = navigation => {
   };
   const showProfileData = !loading && userInfo?.token;
 
-  const logout = async () => {
+  const logout = () => {
+    confirmationRef?.current?.expand();
+  };
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
     const response = await apiPost(
       LOGOUT_URL,
       {userId: userInfo.userId},
@@ -192,6 +200,11 @@ const ProfileScreen = navigation => {
         navigation.navigation.replace(HOME_NAVIGATOR);
       });
     }
+    setLogoutLoading(false);
+    closeSheet();
+  };
+  const closeSheet = () => {
+    confirmationRef?.current?.close();
   };
   return (
     <View style={styles.container}>
@@ -276,6 +289,26 @@ const ProfileScreen = navigation => {
           />
         </ScrollView>
       )}
+      <CustomBottomSheet ref={confirmationRef} snapPoints={['20%']}>
+        <View style={styles.sheetView}>
+          <Text style={styles.sure_text}>
+            Are You sure you want to logout from your account?
+          </Text>
+          <View style={styles.buttonView}>
+            <Button
+              title="Cancel"
+              containerStyle={styles.cancelBtn}
+              textStyle={styles.btn_text_cancel}
+              onPress={closeSheet}
+            />
+            <Button
+              title="Logout"
+              onPress={handleLogout}
+              loading={logoutLoading}
+            />
+          </View>
+        </View>
+      </CustomBottomSheet>
       <Loader loading={loading} />
     </View>
   );

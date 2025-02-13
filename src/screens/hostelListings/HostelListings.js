@@ -74,7 +74,6 @@ const HostelListings = props => {
     }
     setLoading(false);
   }, [
-    title,
     roomType,
     selectedStar,
     selectedChips,

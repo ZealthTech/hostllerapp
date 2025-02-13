@@ -12,6 +12,7 @@ const Button = props => {
     loading,
     elevation,
     isPressable = true,
+    color = WHITE,
   } = props || {};
   const ViewWrapper = isPressable ? Pressable : View;
   return (
@@ -23,7 +24,7 @@ const Button = props => {
         elevation ? styles.elevation : null,
       ]}>
       {loading ? (
-        <ActivityIndicator color={WHITE} />
+        <ActivityIndicator color={color} />
       ) : (
         <Text style={[styles.textStyle, textStyle]}>{title}</Text>
       )}
